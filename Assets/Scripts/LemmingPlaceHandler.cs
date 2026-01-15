@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity;
-using Unity.VisualScripting;
+using UnityEngine.PlayerLoop;
+
 
 public class LemmingPlaceHandler : MonoBehaviour
 {
@@ -11,7 +10,8 @@ public class LemmingPlaceHandler : MonoBehaviour
     private  List<RunPlace> _lemmingPlaces;
     
     private  RunningLemmingsSet _runningLemmingsSet;
-    
+
+    private GameObject _leaderObject;
     
     private bool _isLeaderKilled = false;
     
@@ -21,6 +21,13 @@ public class LemmingPlaceHandler : MonoBehaviour
 
         _runningLemmingsSet.OnLemmingCountAdd += PlaceNewLemming;
         _runningLemmingsSet.OnLemmingCountRemove += ReplaceLemmings;
+
+        _leaderObject = _runningLemmingsSet.RunningLemmingViews[0].gameObject;
+    }
+
+    private void Update()
+    {
+        transform.position = _leaderObject.transform.position;
     }
 
     private void ReplaceLemmings(LemmingView lemmingView)
@@ -35,6 +42,7 @@ public class LemmingPlaceHandler : MonoBehaviour
             if (_isLeaderKilled)
             {
                 view.IsLeader = true;
+                _leaderObject = view.gameObject;
                 _isLeaderKilled = false;
             }
         }
@@ -52,7 +60,7 @@ public class LemmingPlaceHandler : MonoBehaviour
             if (place.IsEmpty)
             {
                 place.IsEmpty = false;
-                lemmingView.transform.position = place.transform.position;
+                lemmingView.RunningPlace = place.transform;
                 return;
             }
         }

@@ -6,8 +6,7 @@ public class EntryPoint : MonoInstaller
 {
     [SerializeField]
     private LemmingView _leaderLemmingView;
-    [SerializeField]
-    private List<RunPlace> _lemmingRunPlaces;
+
     [SerializeField]
     private LemmingPlaceHandler _lemmingPlaceHandler;
     
