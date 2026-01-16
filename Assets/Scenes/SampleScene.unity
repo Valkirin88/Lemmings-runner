@@ -2560,8 +2560,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sideSpeed: 1
   _forwardSpeed: 2
-  _followSpeed: 5
-  _stickDistance: 0.2
+  _followSpeed: 10
+  _acceleration: 3
   _rigidbody: {fileID: 1585961261}
   IsMovingLeft: 0
   IsMovingRight: 0
@@ -2736,8 +2736,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sideSpeed: 1
   _forwardSpeed: 2
-  _followSpeed: 2
-  _stickDistance: 5
+  _followSpeed: 10
+  _acceleration: 8
   _rigidbody: {fileID: 1870740048}
   IsMovingLeft: 0
   IsMovingRight: 0

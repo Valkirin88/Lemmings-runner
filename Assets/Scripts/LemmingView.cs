@@ -20,6 +20,8 @@ public class LemmingView : MonoBehaviour
     private float _followSpeed = 5f;
     [SerializeField]
     private float _stickDistance = 0.1f;
+    [SerializeField]
+    private float _stickSmoothing = 10f;
     
     [SerializeField]
     private Rigidbody _rigidbody;
@@ -63,8 +65,13 @@ public class LemmingView : MonoBehaviour
             }
             else
             {
-                // Держимся на месте - копируем позицию
-                _rigidbody.MovePosition(RunningPlace.position);
+                // Держимся на месте - плавно следуем с инерцией
+                Vector3 smoothedPosition = Vector3.Lerp(
+                    transform.position,
+                    RunningPlace.position,
+                    _stickSmoothing * Time.fixedDeltaTime
+                );
+                _rigidbody.MovePosition(smoothedPosition);
             }
         }
     }
