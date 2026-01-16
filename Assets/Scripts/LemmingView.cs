@@ -1,10 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
-using UnityEngine.PlayerLoop;
-using UnityEngine.Serialization;
 
 
 public class LemmingView : MonoBehaviour
@@ -13,18 +8,15 @@ public class LemmingView : MonoBehaviour
     public event Action<LemmingView> OnLemmingKilled;
     
     [SerializeField]
-    private float _sideSpeed;
-    [SerializeField]
-    private float _forwardSpeed;
-    [SerializeField]
-    private float _followSpeed = 5f;
-    [SerializeField]
-    private float _stickDistance = 0.1f;
-    [SerializeField]
-    private float _stickSmoothing = 10f;
+    private LemmingConfig _config;
     
-    [SerializeField]
-    private Rigidbody _rigidbody;
+    private float _sideSpeed;
+    private float _forwardSpeed;
+    private float _followSpeed;
+    private float _stickDistance ;
+    private float _stickSmoothing;
+    
+    public Rigidbody Rigidbody;
 
     public bool IsMovingLeft;
     public bool IsMovingRight;
@@ -38,9 +30,14 @@ public class LemmingView : MonoBehaviour
         if(IsRun)
         {
             Animator.SetBool("IsRun", true);
-            // Разворачиваем вперед, если уже бежит
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
         }
+
+        _sideSpeed = _config.SideSpeed;
+        _forwardSpeed = _config.ForwardSpeed;
+        _followSpeed = _config.FollowSpeed;
+        _stickDistance = _config.StickDistance;
+        _stickSmoothing = _config.StickSmoothing;
     }
 
     private void FixedUpdate()
@@ -61,7 +58,7 @@ public class LemmingView : MonoBehaviour
                     RunningPlace.position,
                     _followSpeed * Time.fixedDeltaTime
                 );
-                _rigidbody.MovePosition(targetPosition);
+                Rigidbody.MovePosition(targetPosition);
             }
             else
             {
@@ -71,7 +68,7 @@ public class LemmingView : MonoBehaviour
                     RunningPlace.position,
                     _stickSmoothing * Time.fixedDeltaTime
                 );
-                _rigidbody.MovePosition(smoothedPosition);
+                Rigidbody.MovePosition(smoothedPosition);
             }
         }
     }
@@ -84,7 +81,6 @@ public class LemmingView : MonoBehaviour
             {
                 if (!lemmingView.IsRun)
                 {
-                    Debug.Log("Collided");
                     lemmingView.IsRun = true;
                     lemmingView.Animator.SetBool("IsRun", true);
                     
@@ -99,7 +95,7 @@ public class LemmingView : MonoBehaviour
 
     private void UpdateMovement()
     {
-        Vector3 velocity = _rigidbody.velocity;
+        Vector3 velocity = Rigidbody.velocity;
         
 
         velocity.z = _forwardSpeed;
@@ -117,7 +113,12 @@ public class LemmingView : MonoBehaviour
             velocity.x = 0;
         }
         
-        _rigidbody.velocity = velocity;
+        Rigidbody.velocity = velocity;
+    }
+
+    public void Kill()
+    {
+        Destroy(gameObject);
     }
 
     private void OnDestroy()

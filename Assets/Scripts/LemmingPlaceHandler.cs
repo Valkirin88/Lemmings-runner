@@ -1,28 +1,32 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 
 public class LemmingPlaceHandler : MonoBehaviour
 {
     [SerializeField]
-    private  List<RunPlace> _lemmingPlaces;
+    private List<RunPlace> _lemmingPlaces;
     
-    private  RunningLemmingsSet _runningLemmingsSet;
-
+    private RunningLemmingsSet _runningLemmingsSet;
+    private LemmingController _lemmingController;
+    
     private GameObject _leaderObject;
     
     private bool _isLeaderKilled = false;
     
-    public void Initialize(RunningLemmingsSet runningLemmingsSet)
+    public void Initialize(RunningLemmingsSet runningLemmingsSet, LemmingController lemmingController)
     {
         _runningLemmingsSet = runningLemmingsSet;
+        _lemmingController = lemmingController;
 
         _runningLemmingsSet.OnLemmingCountAdd += PlaceNewLemming;
         _runningLemmingsSet.OnLemmingCountRemove += ReplaceLemmings;
 
         _leaderObject = _runningLemmingsSet.RunningLemmingViews[0].gameObject;
+        
+        var leader = _runningLemmingsSet.RunningLemmingViews[0];
+        SetNewPosition(leader);
     }
 
     private void Update()
@@ -36,13 +40,22 @@ public class LemmingPlaceHandler : MonoBehaviour
         {
             _isLeaderKilled = true;
         }
-        foreach (var view in  _runningLemmingsSet.RunningLemmingViews)
+        
+        foreach (var place in _lemmingPlaces)
         {
+            place.IsEmpty = true;
+        }
+        
+        foreach (var view in _runningLemmingsSet.RunningLemmingViews)
+        {
+            view.RunningPlace = null;
             SetNewPosition(view);
+            
             if (_isLeaderKilled)
             {
                 view.IsLeader = true;
                 _leaderObject = view.gameObject;
+                _lemmingController.View = view;
                 _isLeaderKilled = false;
             }
         }
@@ -51,7 +64,7 @@ public class LemmingPlaceHandler : MonoBehaviour
     private void PlaceNewLemming(LemmingView lemmingView)
     {
         SetNewPosition(lemmingView);
- }
+    }
 
     private void SetNewPosition(LemmingView lemmingView)
     {
@@ -66,7 +79,7 @@ public class LemmingPlaceHandler : MonoBehaviour
         }
     }
 
-    public void OnDestroy()
+    private void OnDestroy()
     {
         _runningLemmingsSet.OnLemmingCountAdd -= PlaceNewLemming;
         _runningLemmingsSet.OnLemmingCountRemove -= ReplaceLemmings;

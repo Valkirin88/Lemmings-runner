@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class RunPlace : MonoBehaviour
 {
-    public bool IsEmpty;
+    public bool IsEmpty = true;
 }

@@ -27,8 +27,8 @@ public class RunningLemmingsSet
     private void AddLemmingInList(LemmingView lemmingView)
     {
         RunningLemmingViews.Add(lemmingView);
-        SubscribeOnNewLemmingsCaught(_leaderLemmingView);
-        SubscribeOnLemmingKilled(_leaderLemmingView);
+        SubscribeOnNewLemmingsCaught(lemmingView);
+        SubscribeOnLemmingKilled(lemmingView);
         OnLemmingCountAdd?.Invoke(lemmingView);
     }
 
