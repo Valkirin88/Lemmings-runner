@@ -358,6 +358,7 @@ Transform:
   - {fileID: 4650799309171160636}
   - {fileID: 2361471569177021907}
   - {fileID: 2251243112583402086}
+  - {fileID: 1023299724845559803}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &6991188964707315110
@@ -501,6 +502,85 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!1001 &1160785434401205640
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5224264343076589956}
+    m_Modifications:
+    - target: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.243
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.009652124
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.037831783
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795143255841055023, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4795143255841055023, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6958202847867020046, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
+      value: 0.114283934
+      objectReference: {fileID: 0}
+    - target: {fileID: 6958202847867020046, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
+      value: 0.0114607895
+      objectReference: {fileID: 0}
+    - target: {fileID: 8963862947711749730, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+      propertyPath: m_Name
+      value: Leaking acid Barrel
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3389409470016698283, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+--- !u!4 &1023299724845559803 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2173142531087450739, guid: d3e0c65451eed55488dc30d28305823b, type: 3}
+  m_PrefabInstance: {fileID: 1160785434401205640}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6947571090151861827
 PrefabInstance:
   m_ObjectHideFlags: 0
