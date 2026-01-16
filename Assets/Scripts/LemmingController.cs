@@ -2,12 +2,12 @@ using System;
 
 public class LemmingController: IDisposable
 {
-    public readonly LemmingView _view;
-    public readonly InputController _inputController;
+    public LemmingView View;
+    private readonly InputController _inputController;
     
     public LemmingController(LemmingView view, InputController inputController)
     {
-        _view = view;
+        View = view;
         _inputController = inputController;
 
         _inputController.OnMoveLeft += MoveLeft;
@@ -18,20 +18,20 @@ public class LemmingController: IDisposable
     private void MoveLeft(bool isMoving)
     {
         if(isMoving)
-            _view.IsMovingLeft = true;
+            View.IsMovingLeft = true;
         else
         {
-            _view.IsMovingLeft = false;
+            View.IsMovingLeft = false;
         }
     }
 
     private void MoveRight(bool isMoving)
     {
         if(isMoving)
-            _view.IsMovingRight = true;
+            View.IsMovingRight = true;
         else
         {
-            _view.IsMovingRight = false;
+            View.IsMovingRight = false;
         }
     }
 

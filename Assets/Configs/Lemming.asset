@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b3230578a6a2a148b9e80cbfcd0f9aa, type: 3}
   m_Name: Lemming
   m_EditorClassIdentifier: 
-  _sideSpeed: 1
+  _sideSpeed: 1.5
   _forwardSpeed: 3
-  _followSpeed: 1
-  _stickDistance: 0.5
-  _stickSmoothing: 5
+  _followSpeed: 7
+  _stickDistance: 0.4
+  _stickSmoothing: 10

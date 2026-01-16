@@ -22,6 +22,7 @@ public class LemmingView : MonoBehaviour
     public bool IsMovingRight;
     public bool IsRun;
     public bool IsLeader;
+    public bool IsFinished;
     public Transform RunningPlace;
 
     public Animator Animator;
@@ -42,7 +43,7 @@ public class LemmingView : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsLeader)
+        if (IsLeader && IsRun)
         {
             UpdateMovement();
         }
@@ -91,10 +92,23 @@ public class LemmingView : MonoBehaviour
                 }
             }
         }
+
+        if (other.TryGetComponent(out EndTrack endTrack))
+        {
+            IsRun = false;
+            IsFinished = true;
+            Animator.SetBool("IsRun", false);
+            
+            
+        }
     }
 
     private void UpdateMovement()
     {
+        if (IsLeader)
+        {
+            Rigidbody.velocity = new Vector3(0,0,0);
+        }
         Vector3 velocity = Rigidbody.velocity;
         
 
