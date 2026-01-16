@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sideSpeed: 1.5
   _forwardSpeed: 3
-  _followSpeed: 7
+  _followSpeed: 4
   _stickDistance: 0.4
   _stickSmoothing: 10
