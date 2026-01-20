@@ -29,8 +29,8 @@ public class LemmingPlaceHandler : MonoBehaviour
 
         _leaderObject = _runningLemmingsSet.RunningLemmingViews[0].gameObject;
         
-        var leader = _runningLemmingsSet.RunningLemmingViews[0];
-        SetNewPosition(leader);
+        // Резервируем первое место для лидера
+        _lemmingPlaces[0].IsEmpty = false;
     }
 
     private void Update()
@@ -50,10 +50,12 @@ public class LemmingPlaceHandler : MonoBehaviour
             place.IsEmpty = true;
         }
         
+        // Резервируем первое место для лидера
+        _lemmingPlaces[0].IsEmpty = false;
+        
         foreach (var view in _runningLemmingsSet.RunningLemmingViews)
         {
             view.RunningPlace = null;
-            SetNewPosition(view);
             
             if (_isLeaderKilled)
             {
@@ -61,6 +63,11 @@ public class LemmingPlaceHandler : MonoBehaviour
                 _leaderObject = view.gameObject;
                 _lemmingController.View = view;
                 _isLeaderKilled = false;
+                // Лидер не должен иметь RunningPlace
+            }
+            else if (!view.IsLeader)
+            {
+                SetNewPosition(view);
             }
         }
     }

@@ -10,7 +10,6 @@ public class LemmingView : MonoBehaviour
     [SerializeField]
     private LemmingConfig _config;
 
-    [SerializeField]
     private GameObject _fireObject;
     
     private float _sideSpeed;
@@ -54,6 +53,7 @@ public class LemmingView : MonoBehaviour
         else
         {
             Animator.SetBool("IsRun", false);
+            transform.rotation = Quaternion.LookRotation(Vector3.back);
         }
 
         CheckIfOnPlate();
@@ -99,7 +99,7 @@ public class LemmingView : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (IsRun)
+        if (IsRun && !IsOnFire)
         {
             if (other.TryGetComponent(out LemmingView lemmingView))
             {
@@ -123,48 +123,41 @@ public class LemmingView : MonoBehaviour
 
     private void UpdateMovement()
     {
-        if (IsLeader)
-        {
-            Rigidbody.linearVelocity = new Vector3(0,0,0);
-        }
-        Vector3 velocity = Rigidbody.linearVelocity;
+        float yVelocity = Rigidbody.linearVelocity.y;
         
+        if (IsOnFire)
+        {
+            Rigidbody.linearVelocity = new Vector3(0, yVelocity, _onFireSpeed);
+            return;
+        }
 
-        velocity.z = _forwardSpeed;
+        float xVelocity = 0;
         
         if (IsMovingRight)
         {
-            velocity.x = _sideSpeed;
+            xVelocity = _sideSpeed;
         }
         else if (IsMovingLeft)
         {
-            velocity.x = -_sideSpeed;
-        }
-        else
-        {
-            velocity.x = 0;
+            xVelocity = -_sideSpeed;
         }
         
-        Rigidbody.linearVelocity = velocity;
-
-        if (IsOnFire)
-        {
-            Rigidbody.linearVelocity = new Vector3(0,0,_onFireSpeed);
-            
-        }
+        Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity, _forwardSpeed);
     }
 
-    public void SetFire()
+    public void SetFire(GameObject fireObject)
     {
+        _fireObject = fireObject;
+        _fireObject.transform.SetParent(transform);
+        _fireObject.transform.localPosition = Vector3.zero;
         _fireObject.SetActive(true);
+        
         RunningPlace = null;
         IsOnFire = true;
         
-        OnLemmingKilled?.Invoke(this);
+        Kill();
         
         IsLeader = false;
-        
-        Destroy(gameObject, 2f);
     }
 
     private void CheckIfOnPlate()
