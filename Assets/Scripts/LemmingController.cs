@@ -37,7 +37,7 @@ public class LemmingController: IDisposable
 
     public void Dispose()
     {
-        _inputController.OnMoveLeft += MoveLeft;
-        _inputController.OnMoveRight += MoveRight;
+        _inputController.OnMoveLeft -= MoveLeft;
+        _inputController.OnMoveRight -= MoveRight;
     }
 }

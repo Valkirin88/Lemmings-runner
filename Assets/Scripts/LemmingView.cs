@@ -9,12 +9,16 @@ public class LemmingView : MonoBehaviour
     
     [SerializeField]
     private LemmingConfig _config;
+
+    [SerializeField]
+    private GameObject _fireObject;
     
     private float _sideSpeed;
     private float _forwardSpeed;
     private float _followSpeed;
     private float _stickDistance ;
     private float _stickSmoothing;
+    private float _onFireSpeed;
     
     public Rigidbody Rigidbody;
 
@@ -22,7 +26,7 @@ public class LemmingView : MonoBehaviour
     public bool IsMovingRight;
     public bool IsRun;
     public bool IsLeader;
-    public bool IsFinished;
+    public bool IsOnFire;
     public Transform RunningPlace;
 
     public Animator Animator;
@@ -30,7 +34,6 @@ public class LemmingView : MonoBehaviour
     {
         if(IsRun)
         {
-            Animator.SetBool("IsRun", true);
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
         }
 
@@ -39,6 +42,21 @@ public class LemmingView : MonoBehaviour
         _followSpeed = _config.FollowSpeed;
         _stickDistance = _config.StickDistance;
         _stickSmoothing = _config.StickSmoothing;
+        _onFireSpeed = _config.OnFireSpeed;
+    }
+
+    private void Update()
+    {
+        if (IsRun)
+        {
+            Animator.SetBool("IsRun", true);
+        }
+        else
+        {
+            Animator.SetBool("IsRun", false);
+        }
+
+        CheckIfOnPlate();
     }
 
     private void FixedUpdate()
@@ -47,10 +65,10 @@ public class LemmingView : MonoBehaviour
         {
             UpdateMovement();
         }
-        else if (RunningPlace != null)
+        else if (RunningPlace != null && IsRun)
         {
             float distance = Vector3.Distance(transform.position, RunningPlace.position);
-            
+
             if (distance > _stickDistance)
             {
                 // Быстро догоняем
@@ -72,6 +90,11 @@ public class LemmingView : MonoBehaviour
                 Rigidbody.MovePosition(smoothedPosition);
             }
         }
+
+        if (IsRun && IsOnFire)
+        {
+            UpdateMovement();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -83,7 +106,6 @@ public class LemmingView : MonoBehaviour
                 if (!lemmingView.IsRun)
                 {
                     lemmingView.IsRun = true;
-                    lemmingView.Animator.SetBool("IsRun", true);
                     
                     // Разворачиваем лемминга вперед в направлении бега
                     lemmingView.transform.rotation = Quaternion.LookRotation(Vector3.forward);
@@ -96,10 +118,6 @@ public class LemmingView : MonoBehaviour
         if (other.TryGetComponent(out EndTrack endTrack))
         {
             IsRun = false;
-            IsFinished = true;
-            Animator.SetBool("IsRun", false);
-            
-            
         }
     }
 
@@ -107,9 +125,9 @@ public class LemmingView : MonoBehaviour
     {
         if (IsLeader)
         {
-            Rigidbody.velocity = new Vector3(0,0,0);
+            Rigidbody.linearVelocity = new Vector3(0,0,0);
         }
-        Vector3 velocity = Rigidbody.velocity;
+        Vector3 velocity = Rigidbody.linearVelocity;
         
 
         velocity.z = _forwardSpeed;
@@ -127,16 +145,51 @@ public class LemmingView : MonoBehaviour
             velocity.x = 0;
         }
         
-        Rigidbody.velocity = velocity;
+        Rigidbody.linearVelocity = velocity;
+
+        if (IsOnFire)
+        {
+            Rigidbody.linearVelocity = new Vector3(0,0,_onFireSpeed);
+            
+        }
     }
 
+    public void SetFire()
+    {
+        _fireObject.SetActive(true);
+        RunningPlace = null;
+        IsOnFire = true;
+        
+        OnLemmingKilled?.Invoke(this);
+        
+        IsLeader = false;
+        
+        Destroy(gameObject, 2f);
+    }
+
+    private void CheckIfOnPlate()
+    {
+        if (RunningPlace != null)
+        {
+            float distance = Vector3.Distance(transform.position, RunningPlace.position);
+            if (distance > 2f)
+            {
+                Kill();
+            }
+        }
+    }
+    
     public void Kill()
     {
-        Destroy(gameObject);
+        OnLemmingKilled?.Invoke(this);
+        if(!IsOnFire)
+            Destroy(gameObject);
+        else 
+            Destroy(gameObject, 2f);
     }
 
     private void OnDestroy()
     {
-        OnLemmingKilled?.Invoke(this);
+        
     }
 }

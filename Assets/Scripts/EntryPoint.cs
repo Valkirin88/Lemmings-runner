@@ -20,7 +20,7 @@ public class EntryPoint : MonoInstaller
     private RunningLemmingsSet _runningLemmingsSet;
     
     //mediators
-    private GameStateUIMediator _gameStateUIMediator;
+    private GameStateCollector _gameStateCollector;
     
     
     private void Awake()
@@ -28,19 +28,20 @@ public class EntryPoint : MonoInstaller
         _inputController = new InputController();
         _lemmingController = new LemmingController(_leaderLemmingView, _inputController);
         _runningLemmingsSet = new RunningLemmingsSet(_leaderLemmingView);
-        _lemmingPlaceHandler.Initialize(_runningLemmingsSet, _lemmingController);
-        _gameStateUIMediator = new GameStateUIMediator(_endTrack, _uiHandler, _runningLemmingsSet);
+        _gameStateCollector = new GameStateCollector(_endTrack, _uiHandler, _runningLemmingsSet);
+        _lemmingPlaceHandler.Initialize( _lemmingController, _gameStateCollector);
+        
     }
 
     private void Update()
     {
         _inputController.Update();
-        _gameStateUIMediator.Update();
+        _gameStateCollector.Update();
     }
 
     private void OnDestroy()
     {
         _lemmingController.Dispose();
-        _gameStateUIMediator.Dispose();
+        _gameStateCollector.Dispose();
     }
 }

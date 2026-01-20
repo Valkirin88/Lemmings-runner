@@ -27,15 +27,15 @@ public class Log : MonoBehaviour
 
     private void SetDanger()
     {
-        if (Rigidbody.velocity.magnitude < 1 && IsPileDestroyed)
+        if (Rigidbody.linearVelocity.magnitude < 1 && IsPileDestroyed)
         {
             IsDangerous = false;
         }
-        else if (Rigidbody.velocity.magnitude > 1)
+        else if (Rigidbody.linearVelocity.magnitude > 1)
         {
             IsDangerous = true;
         }
-        Velocity = Rigidbody.velocity.magnitude;
+        Velocity = Rigidbody.linearVelocity.magnitude;
     }
 
     public void StartMoving()

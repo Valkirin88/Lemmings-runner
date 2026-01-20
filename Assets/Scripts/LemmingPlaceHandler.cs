@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,18 +9,23 @@ public class LemmingPlaceHandler : MonoBehaviour
     
     private RunningLemmingsSet _runningLemmingsSet;
     private LemmingController _lemmingController;
+    private GameStateCollector _gameStateCollector;
+    
     
     private GameObject _leaderObject;
     
     private bool _isLeaderKilled = false;
     
-    public void Initialize(RunningLemmingsSet runningLemmingsSet, LemmingController lemmingController)
+    public void Initialize(LemmingController lemmingController, GameStateCollector gameStateCollector)
     {
-        _runningLemmingsSet = runningLemmingsSet;
         _lemmingController = lemmingController;
+        _gameStateCollector = gameStateCollector;
+        _runningLemmingsSet = _gameStateCollector.RunningLemmingsSet;
 
         _runningLemmingsSet.OnLemmingCountAdd += PlaceNewLemming;
         _runningLemmingsSet.OnLemmingCountRemove += ReplaceLemmings;
+
+        _gameStateCollector.EndTrack.OnFinished += StopLemmings;
 
         _leaderObject = _runningLemmingsSet.RunningLemmingViews[0].gameObject;
         
@@ -70,7 +74,7 @@ public class LemmingPlaceHandler : MonoBehaviour
     {
         foreach (RunPlace place in _lemmingPlaces)
         {
-            if (place.IsEmpty)
+            if (place.IsEmpty && !lemmingView.IsOnFire)
             {
                 place.IsEmpty = false;
                 lemmingView.RunningPlace = place.transform;
@@ -79,9 +83,20 @@ public class LemmingPlaceHandler : MonoBehaviour
         }
     }
 
+    private void StopLemmings()
+    {
+        foreach (var lemmingView in _runningLemmingsSet.RunningLemmingViews)
+        {
+            Debug.Log("StopLemmings   ");
+            lemmingView.IsRun = false;
+        }
+    }
+
     private void OnDestroy()
     {
         _runningLemmingsSet.OnLemmingCountAdd -= PlaceNewLemming;
         _runningLemmingsSet.OnLemmingCountRemove -= ReplaceLemmings;
+        
+        _gameStateCollector.EndTrack.OnFinished -= StopLemmings;
     }
 }
