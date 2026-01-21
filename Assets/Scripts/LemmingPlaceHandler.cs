@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -45,6 +46,27 @@ public class LemmingPlaceHandler : MonoBehaviour
             _isLeaderKilled = true;
         }
         
+        // Назначаем нового лидера сразу
+        if (_isLeaderKilled)
+        {
+            foreach (var view in _runningLemmingsSet.RunningLemmingViews)
+            {
+                view.IsLeader = true;
+                _leaderObject = view.gameObject;
+                _lemmingController.View = view;
+                _isLeaderKilled = false;
+                break; // Только первый становится лидером
+            }
+        }
+        
+        // Репозиция остальных через 1 секунду
+        StartCoroutine(DelayedReposition());
+    }
+
+    private IEnumerator DelayedReposition()
+    {
+        yield return new WaitForSeconds(1f);
+        
         foreach (var place in _lemmingPlaces)
         {
             place.IsEmpty = true;
@@ -57,15 +79,7 @@ public class LemmingPlaceHandler : MonoBehaviour
         {
             view.RunningPlace = null;
             
-            if (_isLeaderKilled)
-            {
-                view.IsLeader = true;
-                _leaderObject = view.gameObject;
-                _lemmingController.View = view;
-                _isLeaderKilled = false;
-                // Лидер не должен иметь RunningPlace
-            }
-            else if (!view.IsLeader)
+            if (!view.IsLeader)
             {
                 SetNewPosition(view);
             }
