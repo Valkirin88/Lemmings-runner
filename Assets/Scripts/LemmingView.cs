@@ -27,6 +27,7 @@ public class LemmingView : MonoBehaviour
     public bool IsLeader;
     public bool IsOnFire;
     public bool IsDead;
+    public bool IsSliced;
     public Transform RunningPlace;
 
     public Animator Animator;
@@ -180,9 +181,14 @@ public class LemmingView : MonoBehaviour
         IsDead = true;
         OnLemmingKilled?.Invoke(this);
         
+        // Добавляем пятна крови на экран
+        if (BloodSplatterManager.Instance != null)
+        {
+            BloodSplatterManager.Instance.AddSplattersOnKill();
+        }
+        
         if (!IsOnFire)
         {
-            Debug.Log("Destroyed Lemming View");
             Destroy(gameObject);
         }
         else 

@@ -30,14 +30,25 @@ public class CircularSaw : MonoBehaviour, IObstacle
     {
         if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
-            // Проверяем, что лемминг ещё жив
-            if (lemmingView.IsDead) return;
+            // Проверяем, что лемминг ещё не распилен (горящий тоже может быть распилен)
+            if (lemmingView.IsSliced) return;
             
+            lemmingView.IsSliced = true;
             _bloodParticles.Play();
             
             _slicedObject = lemmingView.gameObject;
             SliceLemming();
-            lemmingView.Kill();
+            
+            // Вызываем Kill для неубитых леммингов, а для горящих - сразу уничтожаем
+            if (!lemmingView.IsDead)
+            {
+                lemmingView.Kill();
+            }
+            else
+            {
+                // Горящий лемминг уже IsDead, просто уничтожаем оригинал
+                Destroy(lemmingView.gameObject);
+            }
         }
     }
 
@@ -56,8 +67,7 @@ public class CircularSaw : MonoBehaviour, IObstacle
             return;
         }
         
-        Debug.Log($"Lemming pos: {lemmingPosition}, Part1 pos: {_slicedObjects[0].transform.position}, Part2 pos: {_slicedObjects[1].transform.position}");
-        _slicedLemmingsHandler.HandleSlicedLemmings(_slicedObjects[0], _slicedObjects[1], _bloodParticles);
+       _slicedLemmingsHandler.HandleSlicedLemmings(_slicedObjects[0], _slicedObjects[1], _bloodParticles);
     }
 
     public GameObject[] Slice(Vector3 planeWorldPosition, Vector3 planeWorldDirection, TextureRegion region)

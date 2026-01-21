@@ -74,7 +74,7 @@ public class SlicedLemmingsHandler
         _rigidbody1.mass = 1;
         _rigidbody2.mass = 1;
         // Разбрасываем части в стороны (по X), вверх (Y) и вперёд (Z)
-        _rigidbody1.AddForce(new Vector3(2, 2, 5), ForceMode.Impulse);
-        _rigidbody2.AddForce(new Vector3(-2, 2, 5), ForceMode.Impulse);
+        _rigidbody1.AddForce(new Vector3(2, 2, 10), ForceMode.Impulse);
+        _rigidbody2.AddForce(new Vector3(-2, 2, 10), ForceMode.Impulse);
     }
 }

@@ -106,7 +106,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -220,7 +220,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -334,7 +334,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -522,7 +522,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -694,6 +694,18 @@ PrefabInstance:
     - target: {fileID: 1142193931700624, guid: 2e34b8ddaf5075541bdd71f246caacd9, type: 3}
       propertyPath: m_Name
       value: BloodExplosionRound2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4906107047789274, guid: 2e34b8ddaf5075541bdd71f246caacd9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4906107047789274, guid: 2e34b8ddaf5075541bdd71f246caacd9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4906107047789274, guid: 2e34b8ddaf5075541bdd71f246caacd9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4906107047789274, guid: 2e34b8ddaf5075541bdd71f246caacd9, type: 3}
       propertyPath: m_LocalPosition.x
