@@ -902,6 +902,8 @@ GameObject:
   - component: {fileID: 8626518834086012544}
   - component: {fileID: 3690955771139997662}
   - component: {fileID: 3417968856102874651}
+  - component: {fileID: 4878001595609191718}
+  - component: {fileID: 2375516500218971187}
   m_Layer: 6
   m_Name: Hamsto04
   m_TagString: Untagged
@@ -963,13 +965,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: a25e6e3d681d51041a2900f46ab90e19, type: 2}
-  _fireObject: {fileID: 8438576451582682372}
   Rigidbody: {fileID: 3690955771139997662}
   IsMovingLeft: 0
   IsMovingRight: 0
   IsRun: 1
   IsLeader: 1
   IsOnFire: 0
+  IsDead: 0
   RunningPlace: {fileID: 0}
   Animator: {fileID: 6650058888881574986}
 --- !u!54 &3690955771139997662
@@ -998,7 +1000,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &3417968856102874651
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1022,6 +1024,63 @@ CapsuleCollider:
   m_Height: 0.59
   m_Direction: 1
   m_Center: {x: 0, y: 0.29, z: 0}
+--- !u!33 &4878001595609191718
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436809084443138963}
+  m_Mesh: {fileID: 4300000, guid: 14dc0dab558577b4dad9ccad6905419f, type: 3}
+--- !u!23 &2375516500218971187
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436809084443138963}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: cabab536730fbe5479693cafe9dc9536, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &3530074372262030269
 GameObject:
   m_ObjectHideFlags: 0
@@ -2442,10 +2501,5 @@ PrefabInstance:
 --- !u!4 &8438576451582356750 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 491456, guid: 433e10b681e225146bd213261fbdfe38, type: 3}
-  m_PrefabInstance: {fileID: 8438576451582530254}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8438576451582682372 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 161738, guid: 433e10b681e225146bd213261fbdfe38, type: 3}
   m_PrefabInstance: {fileID: 8438576451582530254}
   m_PrefabAsset: {fileID: 0}

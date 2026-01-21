@@ -26,6 +26,7 @@ public class LemmingView : MonoBehaviour
     public bool IsRun;
     public bool IsLeader;
     public bool IsOnFire;
+    public bool IsDead;
     public Transform RunningPlace;
 
     public Animator Animator;
@@ -174,11 +175,20 @@ public class LemmingView : MonoBehaviour
     
     public void Kill()
     {
+        if (IsDead) return;
+        
+        IsDead = true;
         OnLemmingKilled?.Invoke(this);
-        if(!IsOnFire)
+        
+        if (!IsOnFire)
+        {
+            Debug.Log("Destroyed Lemming View");
             Destroy(gameObject);
+        }
         else 
+        {
             Destroy(gameObject, 2f);
+        }
     }
 
     private void OnDestroy()

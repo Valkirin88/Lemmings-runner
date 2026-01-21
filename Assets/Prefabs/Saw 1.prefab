@@ -26,14 +26,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1221044811634699598}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5000001, y: 0.5, z: -0.5, w: 0.49999994}
+  m_LocalRotation: {x: 0.5, y: 0.5, z: -0.5, w: -0.5}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.25754, y: 0.25754, z: 0.25754}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6827645241962869797}
   m_Father: {fileID: 5575028126156018057}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: -90}
+  m_LocalEulerAnglesHint: {x: 180, y: 90, z: -90}
 --- !u!198 &6689127495440806733
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4963,9 +4963,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59bfd032efed0b8468bca0dfe558825a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 1000
-  _crossSectionWoodMaterial: {fileID: 0}
-  _crossSectionLemmingMaterial: {fileID: 0}
+  _speed: 500
+  _crossSectionLemmingMaterial: {fileID: 2100000, guid: 5ee42708b8969824f92b3dd3e184cd5f, type: 2}
   _bloodParticles: {fileID: 6689127495440806733}
 --- !u!1 &3793217503743503546
 GameObject:

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bonfire : MonoBehaviour
+public class Bonfire : MonoBehaviour, IObstacle
 {
     [SerializeField]
     private GameObject _firePrefab;

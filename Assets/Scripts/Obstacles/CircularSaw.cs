@@ -1,12 +1,10 @@
 using UnityEngine;
 using EzySlice;
 
-public class CircularSaw : MonoBehaviour
+public class CircularSaw : MonoBehaviour, IObstacle
 {
     [SerializeField]
     private float _speed = 10;
-    [SerializeField]
-    private Material _crossSectionWoodMaterial;
     [SerializeField]
     private Material _crossSectionLemmingMaterial;
     [SerializeField]
@@ -24,27 +22,42 @@ public class CircularSaw : MonoBehaviour
     {
         _slicedLemmingsHandler = new SlicedLemmingsHandler();
         _bloodParticles.transform.SetParent(null);
+        
+        _crossSectionMaterial = _crossSectionLemmingMaterial;
     }
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemming))
+        if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
-                _bloodParticles.Play();
-                lemming.Kill();
-                // lemming.gameObject.transform.position = new Vector3(lemming.gameObject.transform.position.x, lemming.gameObject.transform.position.y, transform.position.z);
-                // _slicedObject = lemming.gameObject;
-                // _crossSectionMaterial = _crossSectionLemmingMaterial;
-                // SliceLemming();
+            // Проверяем, что лемминг ещё жив
+            if (lemmingView.IsDead) return;
+            
+            _bloodParticles.Play();
+            
+            _slicedObject = lemmingView.gameObject;
+            SliceLemming();
+            lemmingView.Kill();
         }
     }
 
 
     private void SliceLemming()
     {
-        _slicedObjects = Slice(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z), new Vector3(0, 0, 1), new TextureRegion());
-        Destroy(_slicedObject);
-        _slicedLemmingsHandler.HandleSlicedLemmings(_slicedObjects[0], _slicedObjects[1]);
+        Vector3 lemmingPosition = _slicedObject.transform.position;
+        // X от пилы (где лезвие), Y и Z от лемминга
+        Vector3 slicePlanePosition = new Vector3(transform.position.x, lemmingPosition.y + 0.2f, lemmingPosition.z);
+        
+        _slicedObjects = Slice(slicePlanePosition, new Vector3(0, 0, 1), new TextureRegion());
+        
+        if (_slicedObjects == null || _slicedObjects.Length < 2)
+        {
+            Debug.LogError("Slice failed!");
+            return;
+        }
+        
+        Debug.Log($"Lemming pos: {lemmingPosition}, Part1 pos: {_slicedObjects[0].transform.position}, Part2 pos: {_slicedObjects[1].transform.position}");
+        _slicedLemmingsHandler.HandleSlicedLemmings(_slicedObjects[0], _slicedObjects[1], _bloodParticles);
     }
 
     public GameObject[] Slice(Vector3 planeWorldPosition, Vector3 planeWorldDirection, TextureRegion region)

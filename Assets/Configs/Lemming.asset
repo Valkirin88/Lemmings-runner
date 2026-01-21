@@ -17,3 +17,4 @@ MonoBehaviour:
   _followSpeed: 4
   _stickDistance: 0.4
   _stickSmoothing: 10
+  _onFireSpeed: 5

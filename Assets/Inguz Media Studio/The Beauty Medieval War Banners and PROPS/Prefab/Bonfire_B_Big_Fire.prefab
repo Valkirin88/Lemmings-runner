@@ -4865,6 +4865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e890cf06aa89bcf4592e7e8c878255ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bonfire
+  _firePrefab: {fileID: 161738, guid: 433e10b681e225146bd213261fbdfe38, type: 3}
 --- !u!135 &6505072715700192789
 SphereCollider:
   m_ObjectHideFlags: 0
