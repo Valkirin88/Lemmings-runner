@@ -5,19 +5,19 @@ public class GameStateCollector : IDisposable
 {
     private readonly EndTrack _endTrack;
     private readonly UIHandler _uiHandler;
-    private readonly RunningLemmingsSet _runningRunningLemmingsSet;
+    private readonly LemmingsStateSet _lemmingsStateSet;
     
     private int _lemmingQuantity;
     
-    public RunningLemmingsSet RunningLemmingsSet => _runningRunningLemmingsSet;
+    public LemmingsStateSet LemmingsStateSet => _lemmingsStateSet;
 
     public EndTrack EndTrack => _endTrack;
 
-    public GameStateCollector(EndTrack endTrack,UIHandler uiHandler, RunningLemmingsSet runningRunningLemmingsSet)
+    public GameStateCollector(EndTrack endTrack,UIHandler uiHandler, LemmingsStateSet lemmingsStateSet)
     {
         _endTrack = endTrack;
         _uiHandler = uiHandler;
-        _runningRunningLemmingsSet = runningRunningLemmingsSet;
+        _lemmingsStateSet = lemmingsStateSet;
         
         EndTrack.OnFinished += Finish;
 
@@ -36,7 +36,7 @@ public class GameStateCollector : IDisposable
 
     public void Update()
     {
-        _lemmingQuantity = RunningLemmingsSet.RunningLemmingViews.Count;
+        _lemmingQuantity = LemmingsStateSet.RunningLemmingViews.Count;
         if (_lemmingQuantity<=0)
         {
             _uiHandler.GameState = GameState.GameOver;

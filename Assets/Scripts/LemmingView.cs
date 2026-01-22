@@ -6,6 +6,7 @@ public class LemmingView : MonoBehaviour
 {
     public event Action<LemmingView> OnLemmingCaught; 
     public event Action<LemmingView> OnLemmingKilled;
+    public event Action OnLemmingOnFire;
     
     [SerializeField]
     private LemmingConfig _config;
@@ -129,6 +130,7 @@ public class LemmingView : MonoBehaviour
         
         if (IsOnFire)
         {
+            
             Rigidbody.linearVelocity = new Vector3(0, yVelocity, _onFireSpeed);
             return;
         }
@@ -153,7 +155,7 @@ public class LemmingView : MonoBehaviour
         _fireObject.transform.SetParent(transform);
         _fireObject.transform.localPosition = Vector3.zero;
         _fireObject.SetActive(true);
-        
+        OnLemmingOnFire?.Invoke();
         RunningPlace = null;
         IsOnFire = true;
         
@@ -181,8 +183,8 @@ public class LemmingView : MonoBehaviour
         IsDead = true;
         OnLemmingKilled?.Invoke(this);
         
-        // Добавляем пятна крови на экран
-        if (BloodSplatterManager.Instance != null)
+        // Добавляем пятна крови на экран (только если не горит)
+        if (!IsOnFire && BloodSplatterManager.Instance != null)
         {
             BloodSplatterManager.Instance.AddSplattersOnKill();
         }

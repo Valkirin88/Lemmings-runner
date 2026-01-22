@@ -8,7 +8,7 @@ public class LemmingPlaceHandler : MonoBehaviour
     [SerializeField]
     private List<RunPlace> _lemmingPlaces;
     
-    private RunningLemmingsSet _runningLemmingsSet;
+    private LemmingsStateSet _lemmingsStateSet;
     private LemmingController _lemmingController;
     private GameStateCollector _gameStateCollector;
     
@@ -21,14 +21,14 @@ public class LemmingPlaceHandler : MonoBehaviour
     {
         _lemmingController = lemmingController;
         _gameStateCollector = gameStateCollector;
-        _runningLemmingsSet = _gameStateCollector.RunningLemmingsSet;
+        _lemmingsStateSet = _gameStateCollector.LemmingsStateSet;
 
-        _runningLemmingsSet.OnLemmingCountAdd += PlaceNewLemming;
-        _runningLemmingsSet.OnLemmingCountRemove += ReplaceLemmings;
+        _lemmingsStateSet.OnLemmingCountAdd += PlaceNewLemmingState;
+        _lemmingsStateSet.OnLemmingCountRemove += ReplaceLemmingsState;
 
         _gameStateCollector.EndTrack.OnFinished += StopLemmings;
 
-        _leaderObject = _runningLemmingsSet.RunningLemmingViews[0].gameObject;
+        _leaderObject = _lemmingsStateSet.RunningLemmingViews[0].gameObject;
         
         // Резервируем первое место для лидера
         _lemmingPlaces[0].IsEmpty = false;
@@ -36,10 +36,13 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private void Update()
     {
-        transform.position = _leaderObject.transform.position;
+        if (_leaderObject != null)
+        {
+            transform.position = _leaderObject.transform.position;
+        }
     }
 
-    private void ReplaceLemmings(LemmingView lemmingView)
+    private void ReplaceLemmingsState(LemmingView lemmingView)
     {
         if (lemmingView.IsLeader)
         {
@@ -49,7 +52,7 @@ public class LemmingPlaceHandler : MonoBehaviour
         // Назначаем нового лидера сразу
         if (_isLeaderKilled)
         {
-            foreach (var view in _runningLemmingsSet.RunningLemmingViews)
+            foreach (var view in _lemmingsStateSet.RunningLemmingViews)
             {
                 view.IsLeader = true;
                 _leaderObject = view.gameObject;
@@ -75,7 +78,7 @@ public class LemmingPlaceHandler : MonoBehaviour
         // Резервируем первое место для лидера
         _lemmingPlaces[0].IsEmpty = false;
         
-        foreach (var view in _runningLemmingsSet.RunningLemmingViews)
+        foreach (var view in _lemmingsStateSet.RunningLemmingViews)
         {
             view.RunningPlace = null;
             
@@ -86,7 +89,7 @@ public class LemmingPlaceHandler : MonoBehaviour
         }
     }
 
-    private void PlaceNewLemming(LemmingView lemmingView)
+    private void PlaceNewLemmingState(LemmingView lemmingView)
     {
         SetNewPosition(lemmingView);
     }
@@ -106,7 +109,7 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private void StopLemmings()
     {
-        foreach (var lemmingView in _runningLemmingsSet.RunningLemmingViews)
+        foreach (var lemmingView in _lemmingsStateSet.RunningLemmingViews)
         {
             Debug.Log("StopLemmings   ");
             lemmingView.IsRun = false;
@@ -115,8 +118,8 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        _runningLemmingsSet.OnLemmingCountAdd -= PlaceNewLemming;
-        _runningLemmingsSet.OnLemmingCountRemove -= ReplaceLemmings;
+        _lemmingsStateSet.OnLemmingCountAdd -= PlaceNewLemmingState;
+        _lemmingsStateSet.OnLemmingCountRemove -= ReplaceLemmingsState;
         
         _gameStateCollector.EndTrack.OnFinished -= StopLemmings;
     }

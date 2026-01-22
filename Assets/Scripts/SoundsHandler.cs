@@ -1,88 +1,41 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SoundsHandler : MonoBehaviour
 {
     [SerializeField]
-    private AudioSource _source;
+    private AudioClip _fireScreamClip;
     [SerializeField]
-    private AudioClip _mergeClip;
+    private List<AudioClip> _bloodSplatterClips;
     [SerializeField]
-    private AudioClip _newFruitClip;
-    [SerializeField]
-    private AudioClip _bombClip;
-    [SerializeField]
-    private AudioClip _collidedClip;
-    [SerializeField]
-    private AudioClip _bananasClip;
-
-
-    
+    private AudioSource _audioSource;
+    private LemmingsStateSet _lemmingsStateSet;
    
-    // public void Initialize(FishInstantiator fishInstantiator, CollisionHandler collisionHandler, BubblesPull bubblesPull, FruitsUpgraderAbility fruitsUpgraderAbility)
-    // {
-    //     _fishInstantiator = fishInstantiator;
-    //     _collisionHandler = collisionHandler;
-    //     _bubblesPull = bubblesPull;
-    //     _fruitsUpgraderAbility = fruitsUpgraderAbility;
-    //     _fishInstantiator.OnFruitInstantiatedAtTop += PlayNewFish;
-    //     _fishInstantiator.OnBombInstantiated += SubscribeOnBomb;
-    //     _collisionHandler.OnCollisionDone += PlayMerge;
-    //     _bubblesPull.OnBananasAppeared += PlayBubbles;
-    //     _fruitsUpgraderAbility.OnFruitUpgraded += PlayMerge;
-    // }
-    //
-    // private void Update()
-    // {
-    //     if (!GameInfo.IsSoundOn)
-    //         _source.mute = true;
-    //     else
-    //         _source.mute = false;
-    // }
-    //
-    // private void PlayNewFish()
-    // {
-    //     _source.PlayOneShot(_newFruitClip);
-    // }
-    //
-    // private void PlayMerge()
-    // {
-    //     _source.PlayOneShot(_mergeClip);
-    // }
-    //
-    // private void SubscribeOnBomb(Bomb bomb)
-    // {
-    //     _bomb = bomb;
-    //     _bomb.OnBombExploded += PlayBomb;
-    // }
-    //
-    // private void PlayBomb() 
-    // {
-    //     UnsubscribeBomb();
-    //     _source.PlayOneShot(_bombClip);
-    // }
-    //
-    // private void UnsubscribeBomb()
-    // {
-    //     _bomb.OnBombExploded -= PlayBomb;
-    // }
-    //
-    // private void PlayCollided()
-    // {
-    //     _source.PlayOneShot(_collidedClip);
-    // }
-    //
-    // private void PlayBubbles()
-    // {
-    //     _source.PlayOneShot(_bananasClip);
-    // }
-    //
-    // private void OnDestroy()
-    // {
-    //     _fishInstantiator.OnFruitInstantiatedAtTop -= PlayNewFish;
-    //     _fishInstantiator.OnBombInstantiated -= SubscribeOnBomb;
-    //     _collisionHandler.OnCollisionDone -= PlayMerge;
-    //     _bubblesPull.OnBananasAppeared -= PlayBubbles;
-    //     _fruitsUpgraderAbility.OnFruitUpgraded -= PlayMerge;
-    //
-    // }
+    public void Initialize(LemmingsStateSet lemmingsStateSet)
+    {
+        _lemmingsStateSet = lemmingsStateSet;
+        _lemmingsStateSet.OnLemmingOnFire += PlayFireScream;
+        _lemmingsStateSet.OnLemmingCountRemove += PlaySplatter;
+    }
+
+    private void PlayFireScream()
+    {
+        _audioSource.PlayOneShot(_fireScreamClip);
+        Debug.Log("Fire Scream Played");
+    }
+    
+    private void PlaySplatter(LemmingView obj)
+    {
+        if (_bloodSplatterClips.Count > 0)
+        {
+            var randomClip = _bloodSplatterClips[Random.Range(0, _bloodSplatterClips.Count)];
+            _audioSource.PlayOneShot(randomClip);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        _lemmingsStateSet.OnLemmingOnFire -= PlayFireScream;
+        _lemmingsStateSet.OnLemmingCountRemove -= PlaySplatter;
+    }
 }

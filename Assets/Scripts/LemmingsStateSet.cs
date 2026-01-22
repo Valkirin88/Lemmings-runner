@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 
 
-public class RunningLemmingsSet
+public class LemmingsStateSet 
 {
     public event Action<LemmingView> OnLemmingCountAdd;
     public event Action<LemmingView> OnLemmingCountRemove;
+    public event Action OnLemmingOnFire;
     
     
     private List<LemmingView> _runningLemmingViews;
@@ -13,7 +14,7 @@ public class RunningLemmingsSet
     private LemmingView _leaderLemmingView;
     public List<LemmingView> RunningLemmingViews => _runningLemmingViews;
 
-    public RunningLemmingsSet(LemmingView leaderLemmingView)
+    public LemmingsStateSet(LemmingView leaderLemmingView)
     {
         _runningLemmingViews = new List<LemmingView>();
         
@@ -29,13 +30,25 @@ public class RunningLemmingsSet
         RunningLemmingViews.Add(lemmingView);
         SubscribeOnNewLemmingsCaught(lemmingView);
         SubscribeOnLemmingKilled(lemmingView);
+        SubscribeLimmingSream(lemmingView);
         OnLemmingCountAdd?.Invoke(lemmingView);
+    }
+
+    private void SubscribeLimmingSream(LemmingView lemmingView)
+    {
+        lemmingView.OnLemmingOnFire += FireLemming;
+    }
+
+    private void FireLemming()
+    {
+        OnLemmingOnFire?.Invoke();
     }
 
     private void RemoveLemmingInList(LemmingView lemmingView)
     {
         RunningLemmingViews.Remove(lemmingView);
         UnsubscribeOnNewLemmingsCaught(lemmingView);
+        lemmingView.OnLemmingOnFire -= FireLemming;
         OnLemmingCountRemove?.Invoke(lemmingView);
     }
     

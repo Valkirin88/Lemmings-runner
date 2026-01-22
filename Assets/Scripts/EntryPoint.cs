@@ -15,9 +15,12 @@ public class EntryPoint : MonoInstaller
     [SerializeField]
     private UIHandler _uiHandler;
     
+    [SerializeField]
+    private SoundsHandler _soundHandler;
+    
     private InputController _inputController;
     private LemmingController _lemmingController;
-    private RunningLemmingsSet _runningLemmingsSet;
+    private LemmingsStateSet _lemmingsStateSet;
     
     //mediators
     private GameStateCollector _gameStateCollector;
@@ -27,10 +30,10 @@ public class EntryPoint : MonoInstaller
     {
         _inputController = new InputController();
         _lemmingController = new LemmingController(_leaderLemmingView, _inputController);
-        _runningLemmingsSet = new RunningLemmingsSet(_leaderLemmingView);
-        _gameStateCollector = new GameStateCollector(_endTrack, _uiHandler, _runningLemmingsSet);
+        _lemmingsStateSet = new LemmingsStateSet(_leaderLemmingView);
+        _gameStateCollector = new GameStateCollector(_endTrack, _uiHandler, _lemmingsStateSet);
         _lemmingPlaceHandler.Initialize( _lemmingController, _gameStateCollector);
-        
+        _soundHandler.Initialize(_lemmingsStateSet);
     }
 
     private void Update()

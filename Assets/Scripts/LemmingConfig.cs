@@ -15,7 +15,7 @@ public class LemmingConfig : ScriptableObject
     private float _stickSmoothing;
     [SerializeField]
     private float _onFireSpeed;
-
+  
     public float SideSpeed => _sideSpeed;
 
     public float ForwardSpeed => _forwardSpeed;
