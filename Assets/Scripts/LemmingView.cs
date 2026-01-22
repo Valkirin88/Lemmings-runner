@@ -39,6 +39,12 @@ public class LemmingView : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
         }
 
+        // Включаем интерполяцию для плавного движения между кадрами физики
+        if (Rigidbody != null)
+        {
+            Rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        }
+
         _sideSpeed = _config.SideSpeed;
         _forwardSpeed = _config.ForwardSpeed;
         _followSpeed = _config.FollowSpeed;

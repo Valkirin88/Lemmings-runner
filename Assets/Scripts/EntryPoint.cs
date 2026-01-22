@@ -18,6 +18,9 @@ public class EntryPoint : MonoInstaller
     [SerializeField]
     private SoundsHandler _soundHandler;
     
+    [SerializeField]
+    private CameraHandler _cameraHandler;
+    
     private InputController _inputController;
     private LemmingController _lemmingController;
     private LemmingsStateSet _lemmingsStateSet;
@@ -34,6 +37,7 @@ public class EntryPoint : MonoInstaller
         _gameStateCollector = new GameStateCollector(_endTrack, _uiHandler, _lemmingsStateSet);
         _lemmingPlaceHandler.Initialize( _lemmingController, _gameStateCollector);
         _soundHandler.Initialize(_lemmingsStateSet);
+        _cameraHandler.Initialize(_lemmingsStateSet);
     }
 
     private void Update()
