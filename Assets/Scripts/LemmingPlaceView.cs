@@ -24,6 +24,10 @@ public class LemmingPlaceView : MonoBehaviour
     {
         if (IsMoving)
         {
+            // Включаем физику если была выключена
+            if (Rigidbody.isKinematic)
+                Rigidbody.isKinematic = false;
+            
             float yVelocity = Rigidbody.linearVelocity.y;
 
             float xVelocity = 0;
@@ -39,7 +43,11 @@ public class LemmingPlaceView : MonoBehaviour
 
             Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity, ForwardSpeed);
         }
-        else 
+        else
+        {
+            // Полностью останавливаем - делаем кинематическим
             Rigidbody.linearVelocity = Vector3.zero;
+            Rigidbody.isKinematic = true;
+        }
     }
 }

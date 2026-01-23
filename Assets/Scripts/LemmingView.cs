@@ -146,6 +146,9 @@ public class LemmingView : MonoBehaviour
 
     private void CheckIfOnPlate()
     {
+        // Не проверяем если лемминг не бежит (игра закончилась)
+        if (!IsRun) return;
+        
         if (RunningPlace != null)
         {
             float distance = Vector3.Distance(transform.position, RunningPlace.position);
