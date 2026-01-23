@@ -9,17 +9,10 @@ public class LemmingPlaceHandler : MonoBehaviour
     private List<RunPlace> _lemmingPlaces;
     
     private LemmingsStateSet _lemmingsStateSet;
-    private LemmingController _lemmingController;
     private GameStateCollector _gameStateCollector;
     
-    
-    private GameObject _leaderObject;
-    
-    private bool _isLeaderKilled = false;
-    
-    public void Initialize(LemmingController lemmingController, GameStateCollector gameStateCollector)
+    public void Initialize(GameStateCollector gameStateCollector)
     {
-        _lemmingController = lemmingController;
         _gameStateCollector = gameStateCollector;
         _lemmingsStateSet = _gameStateCollector.LemmingsStateSet;
 
@@ -27,42 +20,17 @@ public class LemmingPlaceHandler : MonoBehaviour
         _lemmingsStateSet.OnLemmingCountRemove += ReplaceLemmingsState;
 
         _gameStateCollector.EndTrack.OnFinished += StopLemmings;
-
-        _leaderObject = _lemmingsStateSet.RunningLemmingViews[0].gameObject;
         
-        // Резервируем первое место для лидера
-        _lemmingPlaces[0].IsEmpty = false;
-    }
-
-    private void Update()
-    {
-        if (_leaderObject != null)
+        // Назначаем место первому леммингу (он уже в списке до подписки на событие)
+        if (_lemmingsStateSet.RunningLemmingViews.Count > 0)
         {
-            transform.position = _leaderObject.transform.position;
+            SetNewPosition(_lemmingsStateSet.RunningLemmingViews[0]);
         }
     }
 
     private void ReplaceLemmingsState(LemmingView lemmingView)
     {
-        if (lemmingView.IsLeader)
-        {
-            _isLeaderKilled = true;
-        }
-        
-        // Назначаем нового лидера сразу
-        if (_isLeaderKilled)
-        {
-            foreach (var view in _lemmingsStateSet.RunningLemmingViews)
-            {
-                view.IsLeader = true;
-                _leaderObject = view.gameObject;
-                _lemmingController.View = view;
-                _isLeaderKilled = false;
-                break; // Только первый становится лидером
-            }
-        }
-        
-        // Репозиция остальных через 1 секунду
+        // Релокация всех леммингов через 1 секунду
         StartCoroutine(DelayedReposition());
     }
 
@@ -70,22 +38,16 @@ public class LemmingPlaceHandler : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         
+        // Освобождаем все места
         foreach (var place in _lemmingPlaces)
         {
             place.IsEmpty = true;
         }
         
-        // Резервируем первое место для лидера
-        _lemmingPlaces[0].IsEmpty = false;
-        
+        // Назначаем новые места всем живым леммингам
         foreach (var view in _lemmingsStateSet.RunningLemmingViews)
         {
-            view.RunningPlace = null;
-            
-            if (!view.IsLeader)
-            {
-                SetNewPosition(view);
-            }
+            SetNewPosition(view);
         }
     }
 

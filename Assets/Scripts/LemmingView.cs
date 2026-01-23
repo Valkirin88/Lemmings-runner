@@ -25,7 +25,6 @@ public class LemmingView : MonoBehaviour
     public bool IsMovingLeft;
     public bool IsMovingRight;
     public bool IsRun;
-    public bool IsLeader;
     public bool IsOnFire;
     public bool IsDead;
     public bool IsSliced;
@@ -64,11 +63,7 @@ public class LemmingView : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsLeader && IsRun)
-        {
-            UpdateMovement();
-        }
-        else if (RunningPlace != null && IsRun)
+        if (RunningPlace != null && IsRun)
         {
             float distance = Vector3.Distance(transform.position, RunningPlace.position);
 
@@ -130,23 +125,9 @@ public class LemmingView : MonoBehaviour
         
         if (IsOnFire)
         {
-            
             Rigidbody.linearVelocity = new Vector3(0, yVelocity, _onFireSpeed);
             return;
         }
-
-        float xVelocity = 0;
-        
-        if (IsMovingRight)
-        {
-            xVelocity = _sideSpeed;
-        }
-        else if (IsMovingLeft)
-        {
-            xVelocity = -_sideSpeed;
-        }
-        
-        Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity, _forwardSpeed);
     }
 
     public void SetFire(GameObject fireObject)
@@ -161,7 +142,6 @@ public class LemmingView : MonoBehaviour
         
         Kill();
         
-        IsLeader = false;
     }
 
     private void CheckIfOnPlate()

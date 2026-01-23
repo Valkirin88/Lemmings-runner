@@ -86,18 +86,18 @@ public class CameraHandler : MonoBehaviour
     private void OnLemmingRemoved(LemmingView removedLemming)
     {
         // Если убит лидер — обновляем на нового
-        if (removedLemming.IsLeader)
-        {
-            // Сразу обновляем лидера (чтобы камера следовала за новым по Z)
-            UpdateCurrentLeader();
-            
-            // Запускаем переход с задержкой только если ещё не ждём
-            if (!_isWaitingForTransition)
-            {
-                StartCoroutine(DelayedTransition());
-            }
-            // Если уже ждём — лидер обновился, корутина продолжит работу с новым лидером
-        }
+        // if (removedLemming.IsLeader)
+        // {
+        //     // Сразу обновляем лидера (чтобы камера следовала за новым по Z)
+        //     UpdateCurrentLeader();
+        //     
+        //     // Запускаем переход с задержкой только если ещё не ждём
+        //     if (!_isWaitingForTransition)
+        //     {
+        //         StartCoroutine(DelayedTransition());
+        //     }
+        //     // Если уже ждём — лидер обновился, корутина продолжит работу с новым лидером
+        // }
     }
     
     private IEnumerator DelayedTransition()
