@@ -5,12 +5,14 @@ public class LemmingPlaceController: IDisposable
     private readonly LemmingPlaceView _lemmingPlaceView;
     private readonly InputController _inputController;
     private readonly LemmingConfig _lemmingConfig;
+    private readonly GameStateCollector _gameStateCollector;
     
-    public LemmingPlaceController(LemmingPlaceView lemmingPlaceView, InputController inputController, LemmingConfig lemmingConfig)
+    public LemmingPlaceController(LemmingPlaceView lemmingPlaceView, InputController inputController, LemmingConfig lemmingConfig, GameStateCollector gameStateCollector)
     {
         _lemmingPlaceView = lemmingPlaceView;
         _inputController = inputController;
         _lemmingConfig = lemmingConfig;
+        _gameStateCollector = gameStateCollector;
         
         _lemmingPlaceView.SideSpeed = _lemmingConfig.SideSpeed;
         _lemmingPlaceView.ForwardSpeed = _lemmingConfig.ForwardSpeed;
@@ -36,6 +38,18 @@ public class LemmingPlaceController: IDisposable
         else
         {
             _lemmingPlaceView.IsMovingRight = false;
+        }
+    }
+
+    public void Update()
+    {
+        if (_gameStateCollector.State == GameState.Game)
+        {
+            _lemmingPlaceView.IsMoving = true;
+        }
+        else
+        {
+            _lemmingPlaceView.IsMoving = false;
         }
     }
 

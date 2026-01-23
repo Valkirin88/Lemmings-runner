@@ -39,7 +39,7 @@ public class EntryPoint : MonoInstaller
         _lemmingsStateSet = new LemmingsStateSet(_leaderLemmingView);
         _gameStateCollector = new GameStateCollector(_endTrack, _uiHandler, _lemmingsStateSet);
         _lemmingPlaceHandler.Initialize(_gameStateCollector);
-        _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig);
+        _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig, _gameStateCollector);
         _soundHandler.Initialize(_lemmingsStateSet);
     }
 
@@ -47,6 +47,7 @@ public class EntryPoint : MonoInstaller
     {
         _inputController.Update();
         _gameStateCollector.Update();
+        _lemmingPlaceController.Update();
     }
 
     private void OnDestroy()

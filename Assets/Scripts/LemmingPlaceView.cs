@@ -10,29 +10,36 @@ public class LemmingPlaceView : MonoBehaviour
     
     public bool IsMovingLeft;
     public bool IsMovingRight;
+    public bool IsMoving;
     
     public Rigidbody Rigidbody;
 
     private void FixedUpdate()
     {
-        UpdateMovement();
+        
+            UpdateMovement();
     }
 
     private void UpdateMovement()
     {
-        float yVelocity = Rigidbody.linearVelocity.y;
-        
-        float xVelocity = 0;
-        
-        if (IsMovingRight)
+        if (IsMoving)
         {
-            xVelocity = SideSpeed;
+            float yVelocity = Rigidbody.linearVelocity.y;
+
+            float xVelocity = 0;
+
+            if (IsMovingRight)
+            {
+                xVelocity = SideSpeed;
+            }
+            else if (IsMovingLeft)
+            {
+                xVelocity = -SideSpeed;
+            }
+
+            Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity, ForwardSpeed);
         }
-        else if (IsMovingLeft)
-        {
-            xVelocity = -SideSpeed;
-        }
-        
-        Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity, ForwardSpeed);
+        else 
+            Rigidbody.linearVelocity = Vector3.zero;
     }
 }
