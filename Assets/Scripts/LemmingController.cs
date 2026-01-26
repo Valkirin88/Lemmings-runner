@@ -2,42 +2,27 @@ using System;
 
 public class LemmingController: IDisposable
 {
-    public LemmingView View;
+    private readonly LemmingsStateSet _lemmingsStateSet;
     private readonly InputController _inputController;
     
-    public LemmingController(LemmingView view, InputController inputController)
+    public LemmingController(LemmingsStateSet lemmingsStateSet, InputController inputController)
     {
-        View = view;
+        _lemmingsStateSet = lemmingsStateSet;
         _inputController = inputController;
-
-        _inputController.OnMoveLeft += MoveLeft;
-        _inputController.OnMoveRight += MoveRight;
-
+        
+        _inputController.OnJump += Jump;
     }
 
-    private void MoveLeft(bool isMoving)
+    private void Jump()
     {
-        if(isMoving)
-            View.IsMovingLeft = true;
-        else
+        foreach (var lemmingView in _lemmingsStateSet.RunningLemmingViews)
         {
-            View.IsMovingLeft = false;
-        }
-    }
-
-    private void MoveRight(bool isMoving)
-    {
-        if(isMoving)
-            View.IsMovingRight = true;
-        else
-        {
-            View.IsMovingRight = false;
+            lemmingView.Jump();
         }
     }
 
     public void Dispose()
     {
-        _inputController.OnMoveLeft -= MoveLeft;
-        _inputController.OnMoveRight -= MoveRight;
+        _inputController.OnJump -= Jump;
     }
 }

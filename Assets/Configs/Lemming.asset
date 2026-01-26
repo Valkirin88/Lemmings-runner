@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sideSpeed: 1.5
   _forwardSpeed: 3
-  _followSpeed: 4
+  _followSpeed: 7
   _stickDistance: 0.5
-  _stickSmoothing: 10
+  _stickSmoothing: 20
   _onFireSpeed: 5
+  _jumpForce: 12
+  _accelerateDuration: 2
+  _accelerateMultiplier: 2

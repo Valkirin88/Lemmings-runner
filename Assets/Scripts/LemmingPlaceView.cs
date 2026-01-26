@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -13,13 +14,38 @@ public class LemmingPlaceView : MonoBehaviour
     public bool IsMoving;
     
     public Rigidbody Rigidbody;
+    
+    public float AccelerateDuration;
+    public float AccelerateMultiplier;
+    
+    private float _currentSpeedMultiplier = 1f;
+    private bool _isAccelerating = false;
 
     private void FixedUpdate()
     {
         
-            UpdateMovement();
+        UpdateMovement();
     }
 
+    public void Accelerate()
+    {
+        if (!_isAccelerating && IsMoving)
+        {
+            StartCoroutine(AccelerateCoroutine());
+        }
+    }
+    
+    private IEnumerator AccelerateCoroutine()
+    {
+        _isAccelerating = true;
+        _currentSpeedMultiplier = AccelerateMultiplier;
+        
+        yield return new WaitForSeconds(AccelerateDuration);
+        
+        _currentSpeedMultiplier = 1f;
+        _isAccelerating = false;
+    }
+    
     private void UpdateMovement()
     {
         if (IsMoving)
@@ -41,7 +67,8 @@ public class LemmingPlaceView : MonoBehaviour
                 xVelocity = -SideSpeed;
             }
 
-            Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity, ForwardSpeed);
+            float currentForwardSpeed = ForwardSpeed * _currentSpeedMultiplier;
+            Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity, currentForwardSpeed);
         }
         else
         {

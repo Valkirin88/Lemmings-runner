@@ -16,9 +16,17 @@ public class LemmingPlaceController: IDisposable
         
         _lemmingPlaceView.SideSpeed = _lemmingConfig.SideSpeed;
         _lemmingPlaceView.ForwardSpeed = _lemmingConfig.ForwardSpeed;
+        _lemmingPlaceView.AccelerateDuration = _lemmingConfig.AccelerateDuration;
+        _lemmingPlaceView.AccelerateMultiplier = _lemmingConfig.AccelerateMultiplier;
 
         _inputController.OnMoveLeft += MoveLeft;
         _inputController.OnMoveRight += MoveRight;
+        _inputController.OnAccelerate += Accelerate;
+    }
+
+    private void Accelerate()
+    {
+        _lemmingPlaceView.Accelerate();
     }
 
     private void MoveLeft(bool isMoving)
@@ -50,7 +58,6 @@ public class LemmingPlaceController: IDisposable
         else
         {
             _lemmingPlaceView.IsMoving = false;
-            UnityEngine.Debug.Log($"Game finished! State: {_gameStateCollector.State}, IsMoving: {_lemmingPlaceView.IsMoving}");
         }
     }
 
@@ -58,5 +65,6 @@ public class LemmingPlaceController: IDisposable
     {
         _inputController.OnMoveLeft -= MoveLeft;
         _inputController.OnMoveRight -= MoveRight;
+        _inputController.OnAccelerate -= Accelerate;
     }
 }

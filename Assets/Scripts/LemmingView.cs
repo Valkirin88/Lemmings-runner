@@ -13,18 +13,15 @@ public class LemmingView : MonoBehaviour
 
     private GameObject _fireObject;
     
-    private float _sideSpeed;
-    private float _forwardSpeed;
     private float _followSpeed;
     private float _stickDistance ;
     private float _stickSmoothing;
     private float _onFireSpeed;
+    private float _jumpForce;
     
     public Rigidbody Rigidbody;
 
-    public bool IsMovingLeft;
-    public bool IsMovingRight;
-    public bool IsRun;
+   public bool IsRun;
     public bool IsOnFire;
     public bool IsDead;
     public bool IsSliced;
@@ -38,12 +35,12 @@ public class LemmingView : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
         }
 
-        _sideSpeed = _config.SideSpeed;
-        _forwardSpeed = _config.ForwardSpeed;
+
         _followSpeed = _config.FollowSpeed;
         _stickDistance = _config.StickDistance;
         _stickSmoothing = _config.StickSmoothing;
         _onFireSpeed = _config.OnFireSpeed;
+        _jumpForce = _config.JumpForce;
     }
 
     private void Update()
@@ -130,6 +127,14 @@ public class LemmingView : MonoBehaviour
         }
     }
 
+    public void Jump()
+    {
+        if (IsRun && !IsDead)
+        {
+            Rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+        }
+    }
+
     public void SetFire(GameObject fireObject)
     {
         _fireObject = fireObject;
@@ -151,11 +156,11 @@ public class LemmingView : MonoBehaviour
         
         if (RunningPlace != null)
         {
-            float distance = Vector3.Distance(transform.position, RunningPlace.position);
-            if (distance > 2f)
-            {
-                Kill();
-            }
+            // float distance = Vector3.Distance(transform.position, RunningPlace.position);
+            // if (distance > 2f)
+            // {
+            //     Kill();
+            // }
         }
     }
     

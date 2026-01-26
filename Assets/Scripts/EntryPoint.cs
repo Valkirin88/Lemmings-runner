@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 public class EntryPoint : MonoInstaller
@@ -8,6 +9,11 @@ public class EntryPoint : MonoInstaller
     
     [SerializeField]
     private LemmingConfig _lemmingConfig;
+    
+    [SerializeField]
+    private Button _accelerateButton;
+    [SerializeField]
+    private Button _jumpButton;
 
     [SerializeField]
     private LemmingPlaceHandler _lemmingPlaceHandler;
@@ -34,9 +40,9 @@ public class EntryPoint : MonoInstaller
     
     private void Awake()
     {
-        _inputController = new InputController();
-        _lemmingController = new LemmingController(_leaderLemmingView, _inputController);
+        _inputController = new InputController(_accelerateButton, _jumpButton);
         _lemmingsStateSet = new LemmingsStateSet(_leaderLemmingView);
+        _lemmingController = new LemmingController(_lemmingsStateSet, _inputController);
         _gameStateCollector = new GameStateCollector(_endTrack, _uiHandler, _lemmingsStateSet);
         _lemmingPlaceHandler.Initialize(_gameStateCollector);
         _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig, _gameStateCollector);
@@ -52,6 +58,7 @@ public class EntryPoint : MonoInstaller
 
     private void OnDestroy()
     {
+        _inputController.Dispose();
         _lemmingController.Dispose();
         _gameStateCollector.Dispose();
     }
