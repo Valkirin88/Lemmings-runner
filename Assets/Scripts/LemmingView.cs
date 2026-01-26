@@ -187,6 +187,23 @@ public class LemmingView : MonoBehaviour
         }
     }
 
+    public void KillWithotBlood()
+    {
+        if (IsDead) return;
+        
+        IsDead = true;
+        OnLemmingKilled?.Invoke(this);
+        
+        if (!IsOnFire)
+        {
+            Destroy(gameObject);
+        }
+        else 
+        {
+            Destroy(gameObject, 2f);
+        }
+    }
+
     private void OnDestroy()
     {
         
