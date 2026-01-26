@@ -30,6 +30,8 @@ public class GameStateCollector : IDisposable
 
     private void Finish()
     {
+        UnityEngine.Debug.Log($"Finish called! LemmingQuantity: {_lemmingQuantity}, Current State: {_gameState}");
+        
         if (_lemmingQuantity >= 12)
         {
             _gameState = GameState.Finish;
@@ -40,6 +42,8 @@ public class GameStateCollector : IDisposable
             _gameState = GameState.GameOver;
             _uiHandler.GameState = _gameState;
         }
+        
+        UnityEngine.Debug.Log($"New State: {_gameState}");
     }
 
     public void Update()

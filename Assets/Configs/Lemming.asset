@@ -16,7 +16,7 @@ MonoBehaviour:
   _forwardSpeed: 3
   _followSpeed: 7
   _stickDistance: 0.5
-  _stickSmoothing: 20
+  _stickSmoothing: 22
   _onFireSpeed: 5
   _jumpForce: 12
   _accelerateDuration: 2

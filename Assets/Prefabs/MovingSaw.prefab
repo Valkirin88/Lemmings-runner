@@ -4835,6 +4835,37 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
+--- !u!1 &2247077303485638792
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7998294748822027274}
+  m_Layer: 0
+  m_Name: Edge1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7998294748822027274
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2247077303485638792}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.338}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 48499865389189117}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2777833945827679973
 GameObject:
   m_ObjectHideFlags: 0
@@ -4846,8 +4877,8 @@ GameObject:
   - component: {fileID: 5575028126156018057}
   - component: {fileID: 4634703278436031306}
   - component: {fileID: 5237753657810871989}
-  - component: {fileID: 2838029676779866851}
-  - component: {fileID: 5817012384449039023}
+  - component: {fileID: 4359158584126363052}
+  - component: {fileID: 5076399844149256092}
   m_Layer: 0
   m_Name: Saw (6)
   m_TagString: Untagged
@@ -4930,23 +4961,8 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2838029676779866851
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2777833945827679973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59bfd032efed0b8468bca0dfe558825a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _speed: 500
-  _crossSectionLemmingMaterial: {fileID: 2100000, guid: 5ee42708b8969824f92b3dd3e184cd5f, type: 2}
-  _bloodParticles: {fileID: 6689127495440806733}
---- !u!64 &5817012384449039023
-MeshCollider:
+--- !u!65 &4359158584126363052
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4963,10 +4979,27 @@ MeshCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 6915116930832517723, guid: d942f926f70e652438fb8e8a4bb937c9, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.17925696, y: 0.0033844481, z: 0.17925699}
+  m_Center: {x: -0.000000007450581, y: -7.567003e-10, z: 0.00000002607703}
+--- !u!114 &5076399844149256092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2777833945827679973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c813fd837a0c4d43a50cb45fea7c6e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CircularSawMoving
+  _rotationSpeed: 10
+  _speed: 2
+  _firstEdge: {fileID: 7998294748822027274}
+  _secondEdge: {fileID: 5322411990542478428}
+  _crossSectionLemmingMaterial: {fileID: 2100000, guid: c56ff72642e080a4d94c35a02574a151, type: 2}
+  _bloodParticles: {fileID: 6689127495440806733}
 --- !u!1 &3793217503743503546
 GameObject:
   m_ObjectHideFlags: 0
@@ -9831,9 +9864,11 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.02697976, y: -0.058009416, z: 0}
-  m_LocalScale: {x: 0.099999994, y: 0.099999994, z: 2}
+  m_LocalScale: {x: 0.099999994, y: 0.099999994, z: 4.836448}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7998294748822027274}
+  - {fileID: 5322411990542478428}
   m_Father: {fileID: 7724181223050287326}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2554292938606669567
@@ -14700,7 +14735,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7724181223050287326}
   m_Layer: 0
-  m_Name: Saw 1
+  m_Name: MovingSaw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14714,7 +14749,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6721551993907192608}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.17, y: 0.17, z: 89.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -14722,4 +14757,35 @@ Transform:
   - {fileID: 48499865389189117}
   - {fileID: 5575028126156018057}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!1 &7414698403789334101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5322411990542478428}
+  m_Layer: 0
+  m_Name: Edge2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5322411990542478428
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7414698403789334101}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.326}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 48499865389189117}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

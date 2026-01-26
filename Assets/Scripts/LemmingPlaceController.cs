@@ -57,6 +57,10 @@ public class LemmingPlaceController: IDisposable
         }
         else
         {
+            if (_lemmingPlaceView.IsMoving)
+            {
+                UnityEngine.Debug.Log($"Stopping movement. State: {_gameStateCollector.State}");
+            }
             _lemmingPlaceView.IsMoving = false;
         }
     }

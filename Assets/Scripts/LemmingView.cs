@@ -54,8 +54,6 @@ public class LemmingView : MonoBehaviour
             Animator.SetBool("IsRun", false);
             transform.rotation = Quaternion.LookRotation(Vector3.back);
         }
-
-        CheckIfOnPlate();
     }
 
     private void FixedUpdate()
@@ -149,21 +147,6 @@ public class LemmingView : MonoBehaviour
         
     }
 
-    private void CheckIfOnPlate()
-    {
-        // Не проверяем если лемминг не бежит (игра закончилась)
-        if (!IsRun) return;
-        
-        if (RunningPlace != null)
-        {
-            // float distance = Vector3.Distance(transform.position, RunningPlace.position);
-            // if (distance > 2f)
-            // {
-            //     Kill();
-            // }
-        }
-    }
-    
     public void Kill()
     {
         if (IsDead) return;
