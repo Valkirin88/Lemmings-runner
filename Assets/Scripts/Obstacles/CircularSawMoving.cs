@@ -1,13 +1,12 @@
 using UnityEngine;
 using EzySlice;
-using UnityEngine.Serialization;
 
 public class CircularSawMoving : MonoBehaviour, IObstacle
 {
     [SerializeField]
-    private float _rotationSpeed = 10;
+    private float _rotationSpeed;
     [SerializeField]
-    private float _speed = 20;
+    private float _speed;
 
     [SerializeField]
     private Transform _firstEdge;

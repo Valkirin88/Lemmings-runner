@@ -4877,8 +4877,8 @@ GameObject:
   - component: {fileID: 5575028126156018057}
   - component: {fileID: 4634703278436031306}
   - component: {fileID: 5237753657810871989}
-  - component: {fileID: 4359158584126363052}
   - component: {fileID: 5076399844149256092}
+  - component: {fileID: 1278249762078600886}
   m_Layer: 0
   m_Name: Saw (6)
   m_TagString: Untagged
@@ -4961,8 +4961,26 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4359158584126363052
-BoxCollider:
+--- !u!114 &5076399844149256092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2777833945827679973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c813fd837a0c4d43a50cb45fea7c6e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CircularSawMoving
+  _rotationSpeed: 500
+  _speed: 1
+  _firstEdge: {fileID: 7998294748822027274}
+  _secondEdge: {fileID: 5322411990542478428}
+  _crossSectionLemmingMaterial: {fileID: 2100000, guid: c56ff72642e080a4d94c35a02574a151, type: 2}
+  _bloodParticles: {fileID: 6689127495440806733}
+--- !u!64 &1278249762078600886
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4979,27 +4997,10 @@ BoxCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.17925696, y: 0.0033844481, z: 0.17925699}
-  m_Center: {x: -0.000000007450581, y: -7.567003e-10, z: 0.00000002607703}
---- !u!114 &5076399844149256092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2777833945827679973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c813fd837a0c4d43a50cb45fea7c6e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CircularSawMoving
-  _rotationSpeed: 10
-  _speed: 2
-  _firstEdge: {fileID: 7998294748822027274}
-  _secondEdge: {fileID: 5322411990542478428}
-  _crossSectionLemmingMaterial: {fileID: 2100000, guid: c56ff72642e080a4d94c35a02574a151, type: 2}
-  _bloodParticles: {fileID: 6689127495440806733}
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6915116930832517723, guid: d942f926f70e652438fb8e8a4bb937c9, type: 3}
 --- !u!1 &3793217503743503546
 GameObject:
   m_ObjectHideFlags: 0
@@ -9943,7 +9944,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

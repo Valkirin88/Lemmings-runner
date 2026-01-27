@@ -19,6 +19,8 @@ public class LemmingView : MonoBehaviour
     private float _onFireSpeed;
     private float _jumpForce;
     
+    private bool _isJumping;
+    
     public Rigidbody Rigidbody;
 
    public bool IsRun;
@@ -60,28 +62,26 @@ public class LemmingView : MonoBehaviour
     {
         if (RunningPlace != null && IsRun)
         {
-            float distance = Vector3.Distance(transform.position, RunningPlace.position);
-
-            if (distance > _stickDistance)
-            {
-                // Быстро догоняем
-                Vector3 targetPosition = Vector3.MoveTowards(
-                    transform.position,
-                    RunningPlace.position,
-                    _followSpeed * Time.fixedDeltaTime
-                );
-                Rigidbody.MovePosition(targetPosition);
-            }
-            else
-            {
-                // Держимся на месте - плавно следуем с инерцией
-                Vector3 smoothedPosition = Vector3.Lerp(
-                    transform.position,
-                    RunningPlace.position,
-                    _stickSmoothing * Time.fixedDeltaTime
-                );
-                Rigidbody.MovePosition(smoothedPosition);
-            }
+            // Вычисляем разницу по X и Z
+            Vector3 currentPos = transform.position;
+            Vector3 targetPos = RunningPlace.position;
+            
+            float deltaX = targetPos.x - currentPos.x;
+            float deltaZ = targetPos.z - currentPos.z;
+            float distanceXZ = Mathf.Sqrt(deltaX * deltaX + deltaZ * deltaZ);
+            
+            // Скорость следования
+            float speed = distanceXZ > _stickDistance ? _followSpeed : _stickSmoothing;
+            
+            // Вычисляем горизонтальную скорость к цели
+            Vector3 directionXZ = new Vector3(deltaX, 0, deltaZ).normalized;
+            Vector3 velocityXZ = directionXZ * Mathf.Min(distanceXZ * speed, _followSpeed);
+            
+            // Сохраняем вертикальную скорость (для прыжка)
+            float yVelocity = Rigidbody.linearVelocity.y;
+            
+            // Применяем скорость: X и Z к цели, Y от физики
+            Rigidbody.linearVelocity = new Vector3(velocityXZ.x, yVelocity, velocityXZ.z);
         }
 
         if (IsRun && IsOnFire)
@@ -127,9 +127,27 @@ public class LemmingView : MonoBehaviour
 
     public void Jump()
     {
-        if (IsRun && !IsDead)
+        if (IsRun && !IsDead && !_isJumping)
         {
+            _isJumping = true;
             Rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+        }
+    }
+    
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Проверяем приземление
+        if (_isJumping && collision.contacts.Length > 0)
+        {
+            foreach (var contact in collision.contacts)
+            {
+                // Если нормаль направлена вверх — это земля
+                if (contact.normal.y > 0.5f)
+                {
+                    _isJumping = false;
+                    break;
+                }
+            }
         }
     }
 
