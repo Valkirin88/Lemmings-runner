@@ -70,3 +70,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Large files (exceeding GitHub limit)
+Assets/Materials/WoodLog/Materials/Wood_Log_normal.png
+Assets/Materials/WoodLog/Scene/Sky1.exr
