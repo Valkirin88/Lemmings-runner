@@ -15,16 +15,15 @@ public class SoundsHandler : MonoBehaviour
     {
         _lemmingsStateSet = lemmingsStateSet;
         _lemmingsStateSet.OnLemmingOnFire += PlayFireScream;
-        _lemmingsStateSet.OnLemmingCountRemove += PlaySplatter;
+        _lemmingsStateSet.OnLemmingKilled += PlaySplatter;
     }
 
     private void PlayFireScream()
     {
         _audioSource.PlayOneShot(_fireScreamClip);
-        Debug.Log("Fire Scream Played");
     }
     
-    private void PlaySplatter(LemmingView obj)
+    public void PlaySplatter()
     {
         if (_bloodSplatterClips.Count > 0)
         {
@@ -35,7 +34,10 @@ public class SoundsHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        _lemmingsStateSet.OnLemmingOnFire -= PlayFireScream;
-        _lemmingsStateSet.OnLemmingCountRemove -= PlaySplatter;
+        if (_lemmingsStateSet != null)
+        {
+            _lemmingsStateSet.OnLemmingOnFire -= PlayFireScream;
+            _lemmingsStateSet.OnLemmingKilled -= PlaySplatter;
+        }
     }
 }

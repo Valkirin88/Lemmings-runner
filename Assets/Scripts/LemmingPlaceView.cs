@@ -73,8 +73,11 @@ public class LemmingPlaceView : MonoBehaviour
         else
         {
             // Полностью останавливаем - делаем кинематическим
-            Rigidbody.linearVelocity = Vector3.zero;
-            Rigidbody.isKinematic = true;
+            if (!Rigidbody.isKinematic)
+            {
+                Rigidbody.linearVelocity = Vector3.zero;
+                Rigidbody.isKinematic = true;
+            }
         }
     }
 }

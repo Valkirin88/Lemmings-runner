@@ -6,6 +6,7 @@ public class LemmingsStateSet
 {
     public event Action<LemmingView> OnLemmingCountAdd;
     public event Action<LemmingView> OnLemmingCountRemove;
+    public event Action  OnLemmingKilled;
     public event Action OnLemmingOnFire;
     
     
@@ -50,6 +51,7 @@ public class LemmingsStateSet
         UnsubscribeOnNewLemmingsCaught(lemmingView);
         lemmingView.OnLemmingOnFire -= FireLemming;
         OnLemmingCountRemove?.Invoke(lemmingView);
+        OnLemmingKilled?.Invoke();
     }
     
     private void SubscribeOnNewLemmingsCaught(LemmingView lemmingView)
