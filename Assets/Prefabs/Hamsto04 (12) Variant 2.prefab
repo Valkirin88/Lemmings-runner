@@ -475,10 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: a25e6e3d681d51041a2900f46ab90e19, type: 2}
   Rigidbody: {fileID: 2873992957667258072}
-  IsMovingLeft: 0
-  IsMovingRight: 0
   IsRun: 0
-  IsLeader: 0
   IsOnFire: 0
   IsDead: 0
   IsSliced: 0
@@ -508,7 +505,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 1
 --- !u!136 &9126404941828334138

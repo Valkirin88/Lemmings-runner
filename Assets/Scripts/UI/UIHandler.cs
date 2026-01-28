@@ -72,6 +72,7 @@ public class UIHandler : MonoBehaviour
 
     private void ShowMainMenu()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(0);
     }
 
@@ -112,6 +113,7 @@ public class UIHandler : MonoBehaviour
 
     private void RestartGame()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(1);
     }
 
