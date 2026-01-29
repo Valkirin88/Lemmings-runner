@@ -37,7 +37,6 @@ public class LemmingView : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
         }
 
-
         _followSpeed = _config.FollowSpeed;
         _stickDistance = _config.StickDistance;
         _stickSmoothing = _config.StickSmoothing;
@@ -77,7 +76,7 @@ public class LemmingView : MonoBehaviour
             Vector3 directionXZ = new Vector3(deltaX, 0, deltaZ).normalized;
             Vector3 velocityXZ = directionXZ * Mathf.Min(distanceXZ * speed, _followSpeed);
             
-            // Сохраняем вертикальную скорость (для прыжка)
+            // Сохраняем вертикальную скорость (гравитация/прыжок)
             float yVelocity = Rigidbody.linearVelocity.y;
             
             // Применяем скорость: X и Z к цели, Y от физики
@@ -89,7 +88,7 @@ public class LemmingView : MonoBehaviour
             UpdateMovement();
         }
     }
-
+    
     private void OnTriggerEnter(Collider other)
     {
         if (IsRun && !IsOnFire)
@@ -137,16 +136,13 @@ public class LemmingView : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         // Проверяем приземление
-        if (_isJumping && collision.contacts.Length > 0)
+        foreach (var contact in collision.contacts)
         {
-            foreach (var contact in collision.contacts)
+            // Если нормаль направлена вверх — это земля
+            if (contact.normal.y > 0.5f)
             {
-                // Если нормаль направлена вверх — это земля
-                if (contact.normal.y > 0.5f)
-                {
-                    _isJumping = false;
-                    break;
-                }
+                _isJumping = false;
+                break;
             }
         }
     }
