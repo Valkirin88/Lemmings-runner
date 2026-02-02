@@ -16,7 +16,10 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
     private Material _crossSectionLemmingMaterial;
     [SerializeField]
     private ParticleSystem _bloodParticles;
-
+    
+    [SerializeField]
+    private BloodZone _bloodZone;
+    public BloodZone BloodZone => _bloodZone;
 
     private Material _crossSectionMaterial;
 
@@ -42,6 +45,7 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
             
             lemmingView.IsSliced = true;
             _bloodParticles.Play();
+            SpawnBlood();
             
             _slicedObject = lemmingView.gameObject;
             SliceLemming();
@@ -98,5 +102,13 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
     private void RotateSaw()
     {
         transform.Rotate(_rotationSpeed * Time.deltaTime * _sawRotation);
+    }
+    
+    public void SpawnBlood()
+    {
+        if (_bloodZone != null)
+        {
+            _bloodZone.SpawnBlood();
+        }
     }
 }

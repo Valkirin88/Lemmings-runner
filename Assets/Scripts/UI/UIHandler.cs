@@ -113,6 +113,7 @@ public class UIHandler : MonoBehaviour
 
     private void RestartGame()
     {
+        GameState = GameState.Game; // Чтобы Update() не вызвал ShowPause() и не сбросил timeScale
         Time.timeScale = 1;
         SceneManager.LoadScene(1);
     }

@@ -53,7 +53,11 @@ public class LemmingView : MonoBehaviour
         else
         {
             Animator.SetBool("IsRun", false);
-            transform.rotation = Quaternion.LookRotation(Vector3.back);
+            // Не разворачиваем если лемминг захвачен (isKinematic)
+            if (!Rigidbody.isKinematic)
+            {
+                transform.rotation = Quaternion.LookRotation(Vector3.back);
+            }
         }
     }
 
@@ -173,6 +177,8 @@ public class LemmingView : MonoBehaviour
         {
             BloodSplatterManager.Instance.AddSplattersOnKill();
         }
+        
+        // Пятна на поверхности создаются через BloodZone на препятствиях
         
         if (!IsOnFire)
         {

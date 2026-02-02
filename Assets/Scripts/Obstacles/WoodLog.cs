@@ -7,6 +7,10 @@ public class WoodLog : MonoBehaviour, IObstacle
     private ParticleSystem _bloodParticles;
     
     [SerializeField]
+    private BloodZone _bloodZone;
+    public BloodZone BloodZone => _bloodZone;
+    
+    [SerializeField]
     private float _rollSpeed = 5f;
     
     [SerializeField]
@@ -86,5 +90,14 @@ public class WoodLog : MonoBehaviour, IObstacle
         _bloodParticles.transform.rotation = Quaternion.LookRotation(Vector3.back);
         
         _bloodParticles.Play();
+        SpawnBlood();
+    }
+    
+    public void SpawnBlood()
+    {
+        if (_bloodZone != null)
+        {
+            _bloodZone.SpawnBlood();
+        }
     }
 }

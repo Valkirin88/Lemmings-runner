@@ -22,9 +22,13 @@ public class LemmingPlaceHandler : MonoBehaviour
         _gameStateCollector.EndTrack.OnFinished += StopLemmings;
         
         // Назначаем место первому леммингу (он уже в списке до подписки на событие)
+        Debug.Log($"[LemmingPlaceHandler] Initialize: RunningLemmingViews.Count = {_lemmingsStateSet.RunningLemmingViews.Count}");
         if (_lemmingsStateSet.RunningLemmingViews.Count > 0)
         {
-            SetNewPosition(_lemmingsStateSet.RunningLemmingViews[0]);
+            var leader = _lemmingsStateSet.RunningLemmingViews[0];
+            Debug.Log($"[LemmingPlaceHandler] Leader IsRun={leader.IsRun}, RunningPlace={leader.RunningPlace}");
+            SetNewPosition(leader);
+            Debug.Log($"[LemmingPlaceHandler] After SetNewPosition: RunningPlace={leader.RunningPlace}");
         }
     }
 

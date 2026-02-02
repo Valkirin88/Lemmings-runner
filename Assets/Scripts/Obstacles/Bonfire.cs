@@ -6,6 +6,10 @@ public class Bonfire : MonoBehaviour, IObstacle
     [SerializeField]
     private GameObject _firePrefab;
     
+    [SerializeField]
+    private BloodZone _bloodZone;
+    public BloodZone BloodZone => _bloodZone;
+    
     private List<LemmingView> _lemmingsInZone = new List<LemmingView>();
 
     private void OnTriggerEnter(Collider other)
@@ -41,6 +45,14 @@ public class Bonfire : MonoBehaviour, IObstacle
                 GameObject fireObject = Instantiate(_firePrefab);
                 lemming.SetFire(fireObject);
             }
+        }
+    }
+    
+    public void SpawnBlood()
+    {
+        if (_bloodZone != null)
+        {
+            _bloodZone.SpawnBlood();
         }
     }
 }
