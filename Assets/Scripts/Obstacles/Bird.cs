@@ -109,6 +109,13 @@ public class Bird : MonoBehaviour, IObstacle
     {
         if (_targetLemming == null) return;
         
+        // Проверяем что лемминг ещё жив и бежит
+        if (_targetLemming.IsDead || !_targetLemming.IsRun)
+        {
+            StopHunting();
+            return;
+        }
+        
         // Отключаем следование позиции у лемминга
         _targetLemming.IsRun = false;
         _targetLemming.RunningPlace = null;

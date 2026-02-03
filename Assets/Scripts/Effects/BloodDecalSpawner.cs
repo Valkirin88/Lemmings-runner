@@ -95,8 +95,7 @@ public class BloodDecalSpawner : MonoBehaviour
     /// </summary>
     public void SpawnSingleDecal(Vector3 position, Vector3 normal)
     {
-        Debug.Log($"[BloodDecalSpawner] Создаю декаль в {position}");
-        
+       
         // Удаляем старые декали если достигли лимита
         while (_activeDecals.Count >= _maxDecals)
         {
