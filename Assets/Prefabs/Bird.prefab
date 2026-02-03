@@ -452,7 +452,7 @@ MonoBehaviour:
   _huntSpeed: 15
   _catchDistance: 1
   _carryUpSpeed: 10
-  _killHeight: 10
+  _killHeight: 7
   _patrolLineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _rotationSpeed: 5
 --- !u!1 &8308411383451540423
