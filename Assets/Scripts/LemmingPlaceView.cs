@@ -20,11 +20,24 @@ public class LemmingPlaceView : MonoBehaviour
     
     private float _currentSpeedMultiplier = 1f;
     private bool _isAccelerating = false;
+    
+    // Внешние силы (ветер и т.д.)
+    private Vector3 _externalForce;
 
     private void FixedUpdate()
     {
-        
         UpdateMovement();
+        
+        // Сбрасываем внешнюю силу после применения
+        _externalForce = Vector3.zero;
+    }
+    
+    /// <summary>
+    /// Добавить внешнюю силу (ветер, и т.д.)
+    /// </summary>
+    public void AddExternalForce(Vector3 force)
+    {
+        _externalForce += force;
     }
 
     public void Accelerate()
@@ -67,8 +80,11 @@ public class LemmingPlaceView : MonoBehaviour
                 xVelocity = -SideSpeed;
             }
 
+            // Добавляем внешние силы (ветер)
+            xVelocity += _externalForce.x;
+            
             float currentForwardSpeed = ForwardSpeed * _currentSpeedMultiplier;
-            Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity, currentForwardSpeed);
+            Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity + _externalForce.y, currentForwardSpeed + _externalForce.z);
         }
         else
         {

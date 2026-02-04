@@ -23,6 +23,9 @@ public class LemmingView : MonoBehaviour
     
     public Rigidbody Rigidbody;
 
+    // Внешние силы (ветер, и т.д.)
+    private Vector3 _externalForce;
+
    public bool IsRun;
     public bool IsOnFire;
     public bool IsDead;
@@ -65,7 +68,7 @@ public class LemmingView : MonoBehaviour
     {
         if (RunningPlace != null && IsRun)
         {
-            // Вычисляем разницу по X и Z
+            
             Vector3 currentPos = transform.position;
             Vector3 targetPos = RunningPlace.position;
             
@@ -73,24 +76,49 @@ public class LemmingView : MonoBehaviour
             float deltaZ = targetPos.z - currentPos.z;
             float distanceXZ = Mathf.Sqrt(deltaX * deltaX + deltaZ * deltaZ);
             
-            // Скорость следования
+            
             float speed = distanceXZ > _stickDistance ? _followSpeed : _stickSmoothing;
             
-            // Вычисляем горизонтальную скорость к цели
+            
             Vector3 directionXZ = new Vector3(deltaX, 0, deltaZ).normalized;
             Vector3 velocityXZ = directionXZ * Mathf.Min(distanceXZ * speed, _followSpeed);
             
-            // Сохраняем вертикальную скорость (гравитация/прыжок)
-            float yVelocity = Rigidbody.linearVelocity.y;
+            // Добавляем внешние силы (ветер и т.д.) - напрямую к скорости
+            velocityXZ.x += _externalForce.x;
+            velocityXZ.z += _externalForce.z;
+            
+            // Сохраняем вертикальную скорость (гравитация/прыжок) + внешняя вертикальная сила
+            float yVelocity = Rigidbody.linearVelocity.y + _externalForce.y;
             
             // Применяем скорость: X и Z к цели, Y от физики
             Rigidbody.linearVelocity = new Vector3(velocityXZ.x, yVelocity, velocityXZ.z);
+        }
+        else if (_externalForce.sqrMagnitude > 0.01f)
+        {
+            // Если лемминг не бежит, но есть внешняя сила - применяем её
+            Vector3 vel = Rigidbody.linearVelocity;
+            Rigidbody.linearVelocity = new Vector3(
+                vel.x + _externalForce.x,
+                vel.y + _externalForce.y,
+                vel.z + _externalForce.z
+            );
         }
 
         if (IsRun && IsOnFire)
         {
             UpdateMovement();
         }
+        
+        // Сбрасываем внешнюю силу
+        _externalForce = Vector3.zero;
+    }
+    
+    /// <summary>
+    /// Добавить внешнюю силу (ветер, взрывы и т.д.)
+    /// </summary>
+    public void AddExternalForce(Vector3 force)
+    {
+        _externalForce += force;
     }
     
     private void OnTriggerEnter(Collider other)
