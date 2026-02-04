@@ -6,6 +6,7 @@ public class LemmingsStateSet
 {
     public event Action<LemmingView> OnLemmingCountAdd;
     public event Action<LemmingView> OnLemmingCountRemove;
+    public event Action<LemmingView> OnLemmingCaptured; // Захвачен птицей
     public event Action  OnLemmingKilled;
     public event Action OnLemmingOnFire;
     
@@ -32,15 +33,16 @@ public class LemmingsStateSet
         SubscribeOnNewLemmingsCaught(lemmingView);
         SubscribeOnLemmingKilled(lemmingView);
         SubscribeLimmingSream(lemmingView);
+        SubscribeOnCapturedByBird(lemmingView);
         OnLemmingCountAdd?.Invoke(lemmingView);
     }
 
     private void SubscribeLimmingSream(LemmingView lemmingView)
     {
-        lemmingView.OnLemmingOnFire += FireLemming;
+        lemmingView.OnLemmingOnDanger += DangerLemming;
     }
 
-    private void FireLemming()
+    private void DangerLemming()
     {
         OnLemmingOnFire?.Invoke();
     }
@@ -49,7 +51,8 @@ public class LemmingsStateSet
     {
         RunningLemmingViews.Remove(lemmingView);
         UnsubscribeOnNewLemmingsCaught(lemmingView);
-        lemmingView.OnLemmingOnFire -= FireLemming;
+        UnsubscribeOnCapturedByBird(lemmingView);
+        lemmingView.OnLemmingOnDanger -= DangerLemming;
         OnLemmingCountRemove?.Invoke(lemmingView);
         OnLemmingKilled?.Invoke();
     }
@@ -73,5 +76,20 @@ public class LemmingsStateSet
     private void UnsubscribeOnLemmingKilled(LemmingView lemmingView)
     {
         lemmingView.OnLemmingKilled -= RemoveLemmingInList;
+    }
+    
+    private void SubscribeOnCapturedByBird(LemmingView lemmingView)
+    {
+        lemmingView.OnLemmingCapturedByBird += OnCapturedByBird;
+    }
+    
+    private void UnsubscribeOnCapturedByBird(LemmingView lemmingView)
+    {
+        lemmingView.OnLemmingCapturedByBird -= OnCapturedByBird;
+    }
+    
+    private void OnCapturedByBird(LemmingView lemmingView)
+    {
+        OnLemmingCaptured?.Invoke(lemmingView);
     }
 }

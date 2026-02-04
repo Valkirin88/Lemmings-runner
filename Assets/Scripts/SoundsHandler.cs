@@ -32,6 +32,11 @@ public class SoundsHandler : MonoBehaviour
         }
     }
 
+    public void PlaySound(AudioClip clip)
+    {
+        _audioSource.PlayOneShot(clip);
+    }
+
     private void OnDestroy()
     {
         if (_lemmingsStateSet != null)

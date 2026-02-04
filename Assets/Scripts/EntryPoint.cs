@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using Zenject.Asteroids;
 
 public class EntryPoint : MonoInstaller
 {
@@ -29,6 +30,9 @@ public class EntryPoint : MonoInstaller
     [SerializeField]
     private SoundsHandler _soundHandler;
     
+    [SerializeField]
+    private ObstaclesSet _obstaclesSet;
+    
     private InputController _inputController;
     private LemmingController _lemmingController;
     private LemmingsStateSet _lemmingsStateSet;
@@ -36,6 +40,7 @@ public class EntryPoint : MonoInstaller
     
     //mediators
     private GameStateCollector _gameStateCollector;
+    private ObstaclesSoundMediator _obstaclesSoundMediator;
     
     
     private void Awake()
@@ -47,6 +52,7 @@ public class EntryPoint : MonoInstaller
         _lemmingPlaceHandler.Initialize(_gameStateCollector);
         _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig, _gameStateCollector);
         _soundHandler.Initialize(_lemmingsStateSet);
+        _obstaclesSoundMediator = new ObstaclesSoundMediator(_soundHandler, _obstaclesSet);
     }
 
     private void Update()
@@ -61,5 +67,6 @@ public class EntryPoint : MonoInstaller
         _inputController.Dispose();
         _lemmingController.Dispose();
         _gameStateCollector.Dispose();
+        _obstaclesSoundMediator.Dispose();
     }
 }

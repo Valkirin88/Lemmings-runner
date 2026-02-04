@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -11,6 +12,11 @@ public class Chipper : MonoBehaviour, IObstacle
     [SerializeField] private ParticleSystem _particles;
     
     [SerializeField] private BloodZone _bloodZone;
+   
+    public event Action<AudioClip> OnMadeSound;
+    public event Action<GameObject> OnDestroyed;
+    
+    
     public BloodZone BloodZone => _bloodZone;
     
     private List<LemmingView> _caughtLemmings = new List<LemmingView>();
@@ -75,5 +81,15 @@ public class Chipper : MonoBehaviour, IObstacle
         {
             _bloodZone.SpawnBlood();
         }
+    }
+
+    public void MakeSound()
+    {
+        
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke(gameObject);
     }
 }

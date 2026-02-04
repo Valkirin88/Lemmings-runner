@@ -10,6 +10,7 @@ public class LemmingPlaceHandler : MonoBehaviour
     
     private LemmingsStateSet _lemmingsStateSet;
     private GameStateCollector _gameStateCollector;
+    private Coroutine _repositionCoroutine;
     
     public void Initialize(GameStateCollector gameStateCollector)
     {
@@ -18,6 +19,7 @@ public class LemmingPlaceHandler : MonoBehaviour
 
         _lemmingsStateSet.OnLemmingCountAdd += PlaceNewLemmingState;
         _lemmingsStateSet.OnLemmingCountRemove += ReplaceLemmingsState;
+        _lemmingsStateSet.OnLemmingCaptured += ReplaceLemmingsState;
 
         _gameStateCollector.EndTrack.OnFinished += StopLemmings;
         
@@ -32,7 +34,12 @@ public class LemmingPlaceHandler : MonoBehaviour
     private void ReplaceLemmingsState(LemmingView lemmingView)
     {
         // Релокация всех леммингов через 1 секунду
-        StartCoroutine(DelayedReposition());
+        // Перезапускаем корутину при каждом событии чтобы дождаться стабильного состояния
+        if (_repositionCoroutine != null)
+        {
+            StopCoroutine(_repositionCoroutine);
+        }
+        _repositionCoroutine = StartCoroutine(DelayedReposition());
     }
 
     private IEnumerator DelayedReposition()
@@ -45,11 +52,27 @@ public class LemmingPlaceHandler : MonoBehaviour
             place.IsEmpty = true;
         }
         
-        // Назначаем новые места всем живым леммингам
+        // Назначаем новые места всем живым бегущим леммингам
         foreach (var view in _lemmingsStateSet.RunningLemmingViews)
         {
-            SetNewPosition(view);
+            if (view == null || view.IsDead || view.IsOnFire || !view.IsRun)
+            {
+                continue;
+            }
+            
+            // Находим первое свободное место и занимаем его
+            foreach (RunPlace place in _lemmingPlaces)
+            {
+                if (place.IsEmpty)
+                {
+                    place.IsEmpty = false;
+                    view.RunningPlace = place.transform;
+                    break;
+                }
+            }
         }
+        
+        _repositionCoroutine = null;
     }
 
     private void PlaceNewLemmingState(LemmingView lemmingView)
@@ -59,9 +82,15 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private void SetNewPosition(LemmingView lemmingView)
     {
+        // Не назначаем место если лемминг мёртв, горит или не бежит
+        if (lemmingView == null || lemmingView.IsDead || lemmingView.IsOnFire || !lemmingView.IsRun)
+        {
+            return;
+        }
+        
         foreach (RunPlace place in _lemmingPlaces)
         {
-            if (place.IsEmpty && !lemmingView.IsOnFire)
+            if (place.IsEmpty)
             {
                 place.IsEmpty = false;
                 lemmingView.RunningPlace = place.transform;
@@ -82,6 +111,7 @@ public class LemmingPlaceHandler : MonoBehaviour
     {
         _lemmingsStateSet.OnLemmingCountAdd -= PlaceNewLemmingState;
         _lemmingsStateSet.OnLemmingCountRemove -= ReplaceLemmingsState;
+        _lemmingsStateSet.OnLemmingCaptured -= ReplaceLemmingsState;
         
         _gameStateCollector.EndTrack.OnFinished -= StopLemmings;
     }

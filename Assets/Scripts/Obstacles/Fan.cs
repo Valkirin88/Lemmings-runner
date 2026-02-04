@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -8,6 +9,10 @@ public class Fan : MonoBehaviour, IObstacle
     [SerializeField] private Vector3 _windDirection = Vector3.right;
     [SerializeField] private bool _useLocalDirection = true;
     [SerializeField] private BloodZone _bloodZone;
+    
+    public event Action<AudioClip> OnMadeSound;
+    public event Action OnDestroyed;
+    
     private Vector3 _actualWindDirection;
     private LemmingPlaceView _currentTarget;
     
@@ -70,7 +75,17 @@ public class Fan : MonoBehaviour, IObstacle
             _currentTarget = null;
         }
     }
-    
+
+    public void MakeSound()
+    {
+        
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke();
+    }
+
     // Визуализация
     private void OnDrawGizmos()
     {

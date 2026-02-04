@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Bird : MonoBehaviour, IObstacle
@@ -18,6 +19,12 @@ public class Bird : MonoBehaviour, IObstacle
     
     [Header("Rotation")]
     [SerializeField] private float _rotationSpeed = 5f;
+    [Header("Sounds")]
+    [SerializeField]
+    private AudioClip _birdClip;
+    
+    public event Action<AudioClip> OnMadeSound;
+    public event Action<GameObject> OnDestroyed;
     
     // IObstacle implementation (птица не оставляет крови)
     public BloodZone BloodZone => null;
@@ -116,12 +123,8 @@ public class Bird : MonoBehaviour, IObstacle
             return;
         }
         
-        // Отключаем следование позиции у лемминга
-        _targetLemming.IsRun = false;
-        _targetLemming.RunningPlace = null;
-        
-        // Делаем Rigidbody кинематическим чтобы птица могла нести лемминга
-        _targetLemming.Rigidbody.isKinematic = true;
+        // Лемминг захвачен птицей
+        _targetLemming.CaptureByBird();
         
         // Привязываем лемминга к птице
         _targetLemming.transform.SetParent(transform);
@@ -132,6 +135,7 @@ public class Bird : MonoBehaviour, IObstacle
         
         // Запоминаем направление птицы для взлёта
         _carryDirection = transform.forward;
+        _targetLemming.CauughtByBird();
     }
     
     private void CarryLemming()
@@ -187,6 +191,7 @@ public class Bird : MonoBehaviour, IObstacle
             {
                 _targetLemming = lemmingView;
                 _isHunting = true;
+                MakeSound(); // Крик при начале охоты
             }
         }
     }
@@ -195,7 +200,17 @@ public class Bird : MonoBehaviour, IObstacle
     {
         // Птица не оставляет крови
     }
-    
+
+    public void MakeSound()
+    {
+        OnMadeSound?.Invoke(_birdClip);
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke(gameObject);
+    }
+
     private void OnDrawGizmos()
     {
         if (_pointA == null || _pointB == null) return;

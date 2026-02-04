@@ -59,7 +59,6 @@ public class BloodDecalSpawner : MonoBehaviour
     public void SpawnDecalsInZone(Vector3 zoneCenter, Vector3 zoneSize)
     {
         int count = Random.Range(_minDecalsPerKill, _maxDecalsPerKill + 1);
-        Debug.Log($"[BloodDecalSpawner] SpawnDecalsInZone: пытаюсь создать {count} пятен");
         
         float halfX = zoneSize.x / 2f;
         float halfZ = zoneSize.z / 2f;
@@ -82,12 +81,7 @@ public class BloodDecalSpawner : MonoBehaviour
                 successCount++;
             }
         }
-        
-        Debug.Log($"[BloodDecalSpawner] Создано {successCount} из {count} пятен (рейкаст нашёл поверхность)");
-        if (successCount == 0)
-        {
-            Debug.LogWarning($"[BloodDecalSpawner] Рейкаст не нашёл поверхность! Проверьте Ground Layers и позицию BloodZone. rayStartHeight={rayStartHeight}");
-        }
+
     }
     
     /// <summary>

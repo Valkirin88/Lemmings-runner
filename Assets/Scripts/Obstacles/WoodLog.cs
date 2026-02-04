@@ -18,6 +18,8 @@ public class WoodLog : MonoBehaviour, IObstacle
     [SerializeField]
     private Rigidbody _rigidbody;
     
+    public event Action<AudioClip> OnMadeSound;
+    public event Action<GameObject> OnDestroyed;
     
     private bool _isMoving = false;
     
@@ -99,5 +101,15 @@ public class WoodLog : MonoBehaviour, IObstacle
         {
             _bloodZone.SpawnBlood();
         }
+    }
+
+    public void MakeSound()
+    {
+        
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke(gameObject);
     }
 }

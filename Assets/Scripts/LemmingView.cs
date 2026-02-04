@@ -6,7 +6,8 @@ public class LemmingView : MonoBehaviour
 {
     public event Action<LemmingView> OnLemmingCaught; 
     public event Action<LemmingView> OnLemmingKilled;
-    public event Action OnLemmingOnFire;
+    public event Action<LemmingView> OnLemmingCapturedByBird;
+    public event Action OnLemmingOnDanger;
     
     [SerializeField]
     private LemmingConfig _config;
@@ -30,6 +31,7 @@ public class LemmingView : MonoBehaviour
     public bool IsOnFire;
     public bool IsDead;
     public bool IsSliced;
+    
     public Transform RunningPlace;
 
     public Animator Animator;
@@ -66,9 +68,15 @@ public class LemmingView : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Не управляем velocity если Rigidbody кинематический (схвачен птицей)
+        if (Rigidbody.isKinematic)
+        {
+            _externalForce = Vector3.zero;
+            return;
+        }
+        
         if (RunningPlace != null && IsRun)
         {
-            
             Vector3 currentPos = transform.position;
             Vector3 targetPos = RunningPlace.position;
             
@@ -76,9 +84,7 @@ public class LemmingView : MonoBehaviour
             float deltaZ = targetPos.z - currentPos.z;
             float distanceXZ = Mathf.Sqrt(deltaX * deltaX + deltaZ * deltaZ);
             
-            
             float speed = distanceXZ > _stickDistance ? _followSpeed : _stickSmoothing;
-            
             
             Vector3 directionXZ = new Vector3(deltaX, 0, deltaZ).normalized;
             Vector3 velocityXZ = directionXZ * Mathf.Min(distanceXZ * speed, _followSpeed);
@@ -164,6 +170,11 @@ public class LemmingView : MonoBehaviour
             Rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
         }
     }
+
+    public void CauughtByBird()
+    {
+        OnLemmingOnDanger?.Invoke();
+    }
     
     private void OnCollisionEnter(Collision collision)
     {
@@ -185,7 +196,7 @@ public class LemmingView : MonoBehaviour
         _fireObject.transform.SetParent(transform);
         _fireObject.transform.localPosition = Vector3.zero;
         _fireObject.SetActive(true);
-        OnLemmingOnFire?.Invoke();
+        OnLemmingOnDanger?.Invoke();
         RunningPlace = null;
         IsOnFire = true;
         
@@ -193,6 +204,31 @@ public class LemmingView : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Вызывается когда птица захватывает лемминга
+    /// </summary>
+    public void CaptureByBird()
+    {
+        IsRun = false;
+        
+        // Освобождаем место
+        if (RunningPlace != null)
+        {
+            var place = RunningPlace.GetComponent<RunPlace>();
+            if (place != null)
+            {
+                place.IsEmpty = true;
+            }
+            RunningPlace = null;
+        }
+        
+        // Делаем кинематическим
+        Rigidbody.isKinematic = true;
+        
+        // Уведомляем о захвате (для перестроения)
+        OnLemmingCapturedByBird?.Invoke(this);
+    }
+    
     public void Kill()
     {
         if (IsDead) return;
