@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,10 @@ public class Bonfire : MonoBehaviour, IObstacle
     
     [SerializeField]
     private BloodZone _bloodZone;
+    
+    public event Action<AudioClip> OnMadeSound;
+    public event Action<GameObject> OnDestroyed;
+    
     public BloodZone BloodZone => _bloodZone;
     
     private List<LemmingView> _lemmingsInZone = new List<LemmingView>();
@@ -54,5 +59,15 @@ public class Bonfire : MonoBehaviour, IObstacle
         {
             _bloodZone.SpawnBlood();
         }
+    }
+
+    public void MakeSound()
+    {
+        
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke(gameObject);
     }
 }

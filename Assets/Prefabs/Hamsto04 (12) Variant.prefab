@@ -420,6 +420,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1973470434401866, guid: dad5b3d5aa691fd4d99101294168c1a4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3095247136798735589}
+    - targetCorrespondingSourceObject: {fileID: 1973470434401866, guid: dad5b3d5aa691fd4d99101294168c1a4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2608968366951947934}
     - targetCorrespondingSourceObject: {fileID: 1484735945329684, guid: dad5b3d5aa691fd4d99101294168c1a4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1499509174288753025}
@@ -470,6 +473,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: a25e6e3d681d51041a2900f46ab90e19, type: 2}
+  _outline: {fileID: 2608968366951947934}
   Rigidbody: {fileID: 2873992957667258072}
   IsRun: 0
   IsOnFire: 0
@@ -584,6 +588,22 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2608968366951947934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8283856537501685944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179c0028abd14af4a9fad8f1f6cb576e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  _maskShader: {fileID: 4800000, guid: 48d116f5ed1309c46baa057807ea3a89, type: 3}
+  _fillShader: {fileID: 4800000, guid: 4e448dd6bcd53cf43b35464d04317ea6, type: 3}
+  outlineColor: {r: 0.042148173, g: 1, b: 0.015686274, a: 1}
+  outlineWidth: 4.57
 --- !u!4 &8286180708183605038 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4296952709134812, guid: dad5b3d5aa691fd4d99101294168c1a4, type: 3}

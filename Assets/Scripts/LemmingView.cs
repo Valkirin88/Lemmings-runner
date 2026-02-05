@@ -6,10 +6,17 @@ public class LemmingView : MonoBehaviour
 {
     public event Action<LemmingView> OnLemmingCaught; 
     public event Action<LemmingView> OnLemmingKilled;
-    public event Action OnLemmingOnFire;
+    public event Action<LemmingView> OnLemmingCapturedByBird;
+    public event Action OnLemmingOnDanger;
     
     [SerializeField]
     private LemmingConfig _config;
+
+    [Header("Highlight Settings")]
+    [SerializeField]
+    private Outline _outline; // Компонент обводки
+    
+    private bool _wasPickedUp; // Был ли лемминг когда-либо подобран
 
     private GameObject _fireObject;
     
@@ -30,14 +37,24 @@ public class LemmingView : MonoBehaviour
     public bool IsOnFire;
     public bool IsDead;
     public bool IsSliced;
+    
     public Transform RunningPlace;
 
     public Animator Animator;
+    
+    private void Awake()
+    {
+        // Инициализируем подсветку в Awake, до Start
+        InitializeHighlight();
+    }
+    
     private void Start()
     {
         if(IsRun)
         {
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            _wasPickedUp = true; // Лидер уже "подобран"
+            DisableHighlight(); // Лидер без подсветки
         }
 
         _followSpeed = _config.FollowSpeed;
@@ -45,6 +62,29 @@ public class LemmingView : MonoBehaviour
         _stickSmoothing = _config.StickSmoothing;
         _onFireSpeed = _config.OnFireSpeed;
         _jumpForce = _config.JumpForce;
+    }
+    
+    private void InitializeHighlight()
+    {
+        // Если компонент Outline не назначен - пробуем найти
+        if (_outline == null)
+        {
+            _outline = GetComponent<Outline>();
+        }
+        
+        // Включаем обводку (в Start выключим для лидера)
+        if (_outline != null)
+        {
+            _outline.enabled = true;
+        }
+    }
+    
+    private void DisableHighlight()
+    {
+        if (_outline != null)
+        {
+            _outline.enabled = false;
+        }
     }
 
     private void Update()
@@ -66,9 +106,15 @@ public class LemmingView : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Не управляем velocity если Rigidbody кинематический (схвачен птицей)
+        if (Rigidbody.isKinematic)
+        {
+            _externalForce = Vector3.zero;
+            return;
+        }
+        
         if (RunningPlace != null && IsRun)
         {
-            
             Vector3 currentPos = transform.position;
             Vector3 targetPos = RunningPlace.position;
             
@@ -76,9 +122,7 @@ public class LemmingView : MonoBehaviour
             float deltaZ = targetPos.z - currentPos.z;
             float distanceXZ = Mathf.Sqrt(deltaX * deltaX + deltaZ * deltaZ);
             
-            
             float speed = distanceXZ > _stickDistance ? _followSpeed : _stickSmoothing;
-            
             
             Vector3 directionXZ = new Vector3(deltaX, 0, deltaZ).normalized;
             Vector3 velocityXZ = directionXZ * Mathf.Min(distanceXZ * speed, _followSpeed);
@@ -127,12 +171,9 @@ public class LemmingView : MonoBehaviour
         {
             if (other.TryGetComponent(out LemmingView lemmingView))
             {
-                if (!lemmingView.IsRun)
+                if (!lemmingView.IsRun && !lemmingView._wasPickedUp)
                 {
-                    lemmingView.IsRun = true;
-                    
-                    // Разворачиваем лемминга вперед в направлении бега
-                    lemmingView.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+                    lemmingView.PickUp();
                     
                     OnLemmingCaught?.Invoke(lemmingView);
                 }
@@ -143,6 +184,23 @@ public class LemmingView : MonoBehaviour
         {
             IsRun = false;
         }
+    }
+    
+    /// <summary>
+    /// Подобрать лемминга (присоединить к группе)
+    /// </summary>
+    public void PickUp()
+    {
+        if (_wasPickedUp) return;
+        
+        _wasPickedUp = true;
+        IsRun = true;
+        
+        // Разворачиваем лемминга вперед в направлении бега
+        transform.rotation = Quaternion.LookRotation(Vector3.forward);
+        
+        // Выключаем подсветку
+        DisableHighlight();
     }
 
     private void UpdateMovement()
@@ -163,6 +221,11 @@ public class LemmingView : MonoBehaviour
             _isJumping = true;
             Rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
         }
+    }
+
+    public void CauughtByBird()
+    {
+        OnLemmingOnDanger?.Invoke();
     }
     
     private void OnCollisionEnter(Collision collision)
@@ -185,7 +248,7 @@ public class LemmingView : MonoBehaviour
         _fireObject.transform.SetParent(transform);
         _fireObject.transform.localPosition = Vector3.zero;
         _fireObject.SetActive(true);
-        OnLemmingOnFire?.Invoke();
+        OnLemmingOnDanger?.Invoke();
         RunningPlace = null;
         IsOnFire = true;
         
@@ -193,11 +256,48 @@ public class LemmingView : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Вызывается когда птица захватывает лемминга
+    /// </summary>
+    public void CaptureByBird()
+    {
+        IsRun = false;
+        
+        // Освобождаем место
+        if (RunningPlace != null)
+        {
+            var place = RunningPlace.GetComponent<RunPlace>();
+            if (place != null)
+            {
+                place.IsEmpty = true;
+            }
+            RunningPlace = null;
+        }
+        
+        // Делаем кинематическим
+        Rigidbody.isKinematic = true;
+        
+        // Уведомляем о захвате (для перестроения)
+        OnLemmingCapturedByBird?.Invoke(this);
+    }
+    
     public void Kill()
     {
         if (IsDead) return;
         
         IsDead = true;
+        
+        // Освобождаем место
+        if (RunningPlace != null)
+        {
+            var place = RunningPlace.GetComponent<RunPlace>();
+            if (place != null)
+            {
+                place.IsEmpty = true;
+            }
+            RunningPlace = null;
+        }
+        
         OnLemmingKilled?.Invoke(this);
         
         // Добавляем пятна крови на экран (только если не горит)
@@ -223,6 +323,18 @@ public class LemmingView : MonoBehaviour
         if (IsDead) return;
         
         IsDead = true;
+        
+        // Освобождаем место
+        if (RunningPlace != null)
+        {
+            var place = RunningPlace.GetComponent<RunPlace>();
+            if (place != null)
+            {
+                place.IsEmpty = true;
+            }
+            RunningPlace = null;
+        }
+        
         OnLemmingKilled?.Invoke(this);
         
         if (!IsOnFire)

@@ -59,7 +59,6 @@ public class BloodDecalSpawner : MonoBehaviour
     public void SpawnDecalsInZone(Vector3 zoneCenter, Vector3 zoneSize)
     {
         int count = Random.Range(_minDecalsPerKill, _maxDecalsPerKill + 1);
-        Debug.Log($"[BloodDecalSpawner] SpawnDecalsInZone: пытаюсь создать {count} пятен");
         
         float halfX = zoneSize.x / 2f;
         float halfZ = zoneSize.z / 2f;
@@ -82,12 +81,7 @@ public class BloodDecalSpawner : MonoBehaviour
                 successCount++;
             }
         }
-        
-        Debug.Log($"[BloodDecalSpawner] Создано {successCount} из {count} пятен (рейкаст нашёл поверхность)");
-        if (successCount == 0)
-        {
-            Debug.LogWarning($"[BloodDecalSpawner] Рейкаст не нашёл поверхность! Проверьте Ground Layers и позицию BloodZone. rayStartHeight={rayStartHeight}");
-        }
+
     }
     
     /// <summary>
@@ -244,8 +238,8 @@ public class BloodDecal : MonoBehaviour
     private float _timer;
     private System.Action<BloodDecal> _onExpired;
     
-    private Renderer _renderer;
     private SpriteRenderer _spriteRenderer;
+    private Material _cachedMaterial;
     private Color _originalColor;
     
     public void Initialize(float lifetime, float fadeOutDuration, System.Action<BloodDecal> onExpired)
@@ -255,16 +249,20 @@ public class BloodDecal : MonoBehaviour
         _onExpired = onExpired;
         _timer = 0f;
         
-        _renderer = GetComponent<Renderer>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         
         if (_spriteRenderer != null)
         {
             _originalColor = _spriteRenderer.color;
         }
-        else if (_renderer != null)
+        else
         {
-            _originalColor = _renderer.material.color;
+            var renderer = GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                _cachedMaterial = renderer.material; // Кэшируем material один раз
+                _originalColor = _cachedMaterial.color;
+            }
         }
     }
     
@@ -296,9 +294,9 @@ public class BloodDecal : MonoBehaviour
         {
             _spriteRenderer.color = newColor;
         }
-        else if (_renderer != null)
+        else if (_cachedMaterial != null)
         {
-            _renderer.material.color = newColor;
+            _cachedMaterial.color = newColor;
         }
     }
 }

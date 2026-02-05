@@ -452,9 +452,10 @@ MonoBehaviour:
   _huntSpeed: 15
   _catchDistance: 1
   _carryUpSpeed: 10
-  _killHeight: 7
+  _killHeight: 9
   _patrolLineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _rotationSpeed: 5
+  _birdClip: {fileID: 8300000, guid: e19778ac602de814da083639ffd9bff7, type: 3}
 --- !u!1 &8308411383451540423
 GameObject:
   m_ObjectHideFlags: 0

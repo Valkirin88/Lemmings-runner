@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -8,8 +9,17 @@ public class Fan : MonoBehaviour, IObstacle
     [SerializeField] private Vector3 _windDirection = Vector3.right;
     [SerializeField] private bool _useLocalDirection = true;
     [SerializeField] private BloodZone _bloodZone;
+    
+    public event Action<AudioClip> OnMadeSound;
+    public event Action OnDestroyed;
+    
     private Vector3 _actualWindDirection;
     private LemmingPlaceView _currentTarget;
+    
+    // Кэшированные значения для оптимизации
+    private Quaternion _cachedRotation;
+    private Vector3 _cachedWindDirection;
+    private bool _cachedUseLocalDirection;
     
     private void Awake()
     {
@@ -20,12 +30,16 @@ public class Fan : MonoBehaviour, IObstacle
     
     private void Start()
     {
-        UpdateWindDirection();
+        ForceUpdateWindDirection();
     }
     
     private void FixedUpdate()
     {
-        UpdateWindDirection();
+        // Пересчитываем только если что-то изменилось
+        if (NeedsDirectionUpdate())
+        {
+            ForceUpdateWindDirection();
+        }
         
         // Применяем силу пока цель в зоне
         if (_currentTarget != null)
@@ -35,8 +49,19 @@ public class Fan : MonoBehaviour, IObstacle
         }
     }
     
-    private void UpdateWindDirection()
+    private bool NeedsDirectionUpdate()
     {
+        return _cachedUseLocalDirection != _useLocalDirection ||
+               _cachedWindDirection != _windDirection ||
+               (_useLocalDirection && _cachedRotation != transform.rotation);
+    }
+    
+    private void ForceUpdateWindDirection()
+    {
+        _cachedRotation = transform.rotation;
+        _cachedWindDirection = _windDirection;
+        _cachedUseLocalDirection = _useLocalDirection;
+        
         if (_useLocalDirection)
         {
             _actualWindDirection = transform.TransformDirection(_windDirection.normalized);
@@ -45,6 +70,12 @@ public class Fan : MonoBehaviour, IObstacle
         {
             _actualWindDirection = _windDirection.normalized;
         }
+    }
+    
+    // Для обратной совместимости (вызывается из DrawGizmos)
+    private void UpdateWindDirection()
+    {
+        ForceUpdateWindDirection();
     }
     
     private void OnTriggerEnter(Collider other)
@@ -70,7 +101,17 @@ public class Fan : MonoBehaviour, IObstacle
             _currentTarget = null;
         }
     }
-    
+
+    public void MakeSound()
+    {
+        
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke();
+    }
+
     // Визуализация
     private void OnDrawGizmos()
     {

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using EzySlice;
 
@@ -14,6 +15,9 @@ public class CircularSaw : MonoBehaviour, IObstacle
     private BloodZone _bloodZone;
     public BloodZone BloodZone => _bloodZone;
 
+    public event Action<AudioClip> OnMadeSound;
+    public event Action<GameObject> OnDestroyed;
+    
     private Material _crossSectionMaterial;
 
     private Vector3 _sawRotation = new Vector3(0,1,0);
@@ -95,5 +99,15 @@ public class CircularSaw : MonoBehaviour, IObstacle
         {
             _bloodZone.SpawnBlood();
         }
+    }
+
+    public void MakeSound()
+    {
+        
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke(gameObject);
     }
 }
