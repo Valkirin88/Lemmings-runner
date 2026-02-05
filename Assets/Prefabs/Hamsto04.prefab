@@ -965,6 +965,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: a25e6e3d681d51041a2900f46ab90e19, type: 2}
+  _renderer: {fileID: 2375516500218971187}
+  _highlightMaterial: {fileID: 2100000, guid: c9a465d75d9d1c446b463ae9dbf5919f, type: 2}
   Rigidbody: {fileID: 3690955771139997662}
   IsRun: 1
   IsOnFire: 0

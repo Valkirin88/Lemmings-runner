@@ -408,6 +408,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: a25e6e3d681d51041a2900f46ab90e19, type: 2}
+  _renderer: {fileID: 7834488149553350357}
+  _highlightMaterial: {fileID: 2100000, guid: c9a465d75d9d1c446b463ae9dbf5919f, type: 2}
   Rigidbody: {fileID: 2873992957667258072}
   IsRun: 0
   IsOnFire: 0
