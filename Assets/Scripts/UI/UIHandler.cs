@@ -41,6 +41,7 @@ public class UIHandler : MonoBehaviour
     
     private int _lastDisplayedQuantity = -1;
     private GameState _lastProcessedState;
+    private int _currentLevel;
 
     private void Start()
     {
@@ -51,6 +52,7 @@ public class UIHandler : MonoBehaviour
         
         _restartButtonObject.SetActive(false);
         GameState = GameState.Game;
+        _currentLevel = SceneManager.GetActiveScene().buildIndex;
     }
 
     private void ShowPause()
@@ -120,7 +122,7 @@ public class UIHandler : MonoBehaviour
     {
         GameState = GameState.Game; // Чтобы Update() не вызвал ShowPause() и не сбросил timeScale
         Time.timeScale = 1;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(_currentLevel);
     }
 
     private void OnDestroy()

@@ -286,6 +286,18 @@ public class LemmingView : MonoBehaviour
         if (IsDead) return;
         
         IsDead = true;
+        
+        // Освобождаем место
+        if (RunningPlace != null)
+        {
+            var place = RunningPlace.GetComponent<RunPlace>();
+            if (place != null)
+            {
+                place.IsEmpty = true;
+            }
+            RunningPlace = null;
+        }
+        
         OnLemmingKilled?.Invoke(this);
         
         // Добавляем пятна крови на экран (только если не горит)
@@ -311,6 +323,18 @@ public class LemmingView : MonoBehaviour
         if (IsDead) return;
         
         IsDead = true;
+        
+        // Освобождаем место
+        if (RunningPlace != null)
+        {
+            var place = RunningPlace.GetComponent<RunPlace>();
+            if (place != null)
+            {
+                place.IsEmpty = true;
+            }
+            RunningPlace = null;
+        }
+        
         OnLemmingKilled?.Invoke(this);
         
         if (!IsOnFire)
