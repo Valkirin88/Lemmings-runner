@@ -38,6 +38,9 @@ public class UIHandler : MonoBehaviour
     private GameObject _finishObject;
 
     public GameState GameState;
+    
+    private int _lastDisplayedQuantity = -1;
+    private GameState _lastProcessedState;
 
     private void Start()
     {
@@ -78,11 +81,16 @@ public class UIHandler : MonoBehaviour
 
     public void ShowCurrentQuantity(int quantity)
     {
+        if (_lastDisplayedQuantity == quantity) return;
+        _lastDisplayedQuantity = quantity;
         _currentQuantityText.text = quantity.ToString() + "/12";
     }
 
     private void Update()
     {
+        if (_lastProcessedState == GameState) return;
+        _lastProcessedState = GameState;
+        
         switch (GameState)
         {
             case GameState.GameOver:
@@ -90,9 +98,6 @@ public class UIHandler : MonoBehaviour
                 break;
             case GameState.Finish:
                 ShowFinish();
-                break;
-            case GameState.Game:
-                
                 break;
             case GameState.Paused:
                 ShowPause();

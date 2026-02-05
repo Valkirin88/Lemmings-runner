@@ -49,13 +49,12 @@ public class GameStateCollector : IDisposable
     public void Update()
     {
         _lemmingQuantity = LemmingsStateSet.RunningLemmingViews.Count;
-        if (_lemmingQuantity<=0)
+        if (_lemmingQuantity <= 0 && _gameState == GameState.Game)
         {
             _gameState = GameState.GameOver;
             _uiHandler.GameState = _gameState;
         }
         _uiHandler.ShowCurrentQuantity(_lemmingQuantity);
-        
     }
     public void Dispose()
     {

@@ -602,7 +602,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Outline
   _maskShader: {fileID: 4800000, guid: 48d116f5ed1309c46baa057807ea3a89, type: 3}
   _fillShader: {fileID: 4800000, guid: 4e448dd6bcd53cf43b35464d04317ea6, type: 3}
-  outlineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  outlineColor: {r: 0.042148173, g: 1, b: 0.015686274, a: 1}
   outlineWidth: 4.57
 --- !u!4 &8286180708183605038 stripped
 Transform:
