@@ -31,25 +31,20 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private void ReplaceLemmingsState(LemmingView lemmingView, int removedIndex)
     {
-        // Сразу освобождаем место погибшего лемминга
-        if (lemmingView.RunningPlace != null)
-        {
-            var runPlace = lemmingView.RunningPlace.GetComponent<RunPlace>();
-            if (runPlace != null)
-                runPlace.IsEmpty = true;
-        }
-        // Сразу сдвигаем хвост вперёд — без задержки, чтобы все догоняли кучкой
-        RepositionTail(removedIndex);
+        // Ничего не меняем сразу — сдвиг только через секунду
+        StartCoroutine(DelayedReposition(removedIndex));
     }
 
-    private void RepositionTail(int startIndex)
+    private IEnumerator DelayedReposition(int startIndex)
     {
+        yield return new WaitForSeconds(1f);
+
         var views = _lemmingsStateSet.RunningLemmingViews;
-        // Освобождаем места, которые освободятся при сдвиге (хвост колонны)
-        for (int p = startIndex + 1; p < _lemmingPlaces.Count; p++)
+        // Освобождаем место погибшего и места хвоста, которые освободятся при сдвиге
+        for (int p = startIndex; p < _lemmingPlaces.Count; p++)
             _lemmingPlaces[p].IsEmpty = true;
 
-        // Сдвигаем вперёд: лемминг на позиции startIndex занимает место startIndex, следующий — startIndex+1 и т.д.
+        // Сдвигаем вперёд: лемминг на позиции startIndex занимает место startIndex и т.д.
         for (int i = startIndex; i < views.Count && i < _lemmingPlaces.Count; i++)
         {
             var view = views[i];
