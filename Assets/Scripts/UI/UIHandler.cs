@@ -57,6 +57,7 @@ public class UIHandler : MonoBehaviour
 
     private void ShowPause()
     {
+        Debug.Log("Showing Pause Panel");
         GameState = GameState.Paused;
         _pausePanel.SetActive(true);
         Time.timeScale = 0;
