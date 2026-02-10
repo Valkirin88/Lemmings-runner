@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class LemmingsStateSet 
 {
     public event Action<LemmingView> OnLemmingCountAdd;
-    public event Action<LemmingView> OnLemmingCountRemove;
+    public event Action<LemmingView, int> OnLemmingCountRemove;
     public event Action  OnLemmingKilled;
     public event Action OnLemmingOnFire;
     
@@ -37,7 +37,7 @@ public class LemmingsStateSet
 
     private void SubscribeLimmingSream(LemmingView lemmingView)
     {
-        lemmingView.OnLemmingOnFire += FireLemming;
+        lemmingView.OnLemmingOnDanger += FireLemming;
     }
 
     private void FireLemming()
@@ -47,10 +47,11 @@ public class LemmingsStateSet
 
     private void RemoveLemmingInList(LemmingView lemmingView)
     {
+        int removedIndex = _runningLemmingViews.IndexOf(lemmingView);
         RunningLemmingViews.Remove(lemmingView);
         UnsubscribeOnNewLemmingsCaught(lemmingView);
-        lemmingView.OnLemmingOnFire -= FireLemming;
-        OnLemmingCountRemove?.Invoke(lemmingView);
+        lemmingView.OnLemmingOnDanger -= FireLemming;
+        OnLemmingCountRemove?.Invoke(lemmingView, removedIndex);
         OnLemmingKilled?.Invoke();
     }
     

@@ -122,7 +122,9 @@ public class LemmingView : MonoBehaviour
             float deltaZ = targetPos.z - currentPos.z;
             float distanceXZ = Mathf.Sqrt(deltaX * deltaX + deltaZ * deltaZ);
             
-            float speed = distanceXZ > _stickDistance ? _followSpeed : _stickSmoothing;
+            // Цель впереди — догоняем на полной скорости; иначе при приближении — плавное следование
+            bool targetAhead = deltaZ > 0.1f;
+            float speed = (distanceXZ > _stickDistance || targetAhead) ? _followSpeed : _stickSmoothing;
             
             Vector3 directionXZ = new Vector3(deltaX, 0, deltaZ).normalized;
             Vector3 velocityXZ = directionXZ * Mathf.Min(distanceXZ * speed, _followSpeed);
@@ -263,16 +265,7 @@ public class LemmingView : MonoBehaviour
     {
         IsRun = false;
         
-        // Освобождаем место
-        if (RunningPlace != null)
-        {
-            var place = RunningPlace.GetComponent<RunPlace>();
-            if (place != null)
-            {
-                place.IsEmpty = true;
-            }
-            RunningPlace = null;
-        }
+
         
         // Делаем кинематическим
         Rigidbody.isKinematic = true;
@@ -286,18 +279,7 @@ public class LemmingView : MonoBehaviour
         if (IsDead) return;
         
         IsDead = true;
-        
-        // Освобождаем место
-        if (RunningPlace != null)
-        {
-            var place = RunningPlace.GetComponent<RunPlace>();
-            if (place != null)
-            {
-                place.IsEmpty = true;
-            }
-            RunningPlace = null;
-        }
-        
+   
         OnLemmingKilled?.Invoke(this);
         
         // Добавляем пятна крови на экран (только если не горит)
@@ -323,17 +305,6 @@ public class LemmingView : MonoBehaviour
         if (IsDead) return;
         
         IsDead = true;
-        
-        // Освобождаем место
-        if (RunningPlace != null)
-        {
-            var place = RunningPlace.GetComponent<RunPlace>();
-            if (place != null)
-            {
-                place.IsEmpty = true;
-            }
-            RunningPlace = null;
-        }
         
         OnLemmingKilled?.Invoke(this);
         

@@ -29,26 +29,33 @@ public class LemmingPlaceHandler : MonoBehaviour
         }
     }
 
-    private void ReplaceLemmingsState(LemmingView lemmingView)
+    private void ReplaceLemmingsState(LemmingView lemmingView, int removedIndex)
     {
-        // Релокация всех леммингов через 1 секунду
-        StartCoroutine(DelayedReposition());
+        // Сразу освобождаем место погибшего лемминга
+        if (lemmingView.RunningPlace != null)
+        {
+            var runPlace = lemmingView.RunningPlace.GetComponent<RunPlace>();
+            if (runPlace != null)
+                runPlace.IsEmpty = true;
+        }
+        // Сразу сдвигаем хвост вперёд — без задержки, чтобы все догоняли кучкой
+        RepositionTail(removedIndex);
     }
 
-    private IEnumerator DelayedReposition()
+    private void RepositionTail(int startIndex)
     {
-        yield return new WaitForSeconds(1f);
-        
-        // Освобождаем все места
-        foreach (var place in _lemmingPlaces)
+        var views = _lemmingsStateSet.RunningLemmingViews;
+        // Освобождаем места, которые освободятся при сдвиге (хвост колонны)
+        for (int p = startIndex + 1; p < _lemmingPlaces.Count; p++)
+            _lemmingPlaces[p].IsEmpty = true;
+
+        // Сдвигаем вперёд: лемминг на позиции startIndex занимает место startIndex, следующий — startIndex+1 и т.д.
+        for (int i = startIndex; i < views.Count && i < _lemmingPlaces.Count; i++)
         {
-            place.IsEmpty = true;
-        }
-        
-        // Назначаем новые места всем живым леммингам
-        foreach (var view in _lemmingsStateSet.RunningLemmingViews)
-        {
-            SetNewPosition(view);
+            var view = views[i];
+            var place = _lemmingPlaces[i];
+            place.IsEmpty = false;
+            view.RunningPlace = place.transform;
         }
     }
 
@@ -59,15 +66,14 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private void SetNewPosition(LemmingView lemmingView)
     {
-        foreach (RunPlace place in _lemmingPlaces)
-        {
-            if (place.IsEmpty && !lemmingView.IsOnFire)
-            {
-                place.IsEmpty = false;
-                lemmingView.RunningPlace = place.transform;
-                return;
-            }
-        }
+        if (lemmingView.IsOnFire) return;
+
+        int index = _lemmingsStateSet.RunningLemmingViews.IndexOf(lemmingView);
+        if (index < 0 || index >= _lemmingPlaces.Count) return;
+
+        RunPlace place = _lemmingPlaces[index];
+        place.IsEmpty = false;
+        lemmingView.RunningPlace = place.transform;
     }
 
     private void StopLemmings()
