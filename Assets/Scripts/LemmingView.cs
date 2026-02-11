@@ -181,11 +181,7 @@ public class LemmingView : MonoBehaviour
                 }
             }
         }
-
-        if (other.TryGetComponent(out EndTrack endTrack))
-        {
-            IsRun = false;
-        }
+        // Остановка всех леммингов — в LemmingPlaceHandler.StopLemmings() по событию финиша от первого коснувшегося
     }
     
     /// <summary>

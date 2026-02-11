@@ -49,7 +49,7 @@ public class EntryPoint : MonoInstaller
         _lemmingsStateSet = new LemmingsStateSet(_leaderLemmingView);
         _lemmingController = new LemmingController(_lemmingsStateSet, _inputController);
         _gameStateCollector = new GameStateCollector(_endTrack, _uiHandler, _lemmingsStateSet);
-        _lemmingPlaceHandler.Initialize(_gameStateCollector);
+        _lemmingPlaceHandler.Initialize(_gameStateCollector, _lemmingPlaceView);
         _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig, _gameStateCollector);
         _soundHandler.Initialize(_lemmingsStateSet);
         _obstaclesSoundMediator = new ObstaclesSoundMediator(_soundHandler, _obstaclesSet);

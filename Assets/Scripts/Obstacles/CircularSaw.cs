@@ -71,7 +71,6 @@ public class CircularSaw : MonoBehaviour, IObstacle
         
         if (_slicedObjects == null || _slicedObjects.Length < 2)
         {
-            Debug.LogError("Slice failed!");
             return;
         }
         

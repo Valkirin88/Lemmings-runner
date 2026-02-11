@@ -7,13 +7,15 @@ public class LemmingPlaceHandler : MonoBehaviour
 {
     [SerializeField]
     private List<RunPlace> _lemmingPlaces;
-    
+
     private LemmingsStateSet _lemmingsStateSet;
     private GameStateCollector _gameStateCollector;
-    
-    public void Initialize(GameStateCollector gameStateCollector)
+    private LemmingPlaceView _lemmingPlaceView;
+
+    public void Initialize(GameStateCollector gameStateCollector, LemmingPlaceView lemmingPlaceView = null)
     {
         _gameStateCollector = gameStateCollector;
+        _lemmingPlaceView = lemmingPlaceView;
         _lemmingsStateSet = _gameStateCollector.LemmingsStateSet;
 
         _lemmingsStateSet.OnLemmingCountAdd += PlaceNewLemmingState;
@@ -77,6 +79,8 @@ public class LemmingPlaceHandler : MonoBehaviour
         {
             lemmingView.IsRun = false;
         }
+        if (_lemmingPlaceView != null)
+            _lemmingPlaceView.IsMoving = false;
     }
 
     private void OnDestroy()
