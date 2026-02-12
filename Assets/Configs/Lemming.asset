@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Lemming
   m_EditorClassIdentifier: 
   _sideSpeed: 2.5
-  _forwardSpeed: 3.5
+  _forwardSpeed: 5
   _followSpeed: 7
   _stickDistance: 0.3
   _stickSmoothing: 15

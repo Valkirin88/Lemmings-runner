@@ -139,9 +139,19 @@ public class LemmingView : MonoBehaviour
             // Применяем скорость: X и Z к цели, Y от физики
             Rigidbody.linearVelocity = new Vector3(velocityXZ.x, yVelocity, velocityXZ.z);
         }
+        else if (!IsRun && !IsDead)
+        {
+            // Ожидающий лемминг — движется в -Z вместе с миром (Obstacles)
+            float scrollSpeed = ScrollSpeedProvider.CurrentSpeed;
+            Vector3 vel = Rigidbody.linearVelocity;
+            vel.z = -scrollSpeed + _externalForce.z;
+            vel.x += _externalForce.x;
+            vel.y += _externalForce.y;
+            Rigidbody.linearVelocity = vel;
+        }
         else if (_externalForce.sqrMagnitude > 0.01f)
         {
-            // Если лемминг не бежит, но есть внешняя сила - применяем её
+            // Внешняя сила (птица отпустила и т.д.)
             Vector3 vel = Rigidbody.linearVelocity;
             Rigidbody.linearVelocity = new Vector3(
                 vel.x + _externalForce.x,

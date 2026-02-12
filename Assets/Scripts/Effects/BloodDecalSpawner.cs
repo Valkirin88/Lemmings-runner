@@ -54,9 +54,10 @@ public class BloodDecalSpawner : MonoBehaviour
     }
     
     /// <summary>
-    /// Создаёт пятна крови внутри прямоугольной зоны (вызывается из BloodZone)
+    /// Создаёт пятна крови внутри прямоугольной зоны (вызывается из BloodZone).
+    /// parent — объект, к которому привязываются декали (двигаются вместе с препятствием).
     /// </summary>
-    public void SpawnDecalsInZone(Vector3 zoneCenter, Vector3 zoneSize)
+    public void SpawnDecalsInZone(Vector3 zoneCenter, Vector3 zoneSize, Transform parent = null)
     {
         int count = Random.Range(_minDecalsPerKill, _maxDecalsPerKill + 1);
         
@@ -77,7 +78,7 @@ public class BloodDecalSpawner : MonoBehaviour
             // Рейкаст вниз чтобы найти поверхность
             if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, zoneSize.y + 2f, _groundLayers))
             {
-                SpawnSingleDecal(hit.point, hit.normal);
+                SpawnSingleDecal(hit.point, hit.normal, parent);
                 successCount++;
             }
         }
@@ -85,9 +86,10 @@ public class BloodDecalSpawner : MonoBehaviour
     }
     
     /// <summary>
-    /// Создаёт одно пятно в указанной точке с указанной нормалью
+    /// Создаёт одно пятно в указанной точке с указанной нормалью.
+    /// parent — декаль становится ребёнком (двигается вместе с препятствием).
     /// </summary>
-    public void SpawnSingleDecal(Vector3 position, Vector3 normal)
+    public void SpawnSingleDecal(Vector3 position, Vector3 normal, Transform parent = null)
     {
        
         // Удаляем старые декали если достигли лимита
@@ -99,14 +101,17 @@ public class BloodDecalSpawner : MonoBehaviour
         // Создаём декаль
         GameObject decalObj;
         
+        Vector3 decalPosition = position + normal * _surfaceOffset;
+
         if (_decalPrefab != null)
         {
-            decalObj = Instantiate(_decalPrefab, position + normal * _surfaceOffset, Quaternion.identity);
+            decalObj = Instantiate(_decalPrefab, decalPosition, Quaternion.identity, parent);
         }
         else
         {
             decalObj = CreateDefaultDecal();
-            decalObj.transform.position = position + normal * _surfaceOffset;
+            decalObj.transform.SetParent(parent);
+            decalObj.transform.position = decalPosition;
         }
         
         // Поворачиваем декаль по нормали поверхности

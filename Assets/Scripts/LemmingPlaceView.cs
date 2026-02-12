@@ -21,12 +21,18 @@ public class LemmingPlaceView : MonoBehaviour
     private float _currentSpeedMultiplier = 1f;
     private bool _isAccelerating = false;
     
+    /// <summary>
+    /// Эффективная скорость вперёд (для WorldScroller). Лидер бежит на месте, мир движется.
+    /// </summary>
+    public float EffectiveForwardSpeed => IsMoving ? ForwardSpeed * _currentSpeedMultiplier : 0f;
+    
     // Внешние силы (ветер и т.д.)
     private Vector3 _externalForce;
 
     private void FixedUpdate()
     {
         UpdateMovement();
+        ScrollSpeedProvider.CurrentSpeed = EffectiveForwardSpeed;
         
         // Сбрасываем внешнюю силу после применения
         _externalForce = Vector3.zero;
@@ -83,8 +89,9 @@ public class LemmingPlaceView : MonoBehaviour
             // Добавляем внешние силы (ветер)
             xVelocity += _externalForce.x;
             
-            float currentForwardSpeed = ForwardSpeed * _currentSpeedMultiplier;
-            Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity + _externalForce.y, currentForwardSpeed + _externalForce.z);
+            // Лидер бежит на месте по Z — мир движется через WorldScroller
+            float zVelocity = _externalForce.z;
+            Rigidbody.linearVelocity = new Vector3(xVelocity, yVelocity + _externalForce.y, zVelocity);
         }
         else
         {

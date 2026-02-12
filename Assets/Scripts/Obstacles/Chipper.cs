@@ -21,6 +21,11 @@ public class Chipper : MonoBehaviour, IObstacle
     
     private List<LemmingView> _caughtLemmings = new List<LemmingView>();
 
+    private void Start()
+    {
+        transform.rotation *= Quaternion.Euler(-90f, 0f, 0f);
+    }
+
     private void Update()
     {
         for (int i = _caughtLemmings.Count - 1; i >= 0; i--)

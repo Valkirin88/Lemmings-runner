@@ -11,9 +11,6 @@ public class WoodLog : MonoBehaviour, IObstacle
     public BloodZone BloodZone => _bloodZone;
     
     [SerializeField]
-    private float _rollSpeed = 5f;
-    
-    [SerializeField]
     private float _rotationSpeed = 200f;
     [SerializeField]
     private Rigidbody _rigidbody;
@@ -21,25 +18,24 @@ public class WoodLog : MonoBehaviour, IObstacle
     public event Action<AudioClip> OnMadeSound;
     public event Action<GameObject> OnDestroyed;
     
-    private bool _isMoving = false;
-    
-    
-    private void Awake()
+    private Quaternion _bloodZoneInitialRotation;
+
+    private void Start()
     {
-        
         _rigidbody.isKinematic = true;
+        if (_bloodZone != null)
+            _bloodZoneInitialRotation = _bloodZone.transform.rotation;
     }
-    
+
     private void Update()
     {
-        if (_isMoving)
-        {
-            // Движение в направлении -Z
-            transform.position += Vector3.back * _rollSpeed * Time.deltaTime;
-            
-            // Вращение бревна вокруг оси X (имитация качения)
-            transform.Rotate(Vector3.right, _rotationSpeed * Time.deltaTime, Space.World);
-        }
+        transform.Rotate(Vector3.right, _rotationSpeed * Time.deltaTime, Space.World);
+    }
+
+    private void LateUpdate()
+    {
+        if (_bloodZone != null)
+            _bloodZone.transform.rotation = _bloodZoneInitialRotation;
     }
     
     private void OnCollisionEnter(Collision collision)
@@ -61,24 +57,7 @@ public class WoodLog : MonoBehaviour, IObstacle
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
-        {
-            if (lemmingView.IsRun)
-            {
-                StartMoving();
-            }
-        }
-    }
 
-    private void StartMoving()
-    {
-        _isMoving = true;
-        _rigidbody.isKinematic = false;
-        _rigidbody.useGravity = true;
-    }
-    
     private void SpawnBloodAtCollision(Collision collision)
     {
         // Получаем точку столкновения

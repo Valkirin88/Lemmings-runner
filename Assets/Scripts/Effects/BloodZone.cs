@@ -25,7 +25,7 @@ public class BloodZone : MonoBehaviour
             return;
         }
         
-        BloodDecalSpawner.Instance.SpawnDecalsInZone(transform.position, _zoneSize);
+        BloodDecalSpawner.Instance.SpawnDecalsInZone(transform.position, _zoneSize, transform);
     }
     
     private void OnDrawGizmos()

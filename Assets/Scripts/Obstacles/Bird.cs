@@ -51,6 +51,15 @@ public class Bird : MonoBehaviour, IObstacle
     
     private void Update()
     {
+        // Точки патруля сдвигаются в -Z вместе с миром (как препятствия)
+        float scrollSpeed = ScrollSpeedProvider.CurrentSpeed;
+        if (scrollSpeed > 0f)
+        {
+            Vector3 scrollDelta = Vector3.back * scrollSpeed * Time.deltaTime;
+            if (_pointA != null) _pointAPosition += scrollDelta;
+            if (_pointB != null) _pointBPosition += scrollDelta;
+        }
+
         if (_isCarrying)
         {
             CarryLemming();

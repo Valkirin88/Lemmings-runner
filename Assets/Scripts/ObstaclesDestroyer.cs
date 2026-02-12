@@ -8,5 +8,10 @@ public class ObstaclesDestroyer : MonoBehaviour
         {
             Destroy(other.gameObject);
         }
+
+        if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView))
+        {
+            Destroy(other.gameObject);
+        }
     }
 }
