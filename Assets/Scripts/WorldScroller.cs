@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Двигает в сторону -Z только препятствия (IObstacle) и ожидающих леммингов (!IsRun).
+/// Двигает в сторону -Z препятствия (IObstacle). Лемминги с IsScroll двигаются в LemmingView.
 /// Лидер бежит на месте, Obstacles и idle-лемминги движутся навстречу.
 /// </summary>
 public class WorldScroller : MonoBehaviour

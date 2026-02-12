@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c63cff44ea504f44ba7a6932c2e1002b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BloodZone
-  _zoneSize: {x: 3.63, y: 0.55, z: 2.85}
+  _zoneSize: {x: 3.39, y: 0.34, z: 2.5}
   _showGizmos: 1
   _gizmoColor: {r: 1, g: 0, b: 0, a: 0.3}
 --- !u!1001 &935275018772672619
@@ -57,15 +57,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 79d34c56630b8fb46b362d7aa2d7c6ca, type: 3}
       propertyPath: m_LocalScale.x
-      value: 212.93025
+      value: 179.05305
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79d34c56630b8fb46b362d7aa2d7c6ca, type: 3}
       propertyPath: m_LocalScale.y
-      value: 212.93025
+      value: 179.05305
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79d34c56630b8fb46b362d7aa2d7c6ca, type: 3}
       propertyPath: m_LocalScale.z
-      value: 212.93025
+      value: 179.05305
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79d34c56630b8fb46b362d7aa2d7c6ca, type: 3}
       propertyPath: m_LocalPosition.x
@@ -73,7 +73,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79d34c56630b8fb46b362d7aa2d7c6ca, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.24
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 79d34c56630b8fb46b362d7aa2d7c6ca, type: 3}
       propertyPath: m_LocalPosition.z
@@ -154,7 +154,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WoodLog
   _bloodParticles: {fileID: 6959003842282831701}
   _bloodZone: {fileID: 1192853751212486792}
-  _rollSpeed: 5
   _rotationSpeed: 200
   _rigidbody: {fileID: 683700500346442039}
 --- !u!54 &683700500346442039

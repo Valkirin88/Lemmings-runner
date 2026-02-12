@@ -6,12 +6,12 @@ public class ObstaclesDestroyer : MonoBehaviour
     {
         if (other.TryGetComponent<IObstacle>(out IObstacle obstacle))
         {
-            Destroy(other.gameObject);
+            Destroy(other.transform.parent.gameObject);
         }
 
         if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
-            Destroy(other.gameObject);
+            Destroy(other.transform.parent.gameObject);
         }
     }
 }

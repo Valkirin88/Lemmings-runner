@@ -23,7 +23,7 @@ public class Chipper : MonoBehaviour, IObstacle
 
     private void Start()
     {
-        transform.rotation *= Quaternion.Euler(-90f, 0f, 0f);
+        transform.rotation *= Quaternion.Euler(-90f, 180f, 0f);
     }
 
     private void Update()
@@ -62,10 +62,11 @@ public class Chipper : MonoBehaviour, IObstacle
     {
         if (other.TryGetComponent(out LemmingView lemming))
         {
-            if (!lemming.IsDead && !_caughtLemmings.Contains(lemming))
+            if ((lemming.IsRun || lemming.IsOnFire) && !lemming.IsDead && !_caughtLemmings.Contains(lemming))
             {
                 // Отключаем стандартное движение лемминга
                 lemming.IsRun = false;
+                lemming.IsScroll = false;
                 lemming.RunningPlace = null;
                 
                 // Останавливаем физику

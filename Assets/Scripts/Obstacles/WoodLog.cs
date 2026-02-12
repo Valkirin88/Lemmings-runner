@@ -29,7 +29,7 @@ public class WoodLog : MonoBehaviour, IObstacle
 
     private void Update()
     {
-        transform.Rotate(Vector3.right, _rotationSpeed * Time.deltaTime, Space.World);
+        transform.Rotate(Vector3.right, -_rotationSpeed * Time.deltaTime, Space.World);
     }
 
     private void LateUpdate()
@@ -42,7 +42,7 @@ public class WoodLog : MonoBehaviour, IObstacle
     {
         if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
-            if (lemmingView.IsRun)
+            if (lemmingView.IsRun || lemmingView.IsOnFire)
             {
                 lemmingView.Kill();
                 SpawnBloodAtCollision(collision);

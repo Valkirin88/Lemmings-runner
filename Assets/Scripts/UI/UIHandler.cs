@@ -3,12 +3,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class UIHandler : MonoBehaviour
 {
-    [SerializeField]
-    private TMP_Text _currentQuantityText;
+    [FormerlySerializedAs("_currentQuantityText")] [SerializeField]
+    private TMP_Text _currentScoreText;
    
     [SerializeField]
     private Button _restartButton;
@@ -37,11 +38,18 @@ public class UIHandler : MonoBehaviour
     [SerializeField]
     private GameObject _finishObject;
 
+    [SerializeField]
+    private float _timeForIncreaseScore = 10f;
+    
     public GameState GameState;
     
     private int _lastDisplayedQuantity = -1;
     private GameState _lastProcessedState;
     private int _currentLevel;
+    private float _currentTimeforScore;
+    private int _score;
+
+    public int Score => _score;
 
     private void Start()
     {
@@ -82,15 +90,33 @@ public class UIHandler : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+    public void CalculateScore()
+    {
+        _currentTimeforScore = _currentTimeforScore + Time.deltaTime;
+        if (_currentTimeforScore >= _timeForIncreaseScore)
+        {
+            _score = Score + 1;
+            _currentTimeforScore = 0;
+            ShowScore();
+        }
+    }
+
+    private void ShowScore()
+    {
+        _currentScoreText.text = Score.ToString();
+    }
+
     public void ShowCurrentQuantity(int quantity)
     {
-        if (_lastDisplayedQuantity == quantity) return;
-        _lastDisplayedQuantity = quantity;
-        _currentQuantityText.text = quantity.ToString() + "/12";
+        // if (_lastDisplayedQuantity == quantity) return;
+        // _lastDisplayedQuantity = quantity;
+        // _currentScoreText.text = quantity.ToString();
     }
 
     private void Update()
     {
+        CalculateScore();
+        
         if (_lastProcessedState == GameState) return;
         _lastProcessedState = GameState;
         

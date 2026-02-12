@@ -16,6 +16,7 @@ public class AcidPond : MonoBehaviour, IObstacle
     {
         if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemming))
         {
+            if (!lemming.IsRun && !lemming.IsOnFire) return;
             _bloodParticles.Play();
             SpawnBlood();
             lemming.Kill();
@@ -26,6 +27,7 @@ public class AcidPond : MonoBehaviour, IObstacle
     {
         if (other.gameObject.TryGetComponent<LemmingView>(out LemmingView lemming))
         {
+            if (!lemming.IsRun && !lemming.IsOnFire) return;
             _bloodParticles.Play();
             lemming.Kill();
         }

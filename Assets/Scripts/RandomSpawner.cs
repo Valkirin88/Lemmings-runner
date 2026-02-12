@@ -43,11 +43,22 @@ public class RandomSpawner : MonoBehaviour
     [Tooltip("Размер ячейки сетки. Меньше = больше потенциальных точек спавна")]
     private float _gridCellSize = 2f;
 
-    [Header("Частота появления")]
+    [Header("Частота появления — нарастающая сложность")]
     [SerializeField]
-    [Min(0f)]
-    [Tooltip("Спавн каждые N секунд. 0 = только при старте сцены")]
-    private float _spawnIntervalSeconds = 0f;
+    [Tooltip("Источник очков (UIHandler). Если null — используется интервал при 0 очков")]
+    private UIHandler _scoreProvider;
+
+    [SerializeField]
+    [Tooltip("Включить нарастающую сложность. При выключении — только Spawn при старте")]
+    private bool _useScalingDifficulty = true;
+
+    [SerializeField]
+    [Tooltip("Пороги очков (0, 10, 50, 100...)")]
+    private int[] _scoreThresholds = { 0, 10, 50, 100 };
+
+    [SerializeField]
+    [Tooltip("Интервал спавна в сек для каждого порога (2, 1, 0.5, 0.3...)")]
+    private float[] _intervalSeconds = { 2f, 1f, 0.5f, 0.3f };
 
     [Header("Опции")]
     [SerializeField]
@@ -58,16 +69,49 @@ public class RandomSpawner : MonoBehaviour
     [Tooltip("Добавлять спавненные препятствия в ObstaclesSet (для звуков и т.д.)")]
     private ObstaclesSet _obstaclesSet;
 
+    [SerializeField]
+    [Min(0f)]
+    [Tooltip("Минимальная дистанция до существующих препятствий. 0 = проверка отключена")]
+    private float _minDistanceToObstacles = 1.5f;
+
     private Coroutine _periodicSpawnCoroutine;
 
     private void Start()
     {
         Spawn();
 
-        if (_spawnIntervalSeconds > 0f)
+        if (_useScalingDifficulty)
         {
             _periodicSpawnCoroutine = StartCoroutine(PeriodicSpawnCoroutine());
         }
+    }
+
+    private float GetSpawnInterval()
+    {
+        int score = _scoreProvider != null ? _scoreProvider.Score : 0;
+
+        if (_scoreThresholds == null || _intervalSeconds == null || _scoreThresholds.Length == 0 || _intervalSeconds.Length == 0)
+            return 2f;
+
+        int n = Mathf.Min(_scoreThresholds.Length, _intervalSeconds.Length);
+        if (n == 0) return 2f;
+
+        if (score <= _scoreThresholds[0])
+            return _intervalSeconds[0];
+        if (score >= _scoreThresholds[n - 1])
+            return _intervalSeconds[n - 1];
+
+        for (int i = 0; i < n - 1; i++)
+        {
+            if (score >= _scoreThresholds[i] && score < _scoreThresholds[i + 1])
+            {
+                int scoreDelta = _scoreThresholds[i + 1] - _scoreThresholds[i];
+                float t = scoreDelta > 0 ? (float)(score - _scoreThresholds[i]) / scoreDelta : 0f;
+                return Mathf.Lerp(_intervalSeconds[i], _intervalSeconds[i + 1], t);
+            }
+        }
+
+        return _intervalSeconds[n - 1];
     }
 
     private void OnDestroy()
@@ -80,9 +124,9 @@ public class RandomSpawner : MonoBehaviour
 
     private IEnumerator PeriodicSpawnCoroutine()
     {
-        float interval = Mathf.Max(0.1f, _spawnIntervalSeconds);
         while (true)
         {
+            float interval = Mathf.Max(0.1f, GetSpawnInterval());
             yield return new WaitForSeconds(interval);
             SpawnSingle();
         }
@@ -172,25 +216,47 @@ public class RandomSpawner : MonoBehaviour
     private void TrySpawnObstacle(Vector3 position)
     {
         var prefab = _obstaclePrefabs[Random.Range(0, _obstaclePrefabs.Count)];
-        if (prefab == null || !prefab.TryGetComponentInChildren<IObstacle>(out _))
+        if (prefab == null || prefab.GetComponentInChildren<IObstacle>() == null)
         {
             Debug.LogWarning($"[RandomSpawner] Prefab {prefab?.name} не содержит IObstacle, пропуск.");
             return;
         }
 
+        Vector3 spawnPos = position;
+        if (prefab.GetComponentInChildren<Bird>() != null)
+            spawnPos.y = 3f;
+        else if (prefab.GetComponentInChildren<Chipper>() != null)
+            spawnPos.y += 0.7f;
+        else if (prefab.GetComponentInChildren<WoodLog>() != null)
+            spawnPos.y += 0.4f;
+
+        if (_minDistanceToObstacles > 0f && WouldOverlapObstacle(spawnPos))
+            return;
+
         var instance = Instantiate(prefab, position, Quaternion.identity, _spawnedObjectsParent);
         instance.name = prefab.name + " (Spawned)";
 
         var pos = instance.transform.position;
-        if (instance.TryGetComponentInChildren<Bird>(out _))
+        if (instance.GetComponentInChildren<Bird>() != null)
         {
             pos.y = 3f;
             instance.transform.position = pos;
         }
-        else if (instance.TryGetComponentInChildren<Chipper>(out _))
+        else if (instance.GetComponentInChildren<Chipper>() != null)
         {
             pos.y += 0.7f;
             instance.transform.position = pos;
+        }
+        else if (instance.GetComponentInChildren<WoodLog>() != null)
+        {
+            pos.y += 0.4f;
+            instance.transform.position = pos;
+        }
+
+        if (instance.GetComponentInChildren<CircularSaw>() != null || instance.GetComponentInChildren<CircularSawMoving>() != null)
+        {
+            if (Random.value < 0.5f)
+                instance.transform.rotation *= Quaternion.Euler(0f, 90f, 0f);
         }
 
         if (_obstaclesSet != null && _obstaclesSet.Obstacles != null)
@@ -199,14 +265,32 @@ public class RandomSpawner : MonoBehaviour
         }
     }
 
+    private bool WouldOverlapObstacle(Vector3 position)
+    {
+        if (_obstaclesSet == null || _obstaclesSet.Obstacles == null) return false;
+
+        float minDistSq = _minDistanceToObstacles * _minDistanceToObstacles;
+
+        foreach (var obj in _obstaclesSet.Obstacles)
+        {
+            if (obj == null) continue;
+            float distSq = (obj.transform.position - position).sqrMagnitude;
+            if (distSq < minDistSq) return true;
+        }
+        return false;
+    }
+
     private void TrySpawnLemming(Vector3 position)
     {
         var prefab = _lemmingPrefabs[Random.Range(0, _lemmingPrefabs.Count)];
-        if (prefab == null || !prefab.TryGetComponentInChildren<LemmingView>(out _))
+        if (prefab == null || prefab.GetComponentInChildren<LemmingView>() == null)
         {
             Debug.LogWarning($"[RandomSpawner] Prefab {prefab?.name} не содержит LemmingView, пропуск.");
             return;
         }
+
+        if (_minDistanceToObstacles > 0f && WouldOverlapObstacle(position))
+            return;
 
         var instance = Instantiate(prefab, position, Quaternion.identity, _spawnedObjectsParent);
         instance.name = prefab.name + " (Spawned)";
@@ -215,6 +299,7 @@ public class RandomSpawner : MonoBehaviour
         if (lemmingView != null)
         {
             lemmingView.IsRun = false;
+            lemmingView.IsScroll = true;
         }
     }
 

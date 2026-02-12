@@ -119,8 +119,15 @@ public class BloodDecalSpawner : MonoBehaviour
         Quaternion randomRotation = Quaternion.AngleAxis(Random.Range(0f, 360f), normal);
         decalObj.transform.rotation = randomRotation * surfaceRotation;
         
-        // Случайный размер
+        // Случайный размер в мировых единицах. Если декаль — child, компенсируем масштаб родителя.
         float size = Random.Range(_minSize, _maxSize);
+        if (parent != null)
+        {
+            Vector3 parentScale = parent.lossyScale;
+            float avgScale = (Mathf.Abs(parentScale.x) + Mathf.Abs(parentScale.y) + Mathf.Abs(parentScale.z)) / 3f;
+            if (avgScale > 0.001f)
+                size /= avgScale;
+        }
         decalObj.transform.localScale = new Vector3(size, size, size);
         
         // Если есть спрайты, выбираем случайный

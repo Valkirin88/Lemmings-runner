@@ -37,6 +37,7 @@ public class CircularSaw : MonoBehaviour, IObstacle
     {
         if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
+            if (!lemmingView.IsRun && !lemmingView.IsOnFire) return;
             // Проверяем, что лемминг ещё не распилен (горящий тоже может быть распилен)
             if (lemmingView.IsSliced) return;
             

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 
@@ -33,7 +34,14 @@ public class LemmingView : MonoBehaviour
     // Внешние силы (ветер, и т.д.)
     private Vector3 _externalForce;
 
-   public bool IsRun;
+   /// <summary>
+    /// true = подобран другими леммингами. Препятствия проверяют IsRun — убивают только при true.
+    /// </summary>
+    public bool IsRun;
+    /// <summary>
+    /// true = движется в -Z вместе с миром (ожидающий лемминг), false = не двигается скроллом.
+    /// </summary>
+    public bool IsScroll;
     public bool IsOnFire;
     public bool IsDead;
     public bool IsSliced;
@@ -139,9 +147,9 @@ public class LemmingView : MonoBehaviour
             // Применяем скорость: X и Z к цели, Y от физики
             Rigidbody.linearVelocity = new Vector3(velocityXZ.x, yVelocity, velocityXZ.z);
         }
-        else if (!IsRun && !IsDead)
+        else if (IsScroll && !IsDead)
         {
-            // Ожидающий лемминг — движется в -Z вместе с миром (Obstacles)
+            // Ожидающий лемминг — движется в -Z вместе с миром (Obstacles).
             float scrollSpeed = ScrollSpeedProvider.CurrentSpeed;
             Vector3 vel = Rigidbody.linearVelocity;
             vel.z = -scrollSpeed + _externalForce.z;
@@ -203,6 +211,7 @@ public class LemmingView : MonoBehaviour
         
         _wasPickedUp = true;
         IsRun = true;
+        IsScroll = false;
         
         // Разворачиваем лемминга вперед в направлении бега
         transform.rotation = Quaternion.LookRotation(Vector3.forward);
@@ -250,6 +259,9 @@ public class LemmingView : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private float _fireDeathDelay = 2f;
+
     public void SetFire(GameObject fireObject)
     {
         _fireObject = fireObject;
@@ -260,8 +272,14 @@ public class LemmingView : MonoBehaviour
         RunningPlace = null;
         IsOnFire = true;
         
-        Kill();
-        
+        StartCoroutine(KillFromFireAfterDelay());
+    }
+
+    private IEnumerator KillFromFireAfterDelay()
+    {
+        yield return new WaitForSeconds(_fireDeathDelay);
+        if (!IsDead)
+            Kill();
     }
 
     /// <summary>
@@ -270,8 +288,7 @@ public class LemmingView : MonoBehaviour
     public void CaptureByBird()
     {
         IsRun = false;
-        
-
+        IsScroll = false;
         
         // Делаем кинематическим
         Rigidbody.isKinematic = true;
