@@ -39,7 +39,7 @@ public class UIHandler : MonoBehaviour
     private GameObject _finishObject;
 
     [SerializeField]
-    private float _timeForIncreaseScore = 10f;
+    private float _timeForIncreaseScore = 5f;
     
     public GameState GameState;
     
