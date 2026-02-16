@@ -300,7 +300,12 @@ public class LemmingView : MonoBehaviour
     /// <param name="destroyImmediately">true — убрать объект сразу (например при убийстве препятствием), иначе горящий исчезнет через 2 сек</param>
     public void Kill(bool destroyImmediately = false)
     {
-        if (IsDead) return;
+        if (IsDead)
+        {
+            if (destroyImmediately)
+                Destroy(gameObject);
+            return;
+        }
 
         IsDead = true;
 

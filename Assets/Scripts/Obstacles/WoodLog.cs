@@ -40,20 +40,21 @@ public class WoodLog : MonoBehaviour, IObstacle
     
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
+        // Горящий лемминг: коллайдер может быть у дочернего объекта (огонь), ищем лемминга в родителях
+        var lemmingView = collision.gameObject.GetComponent<LemmingView>();
+        if (lemmingView == null) return;
+
+        if (lemmingView.IsRun || lemmingView.IsOnFire)
         {
-            if (lemmingView.IsRun || lemmingView.IsOnFire)
-            {
-                lemmingView.Kill(destroyImmediately: true);
-                SpawnBloodAtCollision(collision);
-            }
-            else
-            {
-                // Игнорируем столкновение с леммингами, которые не бегут
-                Collider logCollider = collision.contacts[0].thisCollider;
-                Collider lemmingCollider = collision.collider;
-                Physics.IgnoreCollision(logCollider, lemmingCollider);
-            }
+            lemmingView.Kill(destroyImmediately: true);
+            SpawnBloodAtCollision(collision);
+        }
+        else
+        {
+            // Игнорируем столкновение с леммингами, которые не бегут
+            Collider logCollider = collision.contacts[0].thisCollider;
+            Collider lemmingCollider = collision.collider;
+            Physics.IgnoreCollision(logCollider, lemmingCollider);
         }
     }
 

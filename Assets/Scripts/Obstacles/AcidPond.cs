@@ -73,24 +73,22 @@ public class AcidPond : MonoBehaviour, IObstacle
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemming))
-        {
-            if (!lemming.IsRun && !lemming.IsOnFire) return;
-            _bloodParticles.Play();
-            SpawnBlood();
-            lemming.Kill();
-        }
+        var lemming = collision.gameObject.GetComponent<LemmingView>();
+        if (lemming == null) return;
+        if (!lemming.IsRun && !lemming.IsOnFire) return;
+        _bloodParticles.Play();
+        SpawnBlood();
+        lemming.Kill(destroyImmediately: true);
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.TryGetComponent<LemmingView>(out LemmingView lemming))
-        {
-            if (!lemming.IsRun && !lemming.IsOnFire) return;
-            _bloodParticles.Play();
-            lemming.Kill();
-        }
-    }
+    // private void OnTriggerStay(Collider other)
+    // {
+    //     var lemming = other.gameObject.GetComponentInParent<LemmingView>();
+    //     if (lemming == null) return;
+    //     if (!lemming.IsRun && !lemming.IsOnFire) return;
+    //     _bloodParticles.Play();
+    //     lemming.Kill(destroyImmediately: true);
+    // }
     
     public void SpawnBlood()
     {

@@ -52,7 +52,7 @@ public class Chipper : MonoBehaviour, IObstacle
             {
                 _particles.Play();
                 SpawnBlood();
-                lemming.Kill();
+                lemming.Kill(destroyImmediately: true);
                 _caughtLemmings.RemoveAt(i);
             }
         }
@@ -60,7 +60,8 @@ public class Chipper : MonoBehaviour, IObstacle
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out LemmingView lemming))
+        var lemming = other.GetComponentInParent<LemmingView>();
+        if (lemming != null)
         {
             if ((lemming.IsRun || lemming.IsOnFire) && !lemming.IsDead && !_caughtLemmings.Contains(lemming))
             {
