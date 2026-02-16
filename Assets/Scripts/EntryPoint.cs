@@ -32,7 +32,10 @@ public class EntryPoint : MonoInstaller
     
     [SerializeField]
     private ObstaclesSet _obstaclesSet;
-    
+
+    [SerializeField]
+    private RandomSpawner _randomSpawner;
+
     private InputController _inputController;
     private LemmingController _lemmingController;
     private LemmingsStateSet _lemmingsStateSet;
@@ -53,6 +56,8 @@ public class EntryPoint : MonoInstaller
         _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig, _gameStateCollector);
         _soundHandler.Initialize(_lemmingsStateSet);
         _obstaclesSoundMediator = new ObstaclesSoundMediator(_soundHandler, _obstaclesSet);
+        if (_randomSpawner != null)
+            _randomSpawner.Initialize(_obstaclesSet);
     }
 
     private void Update()

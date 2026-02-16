@@ -61,6 +61,7 @@ public class UIHandler : MonoBehaviour
         _restartButtonObject.SetActive(false);
         GameState = GameState.Game;
         _currentLevel = SceneManager.GetActiveScene().buildIndex;
+        ShowScore();
     }
 
     private void ShowPause()

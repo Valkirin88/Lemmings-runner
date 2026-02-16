@@ -104,8 +104,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BloodZone
   _zoneSize: {x: 1.45, y: 0.5, z: 2.02}
-  _minDecals: 20
-  _maxDecals: 39
   _showGizmos: 1
   _gizmoColor: {r: 1, g: 0, b: 0, a: 0.3}
 --- !u!1 &5533772641930538801
@@ -147,6 +145,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: df87e9eba49056746bd9fa3409aaccf1, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 131.81999
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: df87e9eba49056746bd9fa3409aaccf1, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 131.81999
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: df87e9eba49056746bd9fa3409aaccf1, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 131.81999
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: df87e9eba49056746bd9fa3409aaccf1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.33

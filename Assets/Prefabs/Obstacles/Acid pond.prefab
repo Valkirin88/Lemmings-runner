@@ -228,6 +228,37 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!1 &3260138449735878786
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4490115810183305047}
+  m_Layer: 0
+  m_Name: SphereSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4490115810183305047
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3260138449735878786}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.304, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5224264343076589956}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4202646870393352489
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,9 +401,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.011357, y: 0.075745, z: -0.0068624}
-  m_LocalScale: {x: 0.5005499, y: 0.5005499, z: 0.5005499}
+  m_LocalScale: {x: 0.82350475, y: 0.82350475, z: 0.82350475}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4490115810183305047}
   - {fileID: 8627983877334743618}
   - {fileID: 6202477660420631697}
   - {fileID: 4650799309171160636}
@@ -417,6 +449,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bloodParticles: {fileID: 8461596179791894106}
   _bloodZone: {fileID: 0}
+  _acidSpherePrefab: {fileID: 1233113996656980527, guid: 46750623c4d380c4e8fb2849e3e7ca60, type: 3}
+  _spawnIntervalMin: 0.5
+  _spawnIntervalMax: 2
+  _throwForce: 6
+  _upwardBias: 1.5
+  _spawnPoint: {fileID: 4490115810183305047}
 --- !u!1 &6498927318041160393
 GameObject:
   m_ObjectHideFlags: 0

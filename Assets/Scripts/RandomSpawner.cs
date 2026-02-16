@@ -66,8 +66,11 @@ public class RandomSpawner : MonoBehaviour
     private Transform _spawnedObjectsParent;
 
     [SerializeField]
-    [Tooltip("Добавлять спавненные препятствия в ObstaclesSet (для звуков и т.д.)")]
+    [Tooltip("Задаётся из Entry Point через Initialize(). Оставь пустым, если прокидываешь из Entry Point.")]
     private ObstaclesSet _obstaclesSet;
+
+    /// <summary> Прокинуть ObstaclesSet из Entry Point (вызывается в Awake). </summary>
+    public void Initialize(ObstaclesSet obstaclesSet) => _obstaclesSet = obstaclesSet;
 
     [SerializeField]
     [Min(0f)]
@@ -258,6 +261,10 @@ public class RandomSpawner : MonoBehaviour
             if (Random.value < 0.5f)
                 instance.transform.rotation *= Quaternion.Euler(0f, 90f, 0f);
         }
+
+        var acidPond = instance.GetComponentInChildren<AcidPond>();
+        if (acidPond != null && _obstaclesSet != null)
+            acidPond.SetObstaclesSet(_obstaclesSet);
 
         if (_obstaclesSet != null && _obstaclesSet.Obstacles != null)
         {

@@ -4,14 +4,18 @@ public class ObstaclesDestroyer : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<IObstacle>(out IObstacle obstacle))
+        // IObstacle может висеть на корне префаба или на дочернем объекте — удаляем корень иерархии
+        var obstacle = other.GetComponentInParent<IObstacle>();
+        if (obstacle != null)
         {
-            Destroy(other.transform.parent.gameObject);
+            GameObject root = (obstacle as MonoBehaviour).transform.root.gameObject;
+            Destroy(root);
+            return;
         }
 
         if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
-            Destroy(other.transform.parent.gameObject);
+            Destroy(lemmingView.gameObject);
         }
     }
 }

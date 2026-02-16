@@ -653,6 +653,12 @@ MonoBehaviour:
   _gridCellSize: 2
   _scoreProvider: {fileID: 1954252298}
   _useScalingDifficulty: 1
+  _scoreThresholds: 000000000a0000003200000064000000
+  _intervalSeconds:
+  - 2
+  - 1
+  - 0.5
+  - 0.3
   _spawnedObjectsParent: {fileID: 0}
   _obstaclesSet: {fileID: 2132151162}
   _minDistanceToObstacles: 1.5
@@ -1281,6 +1287,7 @@ MonoBehaviour:
   _uiHandler: {fileID: 1954252298}
   _soundHandler: {fileID: 548589187}
   _obstaclesSet: {fileID: 2132151162}
+  _randomSpawner: {fileID: 314118684}
 --- !u!4 &450451194
 Transform:
   m_ObjectHideFlags: 0
@@ -3120,6 +3127,7 @@ GameObject:
   - component: {fileID: 1069124574}
   - component: {fileID: 1069124573}
   - component: {fileID: 1069124576}
+  - component: {fileID: 1069124577}
   m_Layer: 0
   m_Name: Cube (8)
   m_TagString: Untagged
@@ -3232,6 +3240,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08f0e78e53b1b7542b133f49ac60e48f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bottom
+--- !u!114 &1069124577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069124571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5375060083429c4397eb01c1c28e0ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlatformTextureScroller
+  _textureProperty: _MainTex
+  _scrollAxis: 1
+  _scrollScale: 0.01
+  _scrollDirection: -1
+  _useSharedMaterial: 0
+  _renderer: {fileID: 1069124574}
 --- !u!1 &1161792053
 GameObject:
   m_ObjectHideFlags: 0
@@ -4276,6 +4302,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1161792054}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1713554098 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8695760888350861245, guid: b7354f59b2e5fea4a9488eaf83b5c48e, type: 3}
+  m_PrefabInstance: {fileID: 9140846134181207259}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1713554100 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8371955865135538506, guid: b7354f59b2e5fea4a9488eaf83b5c48e, type: 3}
+  m_PrefabInstance: {fileID: 9140846134181207259}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1713554102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1713554098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5375060083429c4397eb01c1c28e0ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlatformTextureScroller
+  _textureProperty: _MainTex
+  _scrollAxis: 1
+  _scrollScale: 0.01
+  _scrollDirection: -1
+  _useSharedMaterial: 0
+  _renderer: {fileID: 1713554100}
 --- !u!1 &1748165251
 GameObject:
   m_ObjectHideFlags: 0
@@ -5339,7 +5393,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1866774404153467852, guid: b7354f59b2e5fea4a9488eaf83b5c48e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1392873545}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8695760888350861245, guid: b7354f59b2e5fea4a9488eaf83b5c48e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1713554102}
   m_SourcePrefab: {fileID: 100100000, guid: b7354f59b2e5fea4a9488eaf83b5c48e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
