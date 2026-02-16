@@ -107,6 +107,7 @@ MonoBehaviour:
   _windForce: 4
   _windDirection: {x: 0, y: 0, z: 1}
   _useLocalDirection: 1
+  _bloodZone: {fileID: 0}
 --- !u!65 &7907218763835390633
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -205,12 +206,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198743469195280986, guid: 215d2d668be849649b89786b1762a13e, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198743469195280986, guid: 215d2d668be849649b89786b1762a13e, type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.38
       objectReference: {fileID: 0}
     - target: {fileID: 198743469195280986, guid: 215d2d668be849649b89786b1762a13e, type: 3}
       propertyPath: VelocityModule.speedModifier.scalar
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 198805145302481042, guid: 215d2d668be849649b89786b1762a13e, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198805145302481042, guid: 215d2d668be849649b89786b1762a13e, type: 3}
       propertyPath: InitialModule.startSize.scalar

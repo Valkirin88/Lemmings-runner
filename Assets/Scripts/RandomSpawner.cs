@@ -77,6 +77,14 @@ public class RandomSpawner : MonoBehaviour
     [Tooltip("Минимальная дистанция до существующих препятствий. 0 = проверка отключена")]
     private float _minDistanceToObstacles = 1.5f;
 
+    [Header("Fan — только по краям платформы")]
+    [SerializeField]
+    [Tooltip("Пустой объект на левом краю платформы (берётся position.x)")]
+    private Transform _fanLeftEdge;
+    [SerializeField]
+    [Tooltip("Пустой объект на правом краю платформы (берётся position.x)")]
+    private Transform _fanRightEdge;
+
     private Coroutine _periodicSpawnCoroutine;
 
     private void Start()
@@ -225,7 +233,17 @@ public class RandomSpawner : MonoBehaviour
             return;
         }
 
+        bool isFan = prefab.GetComponentInChildren<Fan>() != null;
         Vector3 spawnPos = position;
+
+        bool fanSpawnOnRight = false;
+        if (isFan && _fanLeftEdge != null && _fanRightEdge != null)
+        {
+            fanSpawnOnRight = Random.value < 0.5f;
+            spawnPos.x = fanSpawnOnRight ? _fanRightEdge.position.x : _fanLeftEdge.position.x;
+            spawnPos.z = position.z;
+        }
+
         if (prefab.GetComponentInChildren<Bird>() != null)
             spawnPos.y = 3f;
         else if (prefab.GetComponentInChildren<Chipper>() != null)
@@ -236,23 +254,17 @@ public class RandomSpawner : MonoBehaviour
         if (_minDistanceToObstacles > 0f && WouldOverlapObstacle(spawnPos))
             return;
 
-        var instance = Instantiate(prefab, position, Quaternion.identity, _spawnedObjectsParent);
+        Quaternion rotation = Quaternion.identity;
+        if (isFan)
+            rotation = Quaternion.Euler(0f, fanSpawnOnRight ? 270f : 90f, 0f); // 90° поперёк уровня, +180° для правого края
+
+        var instance = Instantiate(prefab, spawnPos, rotation, _spawnedObjectsParent);
         instance.name = prefab.name + " (Spawned)";
 
         var pos = instance.transform.position;
         if (instance.GetComponentInChildren<Bird>() != null)
         {
             pos.y = 3f;
-            instance.transform.position = pos;
-        }
-        else if (instance.GetComponentInChildren<Chipper>() != null)
-        {
-            pos.y += 0.7f;
-            instance.transform.position = pos;
-        }
-        else if (instance.GetComponentInChildren<WoodLog>() != null)
-        {
-            pos.y += 0.4f;
             instance.transform.position = pos;
         }
 
