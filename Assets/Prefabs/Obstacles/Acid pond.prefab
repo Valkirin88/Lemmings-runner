@@ -451,7 +451,7 @@ MonoBehaviour:
   _bloodZone: {fileID: 0}
   _acidSpherePrefab: {fileID: 1233113996656980527, guid: 46750623c4d380c4e8fb2849e3e7ca60, type: 3}
   _spawnIntervalMin: 0.5
-  _spawnIntervalMax: 2
+  _spawnIntervalMax: 1
   _throwForce: 6
   _upwardBias: 1.5
   _spawnPoint: {fileID: 4490115810183305047}

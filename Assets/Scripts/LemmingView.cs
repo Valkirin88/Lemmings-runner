@@ -297,30 +297,26 @@ public class LemmingView : MonoBehaviour
         OnLemmingCapturedByBird?.Invoke(this);
     }
     
-    public void Kill()
+    /// <param name="destroyImmediately">true — убрать объект сразу (например при убийстве препятствием), иначе горящий исчезнет через 2 сек</param>
+    public void Kill(bool destroyImmediately = false)
     {
         if (IsDead) return;
-        
+
         IsDead = true;
-   
+
         OnLemmingKilled?.Invoke(this);
-        
+
         // Добавляем пятна крови на экран (только если не горит)
         if (!IsOnFire && BloodSplatterManager.Instance != null)
         {
             BloodSplatterManager.Instance.AddSplattersOnKill();
         }
-        
+
         // Пятна на поверхности создаются через BloodZone на препятствиях
-        
-        if (!IsOnFire)
-        {
+        if (!IsOnFire || destroyImmediately)
             Destroy(gameObject);
-        }
-        else 
-        {
+        else
             Destroy(gameObject, 2f);
-        }
     }
 
     public void KillWithotBlood()

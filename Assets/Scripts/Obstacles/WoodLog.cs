@@ -44,7 +44,7 @@ public class WoodLog : MonoBehaviour, IObstacle
         {
             if (lemmingView.IsRun || lemmingView.IsOnFire)
             {
-                lemmingView.Kill();
+                lemmingView.Kill(destroyImmediately: true);
                 SpawnBloodAtCollision(collision);
             }
             else
@@ -71,6 +71,7 @@ public class WoodLog : MonoBehaviour, IObstacle
         _bloodParticles.transform.rotation = Quaternion.LookRotation(Vector3.back);
         
         _bloodParticles.Play();
+        Destroy(_bloodParticles.gameObject, 2f);
         SpawnBlood();
     }
     

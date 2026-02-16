@@ -28,7 +28,7 @@ public class CircularSaw : MonoBehaviour, IObstacle
     private void Start()
     {
         _slicedLemmingsHandler = new SlicedLemmingsHandler();
-        _bloodParticles.transform.SetParent(null);
+        
         
         _crossSectionMaterial = _crossSectionLemmingMaterial;
     }
@@ -42,16 +42,18 @@ public class CircularSaw : MonoBehaviour, IObstacle
             if (lemmingView.IsSliced) return;
             
             lemmingView.IsSliced = true;
+            _bloodParticles.transform.SetParent(null);
             _bloodParticles.Play();
             SpawnBlood();
             
             _slicedObject = lemmingView.gameObject;
             SliceLemming();
+            Destroy(_bloodParticles.gameObject,4f);
             
             // Вызываем Kill для неубитых леммингов, а для горящих - сразу уничтожаем
             if (!lemmingView.IsDead)
             {
-                lemmingView.Kill();
+                lemmingView.Kill(destroyImmediately: true);
             }
             else
             {
