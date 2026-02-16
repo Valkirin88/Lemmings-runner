@@ -685,10 +685,12 @@ MonoBehaviour:
   _gridCellSize: 2
   _scoreProvider: {fileID: 1954252298}
   _useScalingDifficulty: 1
-  _scoreThresholds: 000000000a0000003200000064000000
+  _scoreThresholds: 0000000003000000070000000a0000000f00000014000000
   _intervalSeconds:
   - 2
+  - 1.5
   - 1
+  - 0.8
   - 0.5
   - 0.3
   _spawnedObjectsParent: {fileID: 0}
