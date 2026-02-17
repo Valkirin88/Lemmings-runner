@@ -691,7 +691,7 @@ MonoBehaviour:
   _gridCellSize: 2
   _scoreProvider: {fileID: 1954252298}
   _useScalingDifficulty: 1
-  _scoreThresholds: 000000000a000000320000005000000064000000c8000000
+  _scoreThresholds: 0000000032000000640000008200000096000000c8000000
   _intervalSeconds:
   - 2
   - 1.5
@@ -3240,7 +3240,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 38efa2495a27ae64cb42617019e33b32, type: 2}
+  - {fileID: 2100000, guid: 0fd41b82b4608c84aa03280b40065be9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
