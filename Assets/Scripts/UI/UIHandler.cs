@@ -91,14 +91,19 @@ public class UIHandler : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void CalculateScore()
+    public void AddScore(int amount)
+    {
+        _score += amount;
+        ShowScore();
+    }
+
+    private void CalculateScoreByTime()
     {
         _currentTimeforScore = _currentTimeforScore + Time.deltaTime;
         if (_currentTimeforScore >= _timeForIncreaseScore)
         {
-            _score = Score + 1;
+            AddScore(1);
             _currentTimeforScore = 0;
-            ShowScore();
         }
     }
 
@@ -116,7 +121,7 @@ public class UIHandler : MonoBehaviour
 
     private void Update()
     {
-        CalculateScore();
+        CalculateScoreByTime();
         
         if (_lastProcessedState == GameState) return;
         _lastProcessedState = GameState;

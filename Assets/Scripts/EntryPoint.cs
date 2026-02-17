@@ -44,6 +44,7 @@ public class EntryPoint : MonoInstaller
     //mediators
     private GameStateCollector _gameStateCollector;
     private ObstaclesSoundMediator _obstaclesSoundMediator;
+    private UILemmingStateMediator _uiLemmingStateMediator;
     
     
     private void Awake()
@@ -56,8 +57,8 @@ public class EntryPoint : MonoInstaller
         _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig, _gameStateCollector);
         _soundHandler.Initialize(_lemmingsStateSet);
         _obstaclesSoundMediator = new ObstaclesSoundMediator(_soundHandler, _obstaclesSet);
-        if (_randomSpawner != null)
-            _randomSpawner.Initialize(_obstaclesSet);
+        _randomSpawner.Initialize(_obstaclesSet);
+        _uiLemmingStateMediator = new UILemmingStateMediator(_uiHandler, _lemmingsStateSet);
     }
 
     private void Update()
@@ -73,5 +74,6 @@ public class EntryPoint : MonoInstaller
         _lemmingController.Dispose();
         _gameStateCollector.Dispose();
         _obstaclesSoundMediator.Dispose();
+        _uiLemmingStateMediator.Dispose();
     }
 }

@@ -8,6 +8,7 @@ public class LemmingsStateSet
     public event Action<LemmingView, int> OnLemmingCountRemove;
     public event Action  OnLemmingKilled;
     public event Action OnLemmingOnFire;
+    public event Action<ScoreBonus> OnScoreBonusGot;
     
     
     private List<LemmingView> _runningLemmingViews;
@@ -31,11 +32,22 @@ public class LemmingsStateSet
         RunningLemmingViews.Add(lemmingView);
         SubscribeOnNewLemmingsCaught(lemmingView);
         SubscribeOnLemmingKilled(lemmingView);
-        SubscribeLimmingSream(lemmingView);
+        SubscribeLemmingScream(lemmingView);
+        SubscribeScoreBonusGet(lemmingView);
         OnLemmingCountAdd?.Invoke(lemmingView);
     }
 
-    private void SubscribeLimmingSream(LemmingView lemmingView)
+    private void SubscribeScoreBonusGet(LemmingView lemmingView)
+    {
+        lemmingView.OnScoreBonusGot += BonusGet;
+    }
+
+    private void BonusGet(ScoreBonus scoreBonus)
+    {
+        OnScoreBonusGot?.Invoke(scoreBonus);
+    }
+
+    private void SubscribeLemmingScream(LemmingView lemmingView)
     {
         lemmingView.OnLemmingOnDanger += FireLemming;
     }
@@ -50,11 +62,17 @@ public class LemmingsStateSet
         int removedIndex = _runningLemmingViews.IndexOf(lemmingView);
         RunningLemmingViews.Remove(lemmingView);
         UnsubscribeOnNewLemmingsCaught(lemmingView);
+        UnsubscribeScoreBonusGet(lemmingView);
         lemmingView.OnLemmingOnDanger -= FireLemming;
         OnLemmingCountRemove?.Invoke(lemmingView, removedIndex);
         OnLemmingKilled?.Invoke();
     }
-    
+
+    private void UnsubscribeScoreBonusGet(LemmingView lemmingView)
+    {
+        lemmingView.OnScoreBonusGot -= BonusGet;
+    }
+
     private void SubscribeOnNewLemmingsCaught(LemmingView lemmingView)
     {
         lemmingView.OnLemmingCaught += AddLemmingInList;

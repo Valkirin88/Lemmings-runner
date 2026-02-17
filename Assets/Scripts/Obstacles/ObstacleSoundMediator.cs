@@ -13,24 +13,35 @@ public class ObstaclesSoundMediator : IDisposable
         _soundHandler = soundsHandler;
         _obstacles = obstacles;
         SubscribeOnBirds();
+        if (_obstacles != null)
+            _obstacles.OnObstacleAdded += OnObstacleAdded;
+    }
+
+    private void OnObstacleAdded(GameObject obj)
+    {
+        if (obj == null) return;
+        if (obj.TryGetComponent<Bird>(out Bird bird))
+            SubscribeBird(bird);
     }
 
     private void SubscribeOnBirds()
     {
         if (_obstacles == null || _obstacles.Obstacles == null) return;
-        
+
         foreach (var obstacle in _obstacles.Obstacles)
         {
-            // Проверяем на null (уничтоженные объекты при рестарте)
             if (obstacle == null) continue;
-            
             if (obstacle.TryGetComponent<Bird>(out Bird bird))
-            {
-                bird.OnMadeSound += MadeSound;
-                bird.OnDestroyed += UnSubscribeBird;
-                _birds.Add(bird);
-            }
+                SubscribeBird(bird);
         }
+    }
+
+    private void SubscribeBird(Bird bird)
+    {
+        if (bird == null) return;
+        bird.OnMadeSound += MadeSound;
+        bird.OnDestroyed += UnSubscribeBird;
+        _birds.Add(bird);
     }
 
     private void UnSubscribeBird(GameObject birdObject)
@@ -52,10 +63,11 @@ public class ObstaclesSoundMediator : IDisposable
 
     public void Dispose()
     {
+        if (_obstacles != null)
+            _obstacles.OnObstacleAdded -= OnObstacleAdded;
         foreach (var bird in _birds)
         {
             if (bird == null) continue;
-            
             bird.OnMadeSound -= MadeSound;
             bird.OnDestroyed -= UnSubscribeBird;
         }

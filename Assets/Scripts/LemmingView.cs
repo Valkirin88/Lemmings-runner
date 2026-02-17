@@ -9,6 +9,7 @@ public class LemmingView : MonoBehaviour
     public event Action<LemmingView> OnLemmingKilled;
     public event Action<LemmingView> OnLemmingCapturedByBird;
     public event Action OnLemmingOnDanger;
+    public event Action<ScoreBonus> OnScoreBonusGot;
     
     [SerializeField]
     private LemmingConfig _config;
@@ -199,12 +200,15 @@ public class LemmingView : MonoBehaviour
                 }
             }
         }
-        // Остановка всех леммингов — в LemmingPlaceHandler.StopLemmings() по событию финиша от первого коснувшегося
+        
+        
+        if (other.TryGetComponent(out ScoreBonus scoreBonus))
+        {
+            OnScoreBonusGot?.Invoke(scoreBonus);
+            Destroy(scoreBonus.gameObject);
+        }
     }
     
-    /// <summary>
-    /// Подобрать лемминга (присоединить к группе)
-    /// </summary>
     public void PickUp()
     {
         if (_wasPickedUp) return;

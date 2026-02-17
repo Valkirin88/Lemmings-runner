@@ -27,6 +27,11 @@ public class RandomSpawner : MonoBehaviour
     [Tooltip("Список префабов леммингов (LemmingView)")]
     private List<GameObject> _lemmingPrefabs = new List<GameObject>();
 
+    [Header("Префабы бонусов")]
+    [SerializeField]
+    [Tooltip("Список префабов с компонентом ScoreBonus")]
+    private List<GameObject> _bonusPrefabs = new List<GameObject>();
+
     [Header("Вероятности спавна")]
     [SerializeField]
     [Range(0f, 1f)]
@@ -37,6 +42,11 @@ public class RandomSpawner : MonoBehaviour
     [Range(0f, 1f)]
     [Tooltip("Вероятность появления лемминга в каждой ячейке сетки")]
     private float _lemmingSpawnProbability = 0.2f;
+
+    [SerializeField]
+    [Range(0f, 1f)]
+    [Tooltip("Вероятность появления бонуса в каждой ячейке сетки")]
+    private float _bonusSpawnProbability = 0.15f;
 
     [Header("Сетка спавна")]
     [SerializeField]
@@ -150,12 +160,16 @@ public class RandomSpawner : MonoBehaviour
     {
         bool spawnObstacle = _obstaclePrefabs.Count > 0 && Random.value < _obstacleSpawnProbability;
         bool spawnLemming = _lemmingPrefabs.Count > 0 && Random.value < _lemmingSpawnProbability;
+        bool spawnBonus = _bonusPrefabs.Count > 0 && Random.value < _bonusSpawnProbability;
 
         if (spawnObstacle)
             TrySpawnObstacle(GetRandomPositionAtLowerBound());
 
         if (spawnLemming)
             TrySpawnLemming(GetRandomPositionAtLowerBound());
+
+        if (spawnBonus)
+            TrySpawnBonus(GetRandomPositionAtLowerBound());
     }
 
     private float LowerBoundY => _spawnAreaCenter.y - _spawnAreaSize.y * 0.5f;
@@ -207,6 +221,7 @@ public class RandomSpawner : MonoBehaviour
 
                     bool spawnObstacle = _obstaclePrefabs.Count > 0 && Random.value < _obstacleSpawnProbability;
                     bool spawnLemming = _lemmingPrefabs.Count > 0 && Random.value < _lemmingSpawnProbability;
+                    bool spawnBonus = _bonusPrefabs.Count > 0 && Random.value < _bonusSpawnProbability;
 
                     if (spawnObstacle)
                     {
@@ -218,6 +233,12 @@ public class RandomSpawner : MonoBehaviour
                     {
                         Vector3 lemmingPos = new Vector3(cellCenter.x + randomOffset.x, LowerBoundY, cellCenter.z + randomOffset.z);
                         TrySpawnLemming(lemmingPos);
+                    }
+
+                    if (spawnBonus)
+                    {
+                        Vector3 bonusPos = new Vector3(cellCenter.x + randomOffset.x, LowerBoundY, cellCenter.z + randomOffset.z);
+                        TrySpawnBonus(bonusPos);
                     }
                 }
             }
@@ -278,10 +299,8 @@ public class RandomSpawner : MonoBehaviour
         if (acidPond != null && _obstaclesSet != null)
             acidPond.SetObstaclesSet(_obstaclesSet);
 
-        if (_obstaclesSet != null && _obstaclesSet.Obstacles != null)
-        {
-            _obstaclesSet.Obstacles.Add(instance);
-        }
+        if (_obstaclesSet != null)
+            _obstaclesSet.AddObstacle(instance);
     }
 
     private bool WouldOverlapObstacle(Vector3 position)
@@ -320,6 +339,25 @@ public class RandomSpawner : MonoBehaviour
             lemmingView.IsRun = false;
             lemmingView.IsScroll = true;
         }
+    }
+
+    private void TrySpawnBonus(Vector3 position)
+    {
+        var prefab = _bonusPrefabs[Random.Range(0, _bonusPrefabs.Count)];
+        if (prefab == null || prefab.GetComponentInChildren<ScoreBonus>() == null)
+        {
+            Debug.LogWarning($"[RandomSpawner] Prefab {prefab?.name} не содержит ScoreBonus, пропуск.");
+            return;
+        }
+
+        if (_minDistanceToObstacles > 0f && WouldOverlapObstacle(position))
+            return;
+
+        var instance = Instantiate(prefab, position, Quaternion.identity, _spawnedObjectsParent);
+        instance.name = prefab.name + " (Spawned)";
+
+        if (_obstaclesSet != null)
+            _obstaclesSet.AddObstacle(instance);
     }
 
 #if UNITY_EDITOR
