@@ -13,8 +13,11 @@ public class AcidSphere : MonoBehaviour, IObstacle
   {
     if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView))
     {
-      lemmingView.Kill();
-      Destroy(gameObject);
+      if (lemmingView.IsRun)
+      {
+        lemmingView.Kill();
+        Destroy(gameObject);
+      }
     }
 
     if (other.TryGetComponent<PlatformTextureScroller>(out PlatformTextureScroller platformTextureScroller))

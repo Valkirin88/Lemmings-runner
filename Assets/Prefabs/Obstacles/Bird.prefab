@@ -449,7 +449,7 @@ MonoBehaviour:
   _pointA: {fileID: 1330607095054867891}
   _pointB: {fileID: 3624070231783013075}
   _patrolSpeed: 3
-  _huntSpeed: 15
+  _huntSpeed: 10
   _catchDistance: 1
   _carryUpSpeed: 10
   _killHeight: 6

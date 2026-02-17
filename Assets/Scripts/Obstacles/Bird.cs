@@ -172,7 +172,7 @@ public class Bird : MonoBehaviour, IObstacle
         if (_targetLemming != null)
         {
             _targetLemming.transform.SetParent(null);
-            _targetLemming.KillWithotBlood();
+            _targetLemming.Kill();
         }
         
         _targetLemming = null;
