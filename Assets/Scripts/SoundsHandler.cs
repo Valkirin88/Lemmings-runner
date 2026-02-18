@@ -4,6 +4,8 @@ using UnityEngine;
 public class SoundsHandler : MonoBehaviour
 {
     [SerializeField]
+    private AudioClip _bonusGotClip;
+    [SerializeField]
     private AudioClip _fireScreamClip;
     [SerializeField]
     private List<AudioClip> _bloodSplatterClips;
@@ -35,6 +37,11 @@ public class SoundsHandler : MonoBehaviour
     public void PlaySound(AudioClip clip)
     {
         _audioSource.PlayOneShot(clip);
+    }
+
+    public void PlayBonusGot()
+    {
+        _audioSource.PlayOneShot(_bonusGotClip);
     }
 
     private void OnDestroy()

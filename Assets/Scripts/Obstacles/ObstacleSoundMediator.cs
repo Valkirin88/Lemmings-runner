@@ -2,19 +2,29 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObstaclesSoundMediator : IDisposable
+public class EventsSoundMediator : IDisposable
 {
     private readonly ObstaclesSet _obstacles;
     private readonly SoundsHandler _soundHandler;
+    private readonly LemmingsStateSet _lemmingsStateSet;
     private readonly List<Bird> _birds = new List<Bird>();
 
-    public ObstaclesSoundMediator(SoundsHandler soundsHandler, ObstaclesSet obstacles)
+    public EventsSoundMediator(SoundsHandler soundsHandler, ObstaclesSet obstacles, LemmingsStateSet lemmingsStateSet)
     {
         _soundHandler = soundsHandler;
         _obstacles = obstacles;
+        _lemmingsStateSet = lemmingsStateSet;
+        
         SubscribeOnBirds();
         if (_obstacles != null)
             _obstacles.OnObstacleAdded += OnObstacleAdded;
+
+        _lemmingsStateSet.OnScoreBonusGot += PlayBonusSound;
+    }
+
+    private void PlayBonusSound(ScoreBonus obj)
+    {
+        _soundHandler.PlayBonusGot();
     }
 
     private void OnObstacleAdded(GameObject obj)
@@ -72,5 +82,7 @@ public class ObstaclesSoundMediator : IDisposable
             bird.OnDestroyed -= UnSubscribeBird;
         }
         _birds.Clear();
+        
+        _lemmingsStateSet.OnScoreBonusGot -= PlayBonusSound;
     }
 }
