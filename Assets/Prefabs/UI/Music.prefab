@@ -143,9 +143,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MusicHandler
   _source: {fileID: 123564901814290013}
-  _audioClips:
+  _audioClipsForGame:
   - {fileID: 8300000, guid: 2ef6d8eb8ccb080479a18e182907565d, type: 3}
+  - {fileID: 8300000, guid: 818cd9f27636b444b9a51dbb6ee9d1a0, type: 3}
+  - {fileID: 8300000, guid: 3a911df90911d86448efcfe600a56db7, type: 3}
+  - {fileID: 8300000, guid: 85efdb939992595459fdb998ff4786c1, type: 3}
   - {fileID: 8300000, guid: b14365a75d5ed0142b53a27fbebdb759, type: 3}
   - {fileID: 8300000, guid: 8a4a27338b692a84caa1c94721297f37, type: 3}
-  - {fileID: 8300000, guid: 85efdb939992595459fdb998ff4786c1, type: 3}
-  - {fileID: 8300000, guid: 4423e10fb45edf6479316f24163cb659, type: 3}
+  _audioClipsForMenu:
+  - {fileID: 8300000, guid: e1f48a436692b3548aa6c7ddb7d3fd1a, type: 3}
