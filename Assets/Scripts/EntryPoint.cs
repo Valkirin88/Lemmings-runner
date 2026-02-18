@@ -15,6 +15,10 @@ public class EntryPoint : MonoInstaller
     private Button _accelerateButton;
     [SerializeField]
     private Button _jumpButton;
+    [SerializeField]
+    private Button _leftButton;
+    [SerializeField]
+    private Button _rightButton;
 
     [SerializeField]
     private LemmingPlaceHandler _lemmingPlaceHandler;
@@ -49,7 +53,7 @@ public class EntryPoint : MonoInstaller
     
     private void Awake()
     {
-        _inputController = new InputController(_accelerateButton, _jumpButton);
+        _inputController = new InputController(_accelerateButton, _jumpButton, _leftButton, _rightButton);
         _lemmingsStateSet = new LemmingsStateSet(_leaderLemmingView);
         _lemmingController = new LemmingController(_lemmingsStateSet, _inputController);
         _gameStateCollector = new GameStateCollector(_endTrack, _uiHandler, _lemmingsStateSet);
