@@ -48,6 +48,15 @@ public class RandomSpawner : MonoBehaviour
     [Tooltip("Вероятность появления бонуса в каждой ячейке сетки")]
     private float _bonusSpawnProbability = 0.15f;
 
+    [SerializeField]
+    [Range(0f, 1f)]
+    [Tooltip("Вероятность спавна двух препятствий сразу вместо одного")]
+    private float _doubleObstacleProbability = 0.25f;
+
+    [SerializeField]
+    [Tooltip("Смещение второго препятствия при двойном спавне (X, Y, Z)")]
+    private Vector3 _doubleObstacleOffset = new Vector3(0f, 0f, 2.5f);
+
     [Header("Сетка спавна")]
     [SerializeField]
     [Tooltip("Размер ячейки сетки. Меньше = больше потенциальных точек спавна")]
@@ -163,7 +172,12 @@ public class RandomSpawner : MonoBehaviour
         bool spawnBonus = _bonusPrefabs.Count > 0 && Random.value < _bonusSpawnProbability;
 
         if (spawnObstacle)
-            TrySpawnObstacle(GetRandomPositionAtLowerBound());
+        {
+            Vector3 pos = GetRandomPositionAtLowerBound();
+            TrySpawnObstacle(pos);
+            if (Random.value < _doubleObstacleProbability)
+                TrySpawnObstacle(pos + _doubleObstacleOffset);
+        }
 
         if (spawnLemming)
             TrySpawnLemming(GetRandomPositionAtLowerBound());
@@ -227,6 +241,8 @@ public class RandomSpawner : MonoBehaviour
                     {
                         Vector3 obstaclePos = new Vector3(cellCenter.x + randomOffset.x, LowerBoundY, cellCenter.z + randomOffset.z);
                         TrySpawnObstacle(obstaclePos);
+                        if (Random.value < _doubleObstacleProbability)
+                            TrySpawnObstacle(obstaclePos + _doubleObstacleOffset);
                     }
 
                     if (spawnLemming)
@@ -272,7 +288,7 @@ public class RandomSpawner : MonoBehaviour
         else if (prefab.GetComponentInChildren<WoodLog>() != null)
             spawnPos.y += 0.4f;
         else if (prefab.GetComponentInChildren<JumpTrap>() != null)
-            spawnPos.y -= 0.4f;
+            spawnPos.y -= 0.9f;
 
         if (_minDistanceToObstacles > 0f && WouldOverlapObstacle(spawnPos))
             return;

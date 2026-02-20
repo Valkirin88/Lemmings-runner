@@ -634,6 +634,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 228786089}
   m_CullTransparentMesh: 1
+--- !u!1 &245395199
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 245395200}
+  m_Layer: 0
+  m_Name: ScrollingBlood
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &245395200
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 245395199}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &277102410
 GameObject:
   m_ObjectHideFlags: 0
@@ -764,6 +795,8 @@ MonoBehaviour:
   _obstacleSpawnProbability: 0.934
   _lemmingSpawnProbability: 0.4
   _bonusSpawnProbability: 0.186
+  _doubleObstacleProbability: 0.25
+  _doubleObstacleOffset: {x: 0, y: 0, z: 2.5}
   _gridCellSize: 2
   _scoreProvider: {fileID: 1954252298}
   _useScalingDifficulty: 1
@@ -2652,7 +2685,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db34d0ea7afa614c8b19a0ad27c6339, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainPlatform
-  _bloodZoneSize: {x: 1.2, y: 0.3, z: 1.2}
+  _bloodZoneSize: {x: 3.74, y: 1.29, z: 3.71}
+  _bloodScrollParent: {fileID: 245395200}
 --- !u!1 &863920288
 GameObject:
   m_ObjectHideFlags: 0
@@ -5363,11 +5397,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1907647915777440778, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 382
+      value: 428
       objectReference: {fileID: 0}
     - target: {fileID: 1907647915777440778, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -144
+      value: -116
       objectReference: {fileID: 0}
     - target: {fileID: 2458115081464145336, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
       propertyPath: _cooldownTime
@@ -5734,7 +5768,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObstaclesSet
   _obstacles:
-  - {fileID: 0}
+  - {fileID: 245395199}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -6100,3 +6134,4 @@ SceneRoots:
   - {fileID: 1954252297}
   - {fileID: 314118685}
   - {fileID: 522412972}
+  - {fileID: 245395200}

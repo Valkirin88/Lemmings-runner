@@ -119,7 +119,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.38, y: -0.215, z: -8.48}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 863310157364734118}
@@ -164,6 +164,7 @@ MonoBehaviour:
   _pushForceUp: 10
   _pushForceForward: 6
   _pushForceSide: 4
+  _tumbleSpeed: 6
   _animator: {fileID: 2468002891440536870}
 --- !u!65 &9136335347793176630
 BoxCollider:
