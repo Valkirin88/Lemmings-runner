@@ -736,6 +736,7 @@ MonoBehaviour:
   - {fileID: 1532992724057033380, guid: 24724409234ad124587d5a5cd652738e, type: 3}
   - {fileID: 16794479506804026, guid: 024f5f80e71ac314580f05b70774053c, type: 3}
   - {fileID: 2903682529211886889, guid: d8d6346b90fca1d46b184fe4f9f15c0b, type: 3}
+  - {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
   _lemmingPrefabs:
   - {fileID: 8283856537501685944, guid: fdc36fc87bf036945b4edc9a8e43ae49, type: 3}
   - {fileID: 8283856537501685944, guid: edd74249871871549865a776bf39638d, type: 3}
@@ -2634,6 +2635,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2132151163}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &832343223 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8695760888350861245, guid: b7354f59b2e5fea4a9488eaf83b5c48e, type: 3}
+  m_PrefabInstance: {fileID: 9140846134181207259}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &832343228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832343223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3db34d0ea7afa614c8b19a0ad27c6339, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainPlatform
+  _bloodZoneSize: {x: 1.2, y: 0.3, z: 1.2}
 --- !u!1 &863920288
 GameObject:
   m_ObjectHideFlags: 0
@@ -5294,6 +5313,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 124
       objectReference: {fileID: 0}
+    - target: {fileID: 1401581940759005393, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d66de50b20c92474b9c648e1f7901f8d, type: 2}
+    - target: {fileID: 1401581940759005393, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 8842445192408042108, guid: d66de50b20c92474b9c648e1f7901f8d, type: 2}
+    - target: {fileID: 1401581940759005393, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1714925509767124208, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
       propertyPath: m_fontSize
       value: 57.49
@@ -6045,7 +6076,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8695760888350861245, guid: b7354f59b2e5fea4a9488eaf83b5c48e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 832343228}
   m_SourcePrefab: {fileID: 100100000, guid: b7354f59b2e5fea4a9488eaf83b5c48e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

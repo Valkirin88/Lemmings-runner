@@ -271,6 +271,8 @@ public class RandomSpawner : MonoBehaviour
             spawnPos.y += 0.7f;
         else if (prefab.GetComponentInChildren<WoodLog>() != null)
             spawnPos.y += 0.4f;
+        else if (prefab.GetComponentInChildren<JumpTrap>() != null)
+            spawnPos.y -= 0.4f;
 
         if (_minDistanceToObstacles > 0f && WouldOverlapObstacle(spawnPos))
             return;

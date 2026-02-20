@@ -6,7 +6,7 @@ public class ScoreBonus : MonoBehaviour
    [SerializeField]
    private int _score;
 
-   private float _rotationSpeed;
+   private float _rotationSpeed = 5f;
 
    public int Score => _score;
 

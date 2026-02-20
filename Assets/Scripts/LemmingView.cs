@@ -46,6 +46,10 @@ public class LemmingView : MonoBehaviour
     public bool IsOnFire;
     public bool IsDead;
     public bool IsSliced;
+    /// <summary>
+    /// true = лемминга подбросило препятствие (например JumpTrap).
+    /// </summary>
+    public bool IsPushed;
     
     public Transform RunningPlace;
 
@@ -117,6 +121,12 @@ public class LemmingView : MonoBehaviour
     {
         // Не управляем velocity если Rigidbody кинематический (схвачен птицей)
         if (Rigidbody.isKinematic)
+        {
+            _externalForce = Vector3.zero;
+            return;
+        }
+        // Подброшенный лемминг — не перезаписываем скорость (импульс от JumpTrap и т.д.)
+        if (IsPushed)
         {
             _externalForce = Vector3.zero;
             return;
