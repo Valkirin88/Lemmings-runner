@@ -3,8 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
+/// Запись для спавна препятствия: префаб + минимальное кол-во очков для разблокировки.
+/// </summary>
+[System.Serializable]
+public class ObstacleSpawnEntry
+{
+    [Tooltip("Префаб препятствия (IObstacle)")]
+    public GameObject prefab;
+
+    [Tooltip("Минимальное кол-во очков, при котором это препятствие может появляться")]
+    public int minScoreToUnlock = 0;
+}
+
+/// <summary>
 /// Спавнит префабы препятствий (IObstacle) и леммингов в заданной области с заданной вероятностью.
 /// Область задаётся через инспектор (центр + размер бокса).
+/// Каждый вид препятствий разблокируется при наборе заданного кол-ва очков.
 /// </summary>
 public class RandomSpawner : MonoBehaviour
 {
@@ -19,8 +33,8 @@ public class RandomSpawner : MonoBehaviour
 
     [Header("Префабы препятствий")]
     [SerializeField]
-    [Tooltip("Список префабов с компонентом IObstacle")]
-    private List<GameObject> _obstaclePrefabs = new List<GameObject>();
+    [Tooltip("Список препятствий: префаб + минимальные очки для появления. При 0 очков доступны только записи с minScoreToUnlock = 0")]
+    private List<ObstacleSpawnEntry> _obstacleSpawnEntries = new List<ObstacleSpawnEntry>();
 
     [Header("Префабы леммингов")]
     [SerializeField]
@@ -106,6 +120,14 @@ public class RandomSpawner : MonoBehaviour
 
     private Coroutine _periodicSpawnCoroutine;
 
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (_obstacleSpawnEntries == null)
+            _obstacleSpawnEntries = new List<ObstacleSpawnEntry>();
+    }
+#endif
+
     private void Start()
     {
         Spawn();
@@ -163,11 +185,30 @@ public class RandomSpawner : MonoBehaviour
     }
 
     /// <summary>
+    /// Возвращает список записей препятствий, доступных при текущем счёте (префаб не null, есть IObstacle, счёт >= minScoreToUnlock).
+    /// </summary>
+    private List<ObstacleSpawnEntry> GetAvailableObstacleEntries()
+    {
+        int score = _scoreProvider != null ? _scoreProvider.Score : 0;
+        var list = new List<ObstacleSpawnEntry>();
+        if (_obstacleSpawnEntries == null) return list;
+        foreach (var entry in _obstacleSpawnEntries)
+        {
+            if (entry?.prefab == null || entry.prefab.GetComponentInChildren<IObstacle>() == null)
+                continue;
+            if (score >= entry.minScoreToUnlock)
+                list.Add(entry);
+        }
+        return list;
+    }
+
+    /// <summary>
     /// Спавнит один или два объекта в случайных точках области.
     /// </summary>
     private void SpawnSingle()
     {
-        bool spawnObstacle = _obstaclePrefabs.Count > 0 && Random.value < _obstacleSpawnProbability;
+        var availableObstacles = GetAvailableObstacleEntries();
+        bool spawnObstacle = availableObstacles.Count > 0 && Random.value < _obstacleSpawnProbability;
         bool spawnLemming = _lemmingPrefabs.Count > 0 && Random.value < _lemmingSpawnProbability;
         bool spawnBonus = _bonusPrefabs.Count > 0 && Random.value < _bonusSpawnProbability;
 
@@ -210,6 +251,8 @@ public class RandomSpawner : MonoBehaviour
         int cellsZ = Mathf.Max(1, Mathf.FloorToInt(_spawnAreaSize.z / _gridCellSize));
 
         Vector3 min = bounds.min;
+        var availableObstacles = GetAvailableObstacleEntries();
+        bool anyObstacleAvailable = availableObstacles.Count > 0;
 
         for (int x = 0; x < cellsX; x++)
         {
@@ -233,7 +276,7 @@ public class RandomSpawner : MonoBehaviour
                         Random.Range(-offsetRange, offsetRange)
                     );
 
-                    bool spawnObstacle = _obstaclePrefabs.Count > 0 && Random.value < _obstacleSpawnProbability;
+                    bool spawnObstacle = anyObstacleAvailable && Random.value < _obstacleSpawnProbability;
                     bool spawnLemming = _lemmingPrefabs.Count > 0 && Random.value < _lemmingSpawnProbability;
                     bool spawnBonus = _bonusPrefabs.Count > 0 && Random.value < _bonusSpawnProbability;
 
@@ -263,7 +306,11 @@ public class RandomSpawner : MonoBehaviour
 
     private void TrySpawnObstacle(Vector3 position)
     {
-        var prefab = _obstaclePrefabs[Random.Range(0, _obstaclePrefabs.Count)];
+        var available = GetAvailableObstacleEntries();
+        if (available.Count == 0) return;
+
+        var entry = available[Random.Range(0, available.Count)];
+        var prefab = entry.prefab;
         if (prefab == null || prefab.GetComponentInChildren<IObstacle>() == null)
         {
             Debug.LogWarning($"[RandomSpawner] Prefab {prefab?.name} не содержит IObstacle, пропуск.");

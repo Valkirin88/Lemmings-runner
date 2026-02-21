@@ -758,16 +758,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RandomSpawner
   _spawnAreaCenter: {x: 0.1, y: 0.27, z: 11}
   _spawnAreaSize: {x: 4.5, y: 0.14, z: 5.27}
-  _obstaclePrefabs:
-  - {fileID: 6721551993907192608, guid: a3bb4e83ec08d464d8aaf766bdcdd0bf, type: 3}
-  - {fileID: 6721551993907192608, guid: fd9ef35f4f8033242ae743f2859f26e6, type: 3}
-  - {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
-  - {fileID: 6918237779229540707, guid: 95892bd777a00de45b0e1f56d8f1d394, type: 3}
-  - {fileID: 7045587940966926872, guid: 4e569a7139dcc1641a615c576bc23862, type: 3}
-  - {fileID: 1532992724057033380, guid: 24724409234ad124587d5a5cd652738e, type: 3}
-  - {fileID: 16794479506804026, guid: 024f5f80e71ac314580f05b70774053c, type: 3}
-  - {fileID: 2903682529211886889, guid: d8d6346b90fca1d46b184fe4f9f15c0b, type: 3}
-  - {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
+  _obstacleSpawnEntries:
+  - prefab: {fileID: 6721551993907192608, guid: fd9ef35f4f8033242ae743f2859f26e6, type: 3}
+    minScoreToUnlock: 0
+  - prefab: {fileID: 7045587940966926872, guid: 4e569a7139dcc1641a615c576bc23862, type: 3}
+    minScoreToUnlock: 0
+  - prefab: {fileID: 16794479506804026, guid: 024f5f80e71ac314580f05b70774053c, type: 3}
+    minScoreToUnlock: 20
+  - prefab: {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
+    minScoreToUnlock: 40
+  - prefab: {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
+    minScoreToUnlock: 50
+  - prefab: {fileID: 1532992724057033380, guid: 24724409234ad124587d5a5cd652738e, type: 3}
+    minScoreToUnlock: 70
+  - prefab: {fileID: 6721551993907192608, guid: a3bb4e83ec08d464d8aaf766bdcdd0bf, type: 3}
+    minScoreToUnlock: 90
+  - prefab: {fileID: 6918237779229540707, guid: 95892bd777a00de45b0e1f56d8f1d394, type: 3}
+    minScoreToUnlock: 100
+  - prefab: {fileID: 2903682529211886889, guid: d8d6346b90fca1d46b184fe4f9f15c0b, type: 3}
+    minScoreToUnlock: 130
   _lemmingPrefabs:
   - {fileID: 8283856537501685944, guid: fdc36fc87bf036945b4edc9a8e43ae49, type: 3}
   - {fileID: 8283856537501685944, guid: edd74249871871549865a776bf39638d, type: 3}
@@ -800,14 +809,14 @@ MonoBehaviour:
   _gridCellSize: 2
   _scoreProvider: {fileID: 1954252298}
   _useScalingDifficulty: 1
-  _scoreThresholds: 0000000032000000640000008200000096000000c8000000
+  _scoreThresholds: 00000000320000006400000096000000c8000000fa000000
   _intervalSeconds:
   - 2
   - 1.5
   - 1
+  - 0.9
   - 0.8
-  - 0.5
-  - 0.3
+  - 0.6
   _spawnedObjectsParent: {fileID: 0}
   _obstaclesSet: {fileID: 2132151162}
   _minDistanceToObstacles: 1.5

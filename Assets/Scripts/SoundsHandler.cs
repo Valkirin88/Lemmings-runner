@@ -23,6 +23,9 @@ public class SoundsHandler : MonoBehaviour
     private void PlayFireScream()
     {
         _audioSource.PlayOneShot(_fireScreamClip);
+        _audioSource.volume.Equals(80);
+
+
     }
     
     public void PlaySplatter()
