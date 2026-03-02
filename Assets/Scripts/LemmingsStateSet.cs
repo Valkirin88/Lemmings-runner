@@ -8,7 +8,7 @@ public class LemmingsStateSet
     public event Action<LemmingView, int> OnLemmingCountRemove;
     public event Action  OnLemmingKilled;
     public event Action OnLemmingOnFire;
-    public event Action<ScoreBonus> OnScoreBonusGot;
+    public event Action<int> OnScoreBonusGot;
     
     
     private List<LemmingView> _runningLemmingViews;
@@ -44,7 +44,7 @@ public class LemmingsStateSet
 
     private void BonusGet(ScoreBonus scoreBonus)
     {
-        OnScoreBonusGot?.Invoke(scoreBonus);
+        OnScoreBonusGot?.Invoke(scoreBonus.Score);
     }
 
     private void SubscribeLemmingScream(LemmingView lemmingView)

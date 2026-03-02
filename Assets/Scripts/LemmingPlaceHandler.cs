@@ -9,20 +9,20 @@ public class LemmingPlaceHandler : MonoBehaviour
     private List<RunPlace> _lemmingPlaces;
 
     private LemmingsStateSet _lemmingsStateSet;
-    private GameStateCollector _gameStateCollector;
+    private GameStatesUIMediator _gameStatesUIMediator;
     private LemmingPlaceView _lemmingPlaceView;
     private Coroutine _repositionCoroutine;
 
-    public void Initialize(GameStateCollector gameStateCollector, LemmingPlaceView lemmingPlaceView = null)
+    public void Initialize(GameStatesUIMediator gameStatesUIMediator, LemmingPlaceView lemmingPlaceView = null)
     {
-        _gameStateCollector = gameStateCollector;
+        _gameStatesUIMediator = gameStatesUIMediator;
         _lemmingPlaceView = lemmingPlaceView;
-        _lemmingsStateSet = _gameStateCollector.LemmingsStateSet;
+        _lemmingsStateSet = _gameStatesUIMediator.LemmingsStateSet;
 
         _lemmingsStateSet.OnLemmingCountAdd += PlaceNewLemmingState;
         _lemmingsStateSet.OnLemmingCountRemove += ReplaceLemmingsState;
 
-        _gameStateCollector.EndTrack.OnFinished += StopLemmings;
+        _gameStatesUIMediator.EndTrack.OnFinished += StopLemmings;
         
         // Назначаем место первому леммингу (он уже в списке до подписки на событие)
         if (_lemmingsStateSet.RunningLemmingViews.Count > 0)
@@ -105,6 +105,6 @@ public class LemmingPlaceHandler : MonoBehaviour
         _lemmingsStateSet.OnLemmingCountAdd -= PlaceNewLemmingState;
         _lemmingsStateSet.OnLemmingCountRemove -= ReplaceLemmingsState;
         
-        _gameStateCollector.EndTrack.OnFinished -= StopLemmings;
+        _gameStatesUIMediator.EndTrack.OnFinished -= StopLemmings;
     }
 }

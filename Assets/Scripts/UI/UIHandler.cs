@@ -38,15 +38,14 @@ public class UIHandler : MonoBehaviour
     [SerializeField]
     private GameObject _finishObject;
 
-    [SerializeField]
-    private float _timeForIncreaseScore = 5f;
+    
     
     public GameState GameState;
     
     private int _lastDisplayedQuantity = -1;
     private GameState _lastProcessedState;
     private int _currentLevel;
-    private float _currentTimeforScore;
+    
     private int _score;
 
     public int Score => _score;
@@ -61,7 +60,7 @@ public class UIHandler : MonoBehaviour
         _restartButtonObject.SetActive(false);
         GameState = GameState.Game;
         _currentLevel = SceneManager.GetActiveScene().buildIndex;
-        ShowScore();
+        ShowScore(_score);
     }
 
     private void ShowPause()
@@ -91,24 +90,9 @@ public class UIHandler : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void AddScore(int amount)
+    public void ShowScore(int score)
     {
-        _score += amount;
-        ShowScore();
-    }
-
-    private void CalculateScoreByTime()
-    {
-        _currentTimeforScore = _currentTimeforScore + Time.deltaTime;
-        if (_currentTimeforScore >= _timeForIncreaseScore)
-        {
-            AddScore(1);
-            _currentTimeforScore = 0;
-        }
-    }
-
-    private void ShowScore()
-    {
+        _score = score;
         _currentScoreText.text = Score.ToString();
     }
 
@@ -121,22 +105,22 @@ public class UIHandler : MonoBehaviour
 
     private void Update()
     {
-        CalculateScoreByTime();
-        
-        if (_lastProcessedState == GameState) return;
-        _lastProcessedState = GameState;
-        
-        switch (GameState)
+        if (_lastProcessedState != GameState)
         {
-            case GameState.GameOver:
-                ShowGameOver();
-                break;
-            case GameState.Finish:
-                ShowFinish();
-                break;
-            case GameState.Paused:
-                ShowPause();
-                break;
+            _lastProcessedState = GameState;
+
+            switch (GameState)
+            {
+                case GameState.GameOver:
+                    ShowGameOver();
+                    break;
+                case GameState.Finish:
+                    ShowFinish();
+                    break;
+                case GameState.Paused:
+                    ShowPause();
+                    break;
+            }
         }
     }
     private void ShowFinish()
@@ -147,6 +131,7 @@ public class UIHandler : MonoBehaviour
 
     private void ShowGameOver()
     {
+        
         _restartButtonObject.SetActive(true);
         _gameOverObject.SetActive(true);
     }

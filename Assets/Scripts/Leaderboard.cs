@@ -30,11 +30,11 @@ public class Leaderboard : MonoBehaviour
 
     private int _currentScore;
     
-    private string LeaderboardId => ServicesInfo.UnityLeaderboardName;
+    private string LeaderboardId => GameInfo.UnityLeaderboardName;
     
     private async void Awake()
     {
-        _scoreText.text = PlayerPrefs.GetInt(ServicesInfo.UnityLeaderboardName).ToString();
+        _scoreText.text = PlayerPrefs.GetInt(GameInfo.UnityLeaderboardName).ToString();
         await InitializeUnityServices();
     }
 
@@ -117,7 +117,7 @@ public class Leaderboard : MonoBehaviour
                 var scores = await LeaderboardsService.Instance.GetPlayerScoreAsync(leaderboardId);
                 Debug.Log($"Текущие очки: {scores.Score}, Позиция: {scores.Rank}");
                 _currentScore = (int)scores.Score;
-                PlayerPrefs.SetInt(ServicesInfo.UnityLeaderboardName, _currentScore);
+                PlayerPrefs.SetInt(GameInfo.UnityLeaderboardName, _currentScore);
                 PlayerPrefs.Save();
                 _scoreText.text = _currentScore.ToString();
                 
@@ -131,7 +131,7 @@ public class Leaderboard : MonoBehaviour
                 if (e.Message.Contains("could not be found"))
                 {
                     Debug.Log("У игрока еще нет записи в таблице лидеров. Используем локальное значение.");
-                    _currentScore = PlayerPrefs.GetInt(ServicesInfo.UnityLeaderboardName, 0);
+                    _currentScore = PlayerPrefs.GetInt(GameInfo.UnityLeaderboardName, 0);
                     _scoreText.text = _currentScore.ToString();
                     _positionText.text = "-";
                     return _currentScore;

@@ -22,7 +22,7 @@ public class EventsSoundMediator : IDisposable
         _lemmingsStateSet.OnScoreBonusGot += PlayBonusSound;
     }
 
-    private void PlayBonusSound(ScoreBonus obj)
+    private void PlayBonusSound(int score)
     {
         _soundHandler.PlayBonusGot();
     }

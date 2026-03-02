@@ -1,11 +1,12 @@
 using System;
 
 
-public class GameStateCollector : IDisposable
+public class GameStatesUIMediator : IDisposable
 {
     private readonly EndTrack _endTrack;
     private readonly UIHandler _uiHandler;
     private readonly LemmingsStateSet _lemmingsStateSet;
+    private readonly ScoreHandler _scoreHandler;
     
     private int _lemmingQuantity;
     private GameState _gameState;
@@ -16,13 +17,15 @@ public class GameStateCollector : IDisposable
 
     public GameState State => _gameState;
 
-    public GameStateCollector(EndTrack endTrack,UIHandler uiHandler, LemmingsStateSet lemmingsStateSet)
+    public GameStatesUIMediator(EndTrack endTrack,UIHandler uiHandler, LemmingsStateSet lemmingsStateSet, ScoreHandler scoreHandler)
     {
         _endTrack = endTrack;
         _uiHandler = uiHandler;
         _lemmingsStateSet = lemmingsStateSet;
+        _scoreHandler = scoreHandler;
         
         EndTrack.OnFinished += Finish;
+        _scoreHandler.OnScoreChanged += _uiHandler.ShowScore;
 
         _gameState = GameState.Game;
         _uiHandler.GameState = _gameState;
@@ -59,6 +62,7 @@ public class GameStateCollector : IDisposable
     public void Dispose()
     {
         EndTrack.OnFinished -= Finish;
+        _scoreHandler.OnScoreChanged -= _uiHandler.ShowScore;
     }
 }
 
