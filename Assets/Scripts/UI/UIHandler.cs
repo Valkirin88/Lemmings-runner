@@ -131,7 +131,7 @@ public class UIHandler : MonoBehaviour
 
     private void ShowGameOver()
     {
-        
+        Time.timeScale = 0;
         _restartButtonObject.SetActive(true);
         _gameOverObject.SetActive(true);
     }

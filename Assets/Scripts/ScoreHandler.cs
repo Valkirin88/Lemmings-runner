@@ -7,6 +7,9 @@ public class ScoreHandler : IDisposable
     
     private readonly LemmingsStateSet _lemmingsStateSet;
     private float _currentTimeforScore;
+    private int _score;
+    
+    public int Score => _score;
     public ScoreHandler(LemmingsStateSet lemmingsStateSet)
     {
         _lemmingsStateSet = lemmingsStateSet;
@@ -14,9 +17,12 @@ public class ScoreHandler : IDisposable
         _lemmingsStateSet.OnScoreBonusGot += IncreaseScore;
     }
 
+  
+
     private void IncreaseScore(int score)
     {
-        OnScoreChanged?.Invoke(score);
+        _score = Score + score;
+        OnScoreChanged?.Invoke(_score);
     }
 
     public void Update()
@@ -26,6 +32,15 @@ public class ScoreHandler : IDisposable
         {
             IncreaseScore(1);
             _currentTimeforScore = 0;
+        }
+    }
+
+    public void SaveScoreResult()
+    {
+        int bestScore = PlayerPrefs.GetInt(GameInfo.UnityLeaderboardName);
+        if (Score > bestScore)
+        {
+            PlayerPrefs.SetInt(GameInfo.UnityLeaderboardName, Score);
         }
     }
 

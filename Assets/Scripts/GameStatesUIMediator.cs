@@ -7,6 +7,7 @@ public class GameStatesUIMediator : IDisposable
     private readonly UIHandler _uiHandler;
     private readonly LemmingsStateSet _lemmingsStateSet;
     private readonly ScoreHandler _scoreHandler;
+    private readonly LeaderboardServerSender _leaderboardServerSender;
     
     private int _lemmingQuantity;
     private GameState _gameState;
@@ -17,12 +18,13 @@ public class GameStatesUIMediator : IDisposable
 
     public GameState State => _gameState;
 
-    public GameStatesUIMediator(EndTrack endTrack,UIHandler uiHandler, LemmingsStateSet lemmingsStateSet, ScoreHandler scoreHandler)
+    public GameStatesUIMediator(EndTrack endTrack,UIHandler uiHandler, LemmingsStateSet lemmingsStateSet, ScoreHandler scoreHandler, LeaderboardServerSender leaderboardServerSender)
     {
         _endTrack = endTrack;
         _uiHandler = uiHandler;
         _lemmingsStateSet = lemmingsStateSet;
         _scoreHandler = scoreHandler;
+        _leaderboardServerSender = leaderboardServerSender;
         
         EndTrack.OnFinished += Finish;
         _scoreHandler.OnScoreChanged += _uiHandler.ShowScore;
@@ -51,14 +53,25 @@ public class GameStatesUIMediator : IDisposable
 
     public void Update()
     {
+        CheckGameOver();
+  
+        _uiHandler.ShowCurrentQuantity(_lemmingQuantity);
+    }
+
+    private void CheckGameOver()
+    {
         _lemmingQuantity = LemmingsStateSet.RunningLemmingViews.Count;
         if (_lemmingQuantity <= 0 && _gameState == GameState.Game)
         {
+            _scoreHandler.SaveScoreResult();
+            _leaderboardServerSender.SendScoreToServer(_scoreHandler.Score);
             _gameState = GameState.GameOver;
             _uiHandler.GameState = _gameState;
+            
         }
-        _uiHandler.ShowCurrentQuantity(_lemmingQuantity);
     }
+    
+    
     public void Dispose()
     {
         EndTrack.OnFinished -= Finish;

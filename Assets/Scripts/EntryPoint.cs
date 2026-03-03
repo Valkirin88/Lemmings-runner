@@ -45,25 +45,27 @@ public class EntryPoint : MonoInstaller
     private LemmingsStateSet _lemmingsStateSet;
     private LemmingPlaceController _lemmingPlaceController;
     private ScoreHandler _scoreHandler;
+    private LeaderboardServerSender _leaderboardServerSender;
     
     //mediators
     private GameStatesUIMediator _gameStatesUIMediator;
     private EventsSoundMediator _eventsSoundMediator;
-    
-    
-    
+
     private void Awake()
     {
         _inputController = new InputController(_accelerateButton, _jumpButton, _leftButton, _rightButton);
         _lemmingsStateSet = new LemmingsStateSet(_leaderLemmingView);
         _lemmingController = new LemmingController(_lemmingsStateSet, _inputController);
-        _gameStatesUIMediator = new GameStatesUIMediator(_endTrack, _uiHandler, _lemmingsStateSet, _scoreHandler);
+        _leaderboardServerSender = new LeaderboardServerSender();
+        _scoreHandler = new ScoreHandler(_lemmingsStateSet);
+        _gameStatesUIMediator = new GameStatesUIMediator(_endTrack, _uiHandler, _lemmingsStateSet, _scoreHandler,_leaderboardServerSender);
         _lemmingPlaceHandler.Initialize(_gameStatesUIMediator, _lemmingPlaceView);
         _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig, _gameStatesUIMediator);
         _soundHandler.Initialize(_lemmingsStateSet);
         _eventsSoundMediator = new EventsSoundMediator(_soundHandler, _obstaclesSet, _lemmingsStateSet);
         _randomSpawner.Initialize(_obstaclesSet);
-        _scoreHandler = new ScoreHandler(_lemmingsStateSet);
+        
+        
     }
 
     private void Update()
