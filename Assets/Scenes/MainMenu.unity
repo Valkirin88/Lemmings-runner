@@ -462,6 +462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenu
   _startButton: {fileID: 814424238}
+  _leaderboardButton: {fileID: 1434463997}
   _bloodDisplayDelay: 0.3
   _soundsHandler: {fileID: 224580285}
 --- !u!1 &814424236
@@ -1034,7 +1035,7 @@ GameObject:
   - component: {fileID: 1434463998}
   - component: {fileID: 1434463997}
   m_Layer: 5
-  m_Name: Leaderboard
+  m_Name: LeaderboardButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

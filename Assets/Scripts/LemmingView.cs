@@ -9,7 +9,7 @@ public class LemmingView : MonoBehaviour
     public event Action<LemmingView> OnLemmingKilled;
     public event Action<LemmingView> OnLemmingCapturedByBird;
     public event Action OnLemmingOnDanger;
-    public event Action<ScoreBonus> OnScoreBonusGot;
+    public event Action<AppleCurrency> OnScoreBonusGot;
     
     [SerializeField]
     private LemmingConfig _config;
@@ -212,7 +212,7 @@ public class LemmingView : MonoBehaviour
         }
         
         
-        if (other.TryGetComponent(out ScoreBonus scoreBonus))
+        if (other.TryGetComponent(out AppleCurrency scoreBonus))
         {
             OnScoreBonusGot?.Invoke(scoreBonus);
             Destroy(scoreBonus.gameObject);

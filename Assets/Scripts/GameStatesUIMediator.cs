@@ -5,24 +5,24 @@ public class GameStatesUIMediator : IDisposable
 {
     private readonly EndTrack _endTrack;
     private readonly UIHandler _uiHandler;
-    private readonly LemmingsStateSet _lemmingsStateSet;
+    private readonly LemmingsEventsHandler _lemmingsEventsHandler;
     private readonly ScoreHandler _scoreHandler;
     private readonly LeaderboardServerSender _leaderboardServerSender;
     
     private int _lemmingQuantity;
     private GameState _gameState;
     
-    public LemmingsStateSet LemmingsStateSet => _lemmingsStateSet;
+    public LemmingsEventsHandler LemmingsEventsHandler => _lemmingsEventsHandler;
 
     public EndTrack EndTrack => _endTrack;
 
     public GameState State => _gameState;
 
-    public GameStatesUIMediator(EndTrack endTrack,UIHandler uiHandler, LemmingsStateSet lemmingsStateSet, ScoreHandler scoreHandler, LeaderboardServerSender leaderboardServerSender)
+    public GameStatesUIMediator(EndTrack endTrack,UIHandler uiHandler, LemmingsEventsHandler lemmingsEventsHandler, ScoreHandler scoreHandler, LeaderboardServerSender leaderboardServerSender)
     {
         _endTrack = endTrack;
         _uiHandler = uiHandler;
-        _lemmingsStateSet = lemmingsStateSet;
+        _lemmingsEventsHandler = lemmingsEventsHandler;
         _scoreHandler = scoreHandler;
         _leaderboardServerSender = leaderboardServerSender;
         
@@ -60,7 +60,7 @@ public class GameStatesUIMediator : IDisposable
 
     private void CheckGameOver()
     {
-        _lemmingQuantity = LemmingsStateSet.RunningLemmingViews.Count;
+        _lemmingQuantity = LemmingsEventsHandler.RunningLemmingViews.Count;
         if (_lemmingQuantity <= 0 && _gameState == GameState.Game)
         {
             _scoreHandler.SaveScoreResult();

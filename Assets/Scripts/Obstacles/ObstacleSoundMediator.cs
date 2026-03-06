@@ -6,20 +6,20 @@ public class EventsSoundMediator : IDisposable
 {
     private readonly ObstaclesSet _obstacles;
     private readonly SoundsHandler _soundHandler;
-    private readonly LemmingsStateSet _lemmingsStateSet;
+    private readonly LemmingsEventsHandler _lemmingsEventsHandler;
     private readonly List<Bird> _birds = new List<Bird>();
 
-    public EventsSoundMediator(SoundsHandler soundsHandler, ObstaclesSet obstacles, LemmingsStateSet lemmingsStateSet)
+    public EventsSoundMediator(SoundsHandler soundsHandler, ObstaclesSet obstacles, LemmingsEventsHandler lemmingsEventsHandler)
     {
         _soundHandler = soundsHandler;
         _obstacles = obstacles;
-        _lemmingsStateSet = lemmingsStateSet;
+        _lemmingsEventsHandler = lemmingsEventsHandler;
         
         SubscribeOnBirds();
         if (_obstacles != null)
             _obstacles.OnObstacleAdded += OnObstacleAdded;
 
-        _lemmingsStateSet.OnScoreBonusGot += PlayBonusSound;
+        _lemmingsEventsHandler.OnCurrencyGot += PlayBonusSound;
     }
 
     private void PlayBonusSound(int score)
@@ -83,6 +83,6 @@ public class EventsSoundMediator : IDisposable
         }
         _birds.Clear();
         
-        _lemmingsStateSet.OnScoreBonusGot -= PlayBonusSound;
+        _lemmingsEventsHandler.OnCurrencyGot -= PlayBonusSound;
     }
 }

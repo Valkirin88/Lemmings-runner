@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class ScoreBonus : MonoBehaviour
+public class AppleCurrency : MonoBehaviour
 {
    [SerializeField]
    private int _score;

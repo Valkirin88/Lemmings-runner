@@ -11,13 +11,13 @@ public class SoundsHandler : MonoBehaviour
     private List<AudioClip> _bloodSplatterClips;
     [SerializeField]
     private AudioSource _audioSource;
-    private LemmingsStateSet _lemmingsStateSet;
+    private LemmingsEventsHandler _lemmingsEventsHandler;
    
-    public void Initialize(LemmingsStateSet lemmingsStateSet)
+    public void Initialize(LemmingsEventsHandler lemmingsEventsHandler)
     {
-        _lemmingsStateSet = lemmingsStateSet;
-        _lemmingsStateSet.OnLemmingOnFire += PlayFireScream;
-        _lemmingsStateSet.OnLemmingKilled += PlaySplatter;
+        _lemmingsEventsHandler = lemmingsEventsHandler;
+        _lemmingsEventsHandler.OnLemmingOnFire += PlayFireScream;
+        _lemmingsEventsHandler.OnLemmingKilled += PlaySplatter;
     }
 
     private void PlayFireScream()
@@ -49,10 +49,10 @@ public class SoundsHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (_lemmingsStateSet != null)
+        if (_lemmingsEventsHandler != null)
         {
-            _lemmingsStateSet.OnLemmingOnFire -= PlayFireScream;
-            _lemmingsStateSet.OnLemmingKilled -= PlaySplatter;
+            _lemmingsEventsHandler.OnLemmingOnFire -= PlayFireScream;
+            _lemmingsEventsHandler.OnLemmingKilled -= PlaySplatter;
         }
     }
 }

@@ -18,7 +18,7 @@ public class ObstaclesDestroyer : MonoBehaviour
             Destroy(lemmingView.gameObject);
         }
 
-        if (other.TryGetComponent<ScoreBonus>(out ScoreBonus scoreBonus))
+        if (other.TryGetComponent<AppleCurrency>(out AppleCurrency scoreBonus))
         {
             Destroy(scoreBonus.gameObject);
         }

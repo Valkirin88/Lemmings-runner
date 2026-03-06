@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 
 
-public class LemmingsStateSet 
+public class LemmingsEventsHandler 
 {
     public event Action<LemmingView> OnLemmingCountAdd;
     public event Action<LemmingView, int> OnLemmingCountRemove;
     public event Action  OnLemmingKilled;
     public event Action OnLemmingOnFire;
-    public event Action<int> OnScoreBonusGot;
+    public event Action<int> OnCurrencyGot;
     
     
     private List<LemmingView> _runningLemmingViews;
@@ -16,7 +16,7 @@ public class LemmingsStateSet
     private LemmingView _leaderLemmingView;
     public List<LemmingView> RunningLemmingViews => _runningLemmingViews;
 
-    public LemmingsStateSet(LemmingView leaderLemmingView)
+    public LemmingsEventsHandler(LemmingView leaderLemmingView)
     {
         _runningLemmingViews = new List<LemmingView>();
         
@@ -42,9 +42,9 @@ public class LemmingsStateSet
         lemmingView.OnScoreBonusGot += BonusGet;
     }
 
-    private void BonusGet(ScoreBonus scoreBonus)
+    private void BonusGet(AppleCurrency appleCurrency)
     {
-        OnScoreBonusGot?.Invoke(scoreBonus.Score);
+        OnCurrencyGot?.Invoke(appleCurrency.Score);
     }
 
     private void SubscribeLemmingScream(LemmingView lemmingView)

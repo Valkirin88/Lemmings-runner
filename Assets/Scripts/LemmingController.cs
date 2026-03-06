@@ -2,12 +2,12 @@ using System;
 
 public class LemmingController: IDisposable
 {
-    private readonly LemmingsStateSet _lemmingsStateSet;
+    private readonly LemmingsEventsHandler _lemmingsEventsHandler;
     private readonly InputController _inputController;
     
-    public LemmingController(LemmingsStateSet lemmingsStateSet, InputController inputController)
+    public LemmingController(LemmingsEventsHandler lemmingsEventsHandler, InputController inputController)
     {
-        _lemmingsStateSet = lemmingsStateSet;
+        _lemmingsEventsHandler = lemmingsEventsHandler;
         _inputController = inputController;
         
         _inputController.OnJump += Jump;
@@ -15,7 +15,7 @@ public class LemmingController: IDisposable
 
     private void Jump()
     {
-        foreach (var lemmingView in _lemmingsStateSet.RunningLemmingViews)
+        foreach (var lemmingView in _lemmingsEventsHandler.RunningLemmingViews)
         {
             lemmingView.Jump();
         }

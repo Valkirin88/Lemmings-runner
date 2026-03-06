@@ -409,7 +409,7 @@ public class RandomSpawner : MonoBehaviour
     private void TrySpawnBonus(Vector3 position)
     {
         var prefab = _bonusPrefabs[Random.Range(0, _bonusPrefabs.Count)];
-        if (prefab == null || prefab.GetComponentInChildren<ScoreBonus>() == null)
+        if (prefab == null || prefab.GetComponentInChildren<AppleCurrency>() == null)
         {
             Debug.LogWarning($"[RandomSpawner] Prefab {prefab?.name} не содержит ScoreBonus, пропуск.");
             return;

@@ -42,10 +42,11 @@ public class EntryPoint : MonoInstaller
 
     private InputController _inputController;
     private LemmingController _lemmingController;
-    private LemmingsStateSet _lemmingsStateSet;
+    private LemmingsEventsHandler _lemmingsEventsHandler;
     private LemmingPlaceController _lemmingPlaceController;
     private ScoreHandler _scoreHandler;
     private LeaderboardServerSender _leaderboardServerSender;
+    private CurrencyHandler _currencyHandler;
     
     //mediators
     private GameStatesUIMediator _gameStatesUIMediator;
@@ -54,16 +55,17 @@ public class EntryPoint : MonoInstaller
     private void Awake()
     {
         _inputController = new InputController(_accelerateButton, _jumpButton, _leftButton, _rightButton);
-        _lemmingsStateSet = new LemmingsStateSet(_leaderLemmingView);
-        _lemmingController = new LemmingController(_lemmingsStateSet, _inputController);
+        _lemmingsEventsHandler = new LemmingsEventsHandler(_leaderLemmingView);
+        _lemmingController = new LemmingController(_lemmingsEventsHandler, _inputController);
         _leaderboardServerSender = new LeaderboardServerSender();
-        _scoreHandler = new ScoreHandler(_lemmingsStateSet);
-        _gameStatesUIMediator = new GameStatesUIMediator(_endTrack, _uiHandler, _lemmingsStateSet, _scoreHandler,_leaderboardServerSender);
+        _scoreHandler = new ScoreHandler(_lemmingsEventsHandler);
+        _gameStatesUIMediator = new GameStatesUIMediator(_endTrack, _uiHandler, _lemmingsEventsHandler, _scoreHandler,_leaderboardServerSender);
         _lemmingPlaceHandler.Initialize(_gameStatesUIMediator, _lemmingPlaceView);
         _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig, _gameStatesUIMediator);
-        _soundHandler.Initialize(_lemmingsStateSet);
-        _eventsSoundMediator = new EventsSoundMediator(_soundHandler, _obstaclesSet, _lemmingsStateSet);
+        _soundHandler.Initialize(_lemmingsEventsHandler);
+        _eventsSoundMediator = new EventsSoundMediator(_soundHandler, _obstaclesSet, _lemmingsEventsHandler);
         _randomSpawner.Initialize(_obstaclesSet);
+        _currencyHandler = new CurrencyHandler(_lemmingsEventsHandler);
         
         
     }
@@ -83,5 +85,6 @@ public class EntryPoint : MonoInstaller
         _gameStatesUIMediator.Dispose();
         _eventsSoundMediator.Dispose();
         _scoreHandler.Dispose();
+        _currencyHandler.Dispose();
     }
 }

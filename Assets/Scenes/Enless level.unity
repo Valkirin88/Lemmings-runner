@@ -722,9 +722,6 @@ MonoBehaviour:
   - {fileID: 8283856537501685944, guid: c6b0880280290094e8a3d4d882cf058c, type: 3}
   - {fileID: 8283856537501685944, guid: d4800784e62524240ad76aad7660eb7c, type: 3}
   _bonusPrefabs:
-  - {fileID: 4560539352217454220, guid: 9338448d5790b5e44b61cddfcaee00bc, type: 3}
-  - {fileID: 6030057194356495316, guid: b5f625060febe8f4db7ff52658dc28e1, type: 3}
-  - {fileID: 8402441979073968845, guid: 099f7e0b554dc9348ba77bd77e2b4879, type: 3}
   - {fileID: 1786189353449905142, guid: 0e8ad1306869f94439ed04917cc39f38, type: 3}
   _obstacleSpawnProbability: 0.934
   _lemmingSpawnProbability: 0.4

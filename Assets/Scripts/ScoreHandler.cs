@@ -5,16 +5,16 @@ public class ScoreHandler : IDisposable
 {
     public event Action<int> OnScoreChanged;
     
-    private readonly LemmingsStateSet _lemmingsStateSet;
+    private readonly LemmingsEventsHandler _lemmingsEventsHandler;
     private float _currentTimeforScore;
     private int _score;
     
     public int Score => _score;
-    public ScoreHandler(LemmingsStateSet lemmingsStateSet)
+    public ScoreHandler(LemmingsEventsHandler lemmingsEventsHandler)
     {
-        _lemmingsStateSet = lemmingsStateSet;
+        _lemmingsEventsHandler = lemmingsEventsHandler;
 
-        _lemmingsStateSet.OnScoreBonusGot += IncreaseScore;
+        _lemmingsEventsHandler.OnCurrencyGot += IncreaseScore;
     }
 
   
@@ -47,6 +47,6 @@ public class ScoreHandler : IDisposable
 
     public void Dispose()
     {
-        _lemmingsStateSet.OnScoreBonusGot -= IncreaseScore;
+        _lemmingsEventsHandler.OnCurrencyGot -= IncreaseScore;
     }
 }

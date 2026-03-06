@@ -8,7 +8,7 @@ public class LemmingPlaceHandler : MonoBehaviour
     [SerializeField]
     private List<RunPlace> _lemmingPlaces;
 
-    private LemmingsStateSet _lemmingsStateSet;
+    private LemmingsEventsHandler _lemmingsEventsHandler;
     private GameStatesUIMediator _gameStatesUIMediator;
     private LemmingPlaceView _lemmingPlaceView;
     private Coroutine _repositionCoroutine;
@@ -17,17 +17,17 @@ public class LemmingPlaceHandler : MonoBehaviour
     {
         _gameStatesUIMediator = gameStatesUIMediator;
         _lemmingPlaceView = lemmingPlaceView;
-        _lemmingsStateSet = _gameStatesUIMediator.LemmingsStateSet;
+        _lemmingsEventsHandler = _gameStatesUIMediator.LemmingsEventsHandler;
 
-        _lemmingsStateSet.OnLemmingCountAdd += PlaceNewLemmingState;
-        _lemmingsStateSet.OnLemmingCountRemove += ReplaceLemmingsState;
+        _lemmingsEventsHandler.OnLemmingCountAdd += PlaceNewLemmingState;
+        _lemmingsEventsHandler.OnLemmingCountRemove += ReplaceLemmingsState;
 
         _gameStatesUIMediator.EndTrack.OnFinished += StopLemmings;
         
         // Назначаем место первому леммингу (он уже в списке до подписки на событие)
-        if (_lemmingsStateSet.RunningLemmingViews.Count > 0)
+        if (_lemmingsEventsHandler.RunningLemmingViews.Count > 0)
         {
-            var leader = _lemmingsStateSet.RunningLemmingViews[0];
+            var leader = _lemmingsEventsHandler.RunningLemmingViews[0];
             SetNewPosition(leader);
         }
     }
@@ -44,7 +44,7 @@ public class LemmingPlaceHandler : MonoBehaviour
         yield return new WaitForSeconds(1f);
         _repositionCoroutine = null;
 
-        var views = _lemmingsStateSet.RunningLemmingViews;
+        var views = _lemmingsEventsHandler.RunningLemmingViews;
         for (int p = 0; p < _lemmingPlaces.Count; p++)
             _lemmingPlaces[p].IsEmpty = true;
 
@@ -67,7 +67,7 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private int GetFormationIndex(LemmingView lemmingView)
     {
-        var views = _lemmingsStateSet.RunningLemmingViews;
+        var views = _lemmingsEventsHandler.RunningLemmingViews;
         int formationIdx = 0;
         for (int i = 0; i < views.Count; i++)
         {
@@ -90,7 +90,7 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private void StopLemmings()
     {
-        foreach (var lemmingView in _lemmingsStateSet.RunningLemmingViews)
+        foreach (var lemmingView in _lemmingsEventsHandler.RunningLemmingViews)
         {
             lemmingView.IsRun = false;
         }
@@ -102,8 +102,8 @@ public class LemmingPlaceHandler : MonoBehaviour
     {
         if (_repositionCoroutine != null)
             StopCoroutine(_repositionCoroutine);
-        _lemmingsStateSet.OnLemmingCountAdd -= PlaceNewLemmingState;
-        _lemmingsStateSet.OnLemmingCountRemove -= ReplaceLemmingsState;
+        _lemmingsEventsHandler.OnLemmingCountAdd -= PlaceNewLemmingState;
+        _lemmingsEventsHandler.OnLemmingCountRemove -= ReplaceLemmingsState;
         
         _gameStatesUIMediator.EndTrack.OnFinished -= StopLemmings;
     }
