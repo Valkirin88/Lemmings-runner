@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Threading.Tasks;
 using TMPro;
@@ -5,6 +6,9 @@ using Unity.Services.Core;
 using Unity.Services.Authentication;
 using Unity.Services.Leaderboards;
 using Unity.Services.Leaderboards.Models;
+using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Leaderboard : MonoBehaviour
 {
@@ -28,14 +32,23 @@ public class Leaderboard : MonoBehaviour
     [SerializeField]
     private GameObject _tryingToConnectToServer;
 
+    [SerializeField]
+    private Button _backButton;
+    
     private int _currentScore;
     
     private string LeaderboardId => GameInfo.UnityLeaderboardName;
     
     private async void Awake()
     {
+        _backButton.onClick.AddListener(ShowMainMenu);
         _scoreText.text = PlayerPrefs.GetInt(GameInfo.UnityLeaderboardName).ToString();
         await InitializeUnityServices();
+    }
+
+    private void ShowMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
     private async Task InitializeUnityServices()
@@ -225,5 +238,10 @@ public class Leaderboard : MonoBehaviour
             gameObject = Instantiate(_usualRowPrefab, _rowsParent);
         }
         return gameObject;
+    }
+
+    private void OnDestroy()
+    {
+        _backButton.onClick.RemoveListener(ShowMainMenu);
     }
 }
