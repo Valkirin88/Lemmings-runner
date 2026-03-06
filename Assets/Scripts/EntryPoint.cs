@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -7,6 +8,9 @@ public class EntryPoint : MonoInstaller
 {
     [SerializeField]
     private LemmingView _leaderLemmingView;
+
+    [SerializeField]
+    private List<AbilitiiesConfig> _abilitiesConfigs;
     
     [SerializeField]
     private LemmingConfig _lemmingConfig;
@@ -47,6 +51,7 @@ public class EntryPoint : MonoInstaller
     private ScoreHandler _scoreHandler;
     private LeaderboardServerSender _leaderboardServerSender;
     private CurrencyHandler _currencyHandler;
+    private AbilitiesHandler _abilitiesHandler;
     
     //mediators
     private GameStatesUIMediator _gameStatesUIMediator;
@@ -66,8 +71,9 @@ public class EntryPoint : MonoInstaller
         _eventsSoundMediator = new EventsSoundMediator(_soundHandler, _obstaclesSet, _lemmingsEventsHandler);
         _randomSpawner.Initialize(_obstaclesSet);
         _currencyHandler = new CurrencyHandler(_lemmingsEventsHandler);
-        
-        
+        _abilitiesHandler = new AbilitiesHandler(_obstaclesSet,_randomSpawner,_lemmingPlaceHandler, _lemmingsEventsHandler, _lemmingPlaceView, _abilitiesConfigs);
+
+
     }
 
     private void Update()
@@ -76,6 +82,7 @@ public class EntryPoint : MonoInstaller
         _gameStatesUIMediator.Update();
         _lemmingPlaceController.Update();
         _scoreHandler.Update();
+        _abilitiesHandler.Update();
     }
 
     private void OnDestroy()
@@ -86,5 +93,6 @@ public class EntryPoint : MonoInstaller
         _eventsSoundMediator.Dispose();
         _scoreHandler.Dispose();
         _currencyHandler.Dispose();
+        _abilitiesHandler.Dispose();
     }
 }

@@ -63,7 +63,7 @@ public class Chipper : MonoBehaviour, IObstacle
         var lemming = other.GetComponentInParent<LemmingView>();
         if (lemming != null)
         {
-            if ((lemming.IsRun || lemming.IsOnFire) && !lemming.IsDead && !_caughtLemmings.Contains(lemming))
+            if ((lemming.IsRun || lemming.IsOnFire) && !lemming.IsDead && !_caughtLemmings.Contains(lemming) && !lemming.IsInvincible)
             {
                 // Отключаем стандартное движение лемминга
                 lemming.IsRun = false;

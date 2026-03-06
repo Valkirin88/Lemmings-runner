@@ -84,7 +84,7 @@ public class Fan : MonoBehaviour, IObstacle
         if (placeView == null)
             placeView = other.GetComponent<LemmingPlaceView>();
             
-        if (placeView != null)
+        if (placeView != null  && placeView.IsInteractable)
         {
             _currentTarget = placeView;
         }

@@ -12,6 +12,9 @@ public class LemmingPlaceView : MonoBehaviour
     public bool IsMovingLeft;
     public bool IsMovingRight;
     public bool IsMoving;
+    public bool IsInteractable;
+
+    
     
     public Rigidbody Rigidbody;
     

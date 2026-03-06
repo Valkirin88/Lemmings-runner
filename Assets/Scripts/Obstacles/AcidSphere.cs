@@ -13,7 +13,7 @@ public class AcidSphere : MonoBehaviour, IObstacle
   {
     if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView))
     {
-      if (lemmingView.IsRun)
+      if (lemmingView.IsRun && !lemmingView.IsInvincible)
       {
         lemmingView.Kill();
         Destroy(gameObject);

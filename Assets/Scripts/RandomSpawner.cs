@@ -40,6 +40,7 @@ public class RandomSpawner : MonoBehaviour
     [SerializeField]
     [Tooltip("Список префабов леммингов (LemmingView)")]
     private List<GameObject> _lemmingPrefabs = new List<GameObject>();
+    public IReadOnlyList<GameObject> LemmingPrefabs => _lemmingPrefabs;
 
     [Header("Префабы бонусов")]
     [SerializeField]

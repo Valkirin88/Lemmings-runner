@@ -45,7 +45,7 @@ public class Bonfire : MonoBehaviour, IObstacle
                 continue;
             }
             
-            if (lemming.IsRun && !lemming.IsOnFire)
+            if (lemming.IsRun && !lemming.IsOnFire && !lemming.IsInvincible)
             {
                 GameObject fireObject = Instantiate(_firePrefab);
                 lemming.SetFire(fireObject);

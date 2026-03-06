@@ -22,12 +22,12 @@ public class LemmingsEventsHandler
         
         _leaderLemmingView = leaderLemmingView;
 
-        AddLemmingInList(_leaderLemmingView);
+        AddLemming(_leaderLemmingView);
     }
 
     
-
-    private void AddLemmingInList(LemmingView lemmingView)
+    
+    public void AddLemming(LemmingView lemmingView)
     {
         RunningLemmingViews.Add(lemmingView);
         SubscribeOnNewLemmingsCaught(lemmingView);
@@ -75,12 +75,12 @@ public class LemmingsEventsHandler
 
     private void SubscribeOnNewLemmingsCaught(LemmingView lemmingView)
     {
-        lemmingView.OnLemmingCaught += AddLemmingInList;
+        lemmingView.OnLemmingCaught += AddLemming;
     }
     
     private void UnsubscribeOnNewLemmingsCaught(LemmingView lemmingView)
     {
-        lemmingView.OnLemmingCaught -= AddLemmingInList;
+        lemmingView.OnLemmingCaught -= AddLemming;
         UnsubscribeOnLemmingKilled(lemmingView);
     }
 

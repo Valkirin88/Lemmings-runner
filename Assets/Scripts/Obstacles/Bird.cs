@@ -178,7 +178,6 @@ public class Bird : MonoBehaviour, IObstacle
         _targetLemming = null;
         _isCarrying = false;
         
-        // Уничтожаем птицу после убийства (улетела)
         Destroy(gameObject);
     }
     
@@ -190,17 +189,16 @@ public class Bird : MonoBehaviour, IObstacle
     
     private void OnTriggerEnter(Collider other)
     {
-        // Если уже охотимся или несём - игнорируем
+
         if (_isHunting || _isCarrying) return;
         
         if (other.TryGetComponent(out LemmingView lemmingView))
         {
-            // Проверяем что лемминг жив и бежит
-            if (!lemmingView.IsDead && lemmingView.IsRun)
+            if (!lemmingView.IsDead && lemmingView.IsRun && !lemmingView.IsInvincible)
             {
                 _targetLemming = lemmingView;
                 _isHunting = true;
-                MakeSound(); // Крик при начале охоты
+                MakeSound(); 
             }
         }
     }
