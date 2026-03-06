@@ -144,7 +144,7 @@ public class Bird : MonoBehaviour, IObstacle
         
         // Запоминаем направление птицы для взлёта
         _carryDirection = transform.forward;
-        _targetLemming.CauughtByBird();
+        _targetLemming.CaughtByBird();
     }
     
     private void CarryLemming()

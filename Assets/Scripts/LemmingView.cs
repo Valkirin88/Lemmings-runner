@@ -46,6 +46,7 @@ public class LemmingView : MonoBehaviour
     public bool IsOnFire;
     public bool IsDead;
     public bool IsSliced;
+    public bool IsInvincible;
     /// <summary>
     /// true = лемминга подбросило препятствие (например JumpTrap).
     /// </summary>
@@ -254,7 +255,7 @@ public class LemmingView : MonoBehaviour
         }
     }
 
-    public void CauughtByBird()
+    public void CaughtByBird()
     {
         OnLemmingOnDanger?.Invoke();
     }
