@@ -55,7 +55,10 @@ public class MusicHandler : MonoBehaviour
 
     private bool IsMenuScene()
     {
-        return SceneManager.GetActiveScene().buildIndex == 0;
+        var isMenuScene = false;
+        if (SceneManager.GetActiveScene().buildIndex == 0 || SceneManager.GetActiveScene().buildIndex == 2)
+            isMenuScene = true;
+        return isMenuScene;
     }
 
     private AudioClip GetGameClip()

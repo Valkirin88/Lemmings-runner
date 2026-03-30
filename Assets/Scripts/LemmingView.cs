@@ -287,14 +287,14 @@ public class LemmingView : MonoBehaviour
         RunningPlace = null;
         IsOnFire = true;
         
-        StartCoroutine(KillFromFireAfterDelay());
+       StartCoroutine(KillFromFireAfterDelay());
     }
 
     private IEnumerator KillFromFireAfterDelay()
     {
         yield return new WaitForSeconds(_fireDeathDelay);
         if (!IsDead)
-            Kill();
+            KillWithotBlood();
     }
 
     /// <summary>
@@ -346,16 +346,9 @@ public class LemmingView : MonoBehaviour
         IsDead = true;
         
         OnLemmingKilled?.Invoke(this);
-        
-        if (!IsOnFire)
-        {
+
             Destroy(gameObject);
-        }
-        else 
-        {
-            Destroy(gameObject, 2f);
-        }
-    }
+     }
 
     private void OnDestroy()
     {

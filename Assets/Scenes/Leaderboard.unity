@@ -608,6 +608,7 @@ MonoBehaviour:
   _positionText: {fileID: 1073250231}
   _scoreText: {fileID: 1073250230}
   _tryingToConnectToServer: {fileID: 1208598216}
+  _backButton: {fileID: 573883032}
 --- !u!1 &573883030
 GameObject:
   m_ObjectHideFlags: 0

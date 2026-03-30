@@ -37,28 +37,30 @@ public class CircularSaw : MonoBehaviour, IObstacle
     {
         if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
-            if (!lemmingView.IsRun && !lemmingView.IsOnFire && lemmingView.IsInvincible) return;
+            if (lemmingView.IsRun && !lemmingView.IsInvincible) 
+            {
+                if (!lemmingView.IsSliced) 
+                {
+                    lemmingView.IsSliced = true;
+                    _bloodParticles.transform.SetParent(null);
+                    _bloodParticles.Play();
+                    SpawnBlood();
 
-            if (lemmingView.IsSliced) return;
-            
-            lemmingView.IsSliced = true;
-            _bloodParticles.transform.SetParent(null);
-            _bloodParticles.Play();
-            SpawnBlood();
-            
-            _slicedObject = lemmingView.gameObject;
-            SliceLemming();
-            Destroy(_bloodParticles.gameObject,4f);
-            
-            // Вызываем Kill для неубитых леммингов, а для горящих - сразу уничтожаем
-            if (!lemmingView.IsDead)
-            {
-                lemmingView.Kill(destroyImmediately: true);
-            }
-            else
-            {
-                // Горящий лемминг уже IsDead, просто уничтожаем оригинал
-                Destroy(lemmingView.gameObject);
+                    _slicedObject = lemmingView.gameObject;
+                    SliceLemming();
+                    Destroy(_bloodParticles.gameObject, 4f);
+
+                    // Вызываем Kill для неубитых леммингов, а для горящих - сразу уничтожаем
+                    if (!lemmingView.IsDead)
+                    {
+                        lemmingView.Kill(destroyImmediately: true);
+                    }
+                    else
+                    {
+                        // Горящий лемминг уже IsDead, просто уничтожаем оригинал
+                        Destroy(lemmingView.gameObject);
+                    }
+                }
             }
         }
     }
