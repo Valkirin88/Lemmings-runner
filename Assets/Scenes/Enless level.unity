@@ -1303,6 +1303,7 @@ MonoBehaviour:
   IsMovingLeft: 0
   IsMovingRight: 0
   IsMoving: 0
+  IsInteractable: 0
   Rigidbody: {fileID: 405622572}
   AccelerateDuration: 0
   AccelerateMultiplier: 0
@@ -1362,6 +1363,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _leaderLemmingView: {fileID: 1585961262}
+  _abilitiesConfigs:
+  - {fileID: 11400000, guid: c244bf51eb8b9f841a46ce75c08f39d8, type: 2}
+  - {fileID: 11400000, guid: 4098716c43c5f824bb65090b902f90cb, type: 2}
+  - {fileID: 11400000, guid: f22812a1c4fefab48bee3df003527f97, type: 2}
   _lemmingConfig: {fileID: 11400000, guid: a25e6e3d681d51041a2900f46ab90e19, type: 2}
   _accelerateButton: {fileID: 1954252299}
   _jumpButton: {fileID: 1954252300}
@@ -1371,6 +1376,7 @@ MonoBehaviour:
   _lemmingPlaceView: {fileID: 405622573}
   _endTrack: {fileID: 874589582}
   _uiHandler: {fileID: 1954252298}
+  _abilityButton: {fileID: 1954252301}
   _soundHandler: {fileID: 548589187}
   _obstaclesSet: {fileID: 2132151162}
   _randomSpawner: {fileID: 314118684}
@@ -4944,6 +4950,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 380317091427749736, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 125
+      objectReference: {fileID: 0}
     - target: {fileID: 391844341313340106, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -4952,9 +4962,17 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1805665905839953333, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2474341238384089940, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3604114543038210948, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: m_Name
+      value: AbilityButton
       objectReference: {fileID: 0}
     - target: {fileID: 4125264934069926397, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4992,6 +5010,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 192
       objectReference: {fileID: 0}
+    - target: {fileID: 4913673876550615803, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: _abilityButton
+      value: 
+      objectReference: {fileID: 1954252299}
+    - target: {fileID: 4913673876550615803, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: _currentAbilityImage
+      value: 
+      objectReference: {fileID: 1965483008}
     - target: {fileID: 6165009266932379824, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -5098,7 +5124,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6494071959957250024, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 1965483007}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
 --- !u!114 &1954252298 stripped
@@ -5134,6 +5163,97 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!114 &1954252301 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4913673876550615803, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+  m_PrefabInstance: {fileID: 1954252297}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fca97ba1228e3594fa1401550789f97d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AccelerateButton
+--- !u!224 &1954252302 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6494071959957250024, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+  m_PrefabInstance: {fileID: 1954252297}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1965483006
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1965483007}
+  - component: {fileID: 1965483009}
+  - component: {fileID: 1965483008}
+  m_Layer: 5
+  m_Name: AbilityImage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1965483007
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965483006}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.5215, y: 1.5215, z: 1.5215}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1954252302}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0.000010255, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1965483008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965483006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1965483009
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965483006}
+  m_CullTransparentMesh: 1
 --- !u!1 &2024478338
 GameObject:
   m_ObjectHideFlags: 0

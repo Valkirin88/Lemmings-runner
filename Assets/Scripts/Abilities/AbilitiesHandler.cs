@@ -13,6 +13,7 @@ public class AbilitiesHandler : IDisposable
     
     private IAbility _currentAbility;
     
+    
     public AbilitiesHandler(ObstaclesSet obstaclesSet, RandomSpawner randomSpawner, LemmingPlaceHandler lemmingPlaceHandler,
         LemmingsEventsHandler lemmingsEventsHandler, LemmingPlaceView lemmingPlaceView, List<AbilitiiesConfig> abilitiesConfigs)
     {
@@ -22,6 +23,8 @@ public class AbilitiesHandler : IDisposable
         _lemmingsEventsHandler = lemmingsEventsHandler;
         _lemmingPlaceView = lemmingPlaceView;
         _abilitiesConfigs = abilitiesConfigs;
+
+        
     }
 
     public AbilitiiesConfig GetRandomAbility()
@@ -32,10 +35,11 @@ public class AbilitiesHandler : IDisposable
         var config = _abilitiesConfigs[Random.Range(0, _abilitiesConfigs.Count)];
         if (config == null)
             return null;
-
-        _currentAbility = CreateAbilityFromConfig(config);
+        
         if (_currentAbility != null)
-            ActivateAbility();
+            ResetCurrentAbility();
+        
+        _currentAbility = CreateAbilityFromConfig(config);
 
         return config;
     }
@@ -46,7 +50,7 @@ public class AbilitiesHandler : IDisposable
             _currentAbility.Update();
     }
     
-    private void ActivateAbility()
+    public void ActivateAbility()
     {
         _currentAbility.Activate();
         _currentAbility.OnDeactivated += ResetCurrentAbility;
@@ -69,7 +73,7 @@ public class AbilitiesHandler : IDisposable
 
             case AbilityId.MakeLemmingsInvincible:
             {
-                MakeLemmingsInvinsible _makeLemmingsInvinsible = new MakeLemmingsInvinsible(_lemmingPlaceView);
+                MakeLemmingsInvinsible _makeLemmingsInvinsible = new MakeLemmingsInvinsible(_lemmingPlaceView, _lemmingsEventsHandler);
                 _makeLemmingsInvinsible.AbilitiesConfig = config;
                 return _makeLemmingsInvinsible;
             }

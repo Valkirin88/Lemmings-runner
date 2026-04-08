@@ -17,7 +17,7 @@ public class InputController :IDisposable
     private bool _isMovingLeft = false;
     private bool _isMovingRight = false;
     
-    private Button _accelerateButton;
+    
     private Button _jumpButton;
     private Button _leftButton;
     private Button _rightButton;
@@ -35,12 +35,10 @@ public class InputController :IDisposable
 
     public InputController(Button accelerateButton, Button jumpButton, Button leftButton, Button rightButton)
     {
-        _accelerateButton = accelerateButton;
         _jumpButton = jumpButton;
         _leftButton = leftButton;
         _rightButton = rightButton;
 
-        _accelerateButton.onClick.AddListener(Accelerate);
         _jumpButton.onClick.AddListener(Jump);
         SetupHoldButton(_leftButton, () => OnMoveLeft?.Invoke(true), () => OnMoveLeft?.Invoke(false),
             out _leftTrigger, out _leftEntryDown, out _leftEntryUp, out _leftActionDown, out _leftActionUp);
@@ -68,10 +66,6 @@ public class InputController :IDisposable
         trigger.triggers.Add(entryUp);
     }
 
-    private void Accelerate()
-    {
-        OnAccelerate?.Invoke();
-    }
 
     private void Jump()
     {
@@ -197,7 +191,6 @@ public class InputController :IDisposable
 
     public void Dispose()
     {
-        _accelerateButton.onClick.RemoveListener(Accelerate);
         _jumpButton.onClick.RemoveListener(Jump);
 
         if (_leftTrigger != null)
