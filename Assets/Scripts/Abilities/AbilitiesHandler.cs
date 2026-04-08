@@ -10,12 +10,13 @@ public class AbilitiesHandler : IDisposable
     private readonly LemmingsEventsHandler _lemmingsEventsHandler;
     private readonly LemmingPlaceView _lemmingPlaceView;
     private readonly List<AbilitiiesConfig> _abilitiesConfigs;
+    private readonly AbilitiesFX _abilitiesFX;
     
     private IAbility _currentAbility;
     
     
     public AbilitiesHandler(ObstaclesSet obstaclesSet, RandomSpawner randomSpawner, LemmingPlaceHandler lemmingPlaceHandler,
-        LemmingsEventsHandler lemmingsEventsHandler, LemmingPlaceView lemmingPlaceView, List<AbilitiiesConfig> abilitiesConfigs)
+        LemmingsEventsHandler lemmingsEventsHandler, LemmingPlaceView lemmingPlaceView, List<AbilitiiesConfig> abilitiesConfigs, AbilitiesFX abilitiesFX)
     {
         _obstaclesSet = obstaclesSet;
         _randomSpawner = randomSpawner;
@@ -23,8 +24,7 @@ public class AbilitiesHandler : IDisposable
         _lemmingsEventsHandler = lemmingsEventsHandler;
         _lemmingPlaceView = lemmingPlaceView;
         _abilitiesConfigs = abilitiesConfigs;
-
-        
+        _abilitiesFX = abilitiesFX;
     }
 
     public AbilitiiesConfig GetRandomAbility()
@@ -79,7 +79,10 @@ public class AbilitiesHandler : IDisposable
             }
             case AbilityId.IncreaseLemmingsNumber:
             {
-                return new IncreaseLemmingsNumber(_randomSpawner, _lemmingPlaceHandler, _lemmingsEventsHandler);
+                var increaseLemmingsNumber = new IncreaseLemmingsNumber(_randomSpawner, _lemmingPlaceHandler, _lemmingsEventsHandler);
+                if (_abilitiesFX != null)
+                    _abilitiesFX.Initialize(increaseLemmingsNumber);
+                return increaseLemmingsNumber;
             }
 
             default:

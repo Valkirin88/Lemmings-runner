@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class IncreaseLemmingsNumber : IAbility
 {
-    
+    public event Action OnActivated;
     public event Action OnDeactivated;
     
     private readonly RandomSpawner _randomSpawner;
@@ -47,6 +47,8 @@ public class IncreaseLemmingsNumber : IAbility
         {
             SpawnAndRegisterLemming(prefabs);
         }
+
+        OnActivated?.Invoke();
 
         // Способность мгновенная: отработали спавн — считаем деактивированной.
         Deactivate();

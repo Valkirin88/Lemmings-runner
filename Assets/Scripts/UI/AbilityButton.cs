@@ -40,6 +40,7 @@ public class AbilityButton : MonoBehaviour
       if (!_isPushed)
       {
          _abilitiesHandler.ActivateAbility();
+         _currentAbilityImage.enabled = false;
          _isPushed = true;
          _cooldownImage.fillAmount = 1;
          _cooldownTimer = _cooldownTime;
@@ -57,6 +58,8 @@ public class AbilityButton : MonoBehaviour
       _currentAbilitiesConfig = _abilitiesHandler.GetRandomAbility();
       _currentAbilityImage.sprite = _currentAbilitiesConfig.Image;
       _cooldownTime = _currentAbilitiesConfig.DurationTime;
+
+      _currentAbilityImage.enabled = true;
    }
 
    private void Update()
