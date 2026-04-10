@@ -43,6 +43,9 @@ public class EntryPoint : MonoInstaller
     
     [SerializeField]
     private SoundsHandler _soundHandler;
+
+    [SerializeField]
+    private AudioClip _destroyAllObstaclesSound;
     
     [SerializeField]
     private ObstaclesSet _obstaclesSet;
@@ -77,7 +80,7 @@ public class EntryPoint : MonoInstaller
         _eventsSoundMediator = new EventsSoundMediator(_soundHandler, _obstaclesSet, _lemmingsEventsHandler);
         _randomSpawner.Initialize(_obstaclesSet);
         _currencyHandler = new CurrencyHandler(_lemmingsEventsHandler);
-        _abilitiesHandler = new AbilitiesHandler(_obstaclesSet,_randomSpawner,_lemmingPlaceHandler, _lemmingsEventsHandler, _lemmingPlaceView, _abilitiesConfigs, _abilitiesFX);
+        _abilitiesHandler = new AbilitiesHandler(_obstaclesSet,_randomSpawner,_lemmingPlaceHandler, _lemmingsEventsHandler, _lemmingPlaceView, _abilitiesConfigs, _abilitiesFX, _destroyAllObstaclesSound);
         _abilityButton.Initialize(_abilitiesHandler);
     }
 

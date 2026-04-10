@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class AbilitiesHandler : IDisposable
@@ -11,12 +12,13 @@ public class AbilitiesHandler : IDisposable
     private readonly LemmingPlaceView _lemmingPlaceView;
     private readonly List<AbilitiiesConfig> _abilitiesConfigs;
     private readonly AbilitiesFX _abilitiesFX;
+    private readonly AudioClip _destroyAllObstaclesClip;
     
     private IAbility _currentAbility;
     
     
     public AbilitiesHandler(ObstaclesSet obstaclesSet, RandomSpawner randomSpawner, LemmingPlaceHandler lemmingPlaceHandler,
-        LemmingsEventsHandler lemmingsEventsHandler, LemmingPlaceView lemmingPlaceView, List<AbilitiiesConfig> abilitiesConfigs, AbilitiesFX abilitiesFX)
+        LemmingsEventsHandler lemmingsEventsHandler, LemmingPlaceView lemmingPlaceView, List<AbilitiiesConfig> abilitiesConfigs, AbilitiesFX abilitiesFX, AudioClip destroyAllObstaclesClip)
     {
         _obstaclesSet = obstaclesSet;
         _randomSpawner = randomSpawner;
@@ -25,6 +27,7 @@ public class AbilitiesHandler : IDisposable
         _lemmingPlaceView = lemmingPlaceView;
         _abilitiesConfigs = abilitiesConfigs;
         _abilitiesFX = abilitiesFX;
+        _destroyAllObstaclesClip = destroyAllObstaclesClip;
     }
 
     public AbilitiiesConfig GetRandomAbility()
@@ -69,7 +72,7 @@ public class AbilitiesHandler : IDisposable
         switch (config.AbilityId)
         {
             case AbilityId.DestroyAllObstacles:
-                return new DestroyAllObstacles(_obstaclesSet);
+                return new DestroyAllObstacles(_obstaclesSet, _destroyAllObstaclesClip);
 
             case AbilityId.MakeLemmingsInvincible:
             {

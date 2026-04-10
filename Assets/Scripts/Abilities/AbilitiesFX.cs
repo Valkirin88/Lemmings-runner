@@ -20,11 +20,11 @@ public class AbilitiesFX : MonoBehaviour
 
     private void ShowHearts()
     {
-        
-        var hearts = Instantiate(_heartsParticles,transform);
-        hearts.gameObject.SetActive(true);
- 
-        Destroy(hearts.gameObject, 5f);
+        if (_heartsParticles == null) return;
+        var hearts = Instantiate(_heartsParticles, transform.position, transform.rotation, transform);
+        var main = hearts.main;
+        main.simulationSpace = ParticleSystemSimulationSpace.Local;
+        hearts.Play();
     }
 
     private void OnDestroy()
