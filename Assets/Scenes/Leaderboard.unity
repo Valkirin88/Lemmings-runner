@@ -647,7 +647,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 74, y: -97}
-  m_SizeDelta: {x: 105, y: 80}
+  m_SizeDelta: {x: 125, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &573883032
 MonoBehaviour:
@@ -897,11 +897,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2278286618793211470, guid: e2152c4e8ec97be46ab3b26d92ff5259, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 500
+      value: 600
       objectReference: {fileID: 0}
     - target: {fileID: 2278286618793211470, guid: e2152c4e8ec97be46ab3b26d92ff5259, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 31
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 3858867760986772623, guid: e2152c4e8ec97be46ab3b26d92ff5259, type: 3}
       propertyPath: m_Name
@@ -909,7 +909,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6246918420602559530, guid: e2152c4e8ec97be46ab3b26d92ff5259, type: 3}
       propertyPath: m_text
-      value: 'Your place and best result:'
+      value: "\u0412\u0430\u0448\u0435 \u043C\u0435\u0441\u0442\u043E \u0438 \u043B\u0443\u0447\u0448\u0438\u0439
+        \u0440\u0435\u0437\u0443\u043B\u044C\u0430\u0442"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6246918420602559530, guid: e2152c4e8ec97be46ab3b26d92ff5259, type: 3}
+      propertyPath: m_fontSize
+      value: 32.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 6246918420602559530, guid: e2152c4e8ec97be46ab3b26d92ff5259, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 32.66
       objectReference: {fileID: 0}
     - target: {fileID: 9166084032296878692, guid: e2152c4e8ec97be46ab3b26d92ff5259, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1122,7 +1131,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Connecting to the server...
+  m_text: "\u0423\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u043C
+    \u0441\u043E\u0435\u0434\u0438\u043D\u0435\u043D\u0438\u0435 \u0441 \u0441\u0435\u0440\u0432\u0435\u0440\u043E\u043C..."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d66de50b20c92474b9c648e1f7901f8d, type: 2}
   m_sharedMaterial: {fileID: 8842445192408042108, guid: d66de50b20c92474b9c648e1f7901f8d, type: 2}
@@ -1219,7 +1229,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 50}
+  m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1359035719
 GameObject:
@@ -1557,7 +1567,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -2, y: -219}
+  m_AnchoredPosition: {x: -2, y: -202}
   m_SizeDelta: {x: 500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1986021345
@@ -1580,7 +1590,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Leaderboard
+  m_text: "\u0420\u0415\u041A\u041E\u0420\u0414\u042B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d66de50b20c92474b9c648e1f7901f8d, type: 2}
   m_sharedMaterial: {fileID: 8842445192408042108, guid: d66de50b20c92474b9c648e1f7901f8d, type: 2}
