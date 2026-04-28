@@ -133,6 +133,7 @@ public class UIHandler : MonoBehaviour
     {
         Time.timeScale = 0;
         _restartButtonObject.SetActive(true);
+        _mainMenuButtonObject.SetActive(true);
         _gameOverObject.SetActive(true);
     }
 
