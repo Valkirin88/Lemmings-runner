@@ -8,9 +8,12 @@ using UnityEngine.UI;
 
 public class UIHandler : MonoBehaviour
 {
-    [FormerlySerializedAs("_currentQuantityText")] [SerializeField]
+    [SerializeField]
     private TMP_Text _currentScoreText;
-   
+
+    [SerializeField]
+    private GameObject _pauseTextObject;
+    
     [SerializeField]
     private Button _restartButton;
     [SerializeField]
@@ -28,7 +31,9 @@ public class UIHandler : MonoBehaviour
     private GameObject _pauseButtonObject;
     [SerializeField]
     private GameObject _resumeButtonObject;
-
+    [SerializeField]
+    private GameObject _manageButtonsObject;
+    
     [SerializeField]
     private GameObject _pausePanel;
     
@@ -72,6 +77,9 @@ public class UIHandler : MonoBehaviour
         _mainMenuButtonObject.SetActive(true);
         _restartButtonObject.SetActive(true);
         _resumeButtonObject.SetActive(true);
+        _mainMenuButtonObject.SetActive(false);
+        _manageButtonsObject.SetActive(false);
+        _pauseTextObject.SetActive(true);
     }
 
     private void ResumeGame()
@@ -82,6 +90,8 @@ public class UIHandler : MonoBehaviour
         _mainMenuButtonObject.SetActive(false);
         _restartButtonObject.SetActive(false);
         _resumeButtonObject.SetActive(false);
+        _manageButtonsObject.SetActive(true);
+        _pauseTextObject.SetActive(false);
     }
 
     private void ShowMainMenu()
@@ -135,6 +145,8 @@ public class UIHandler : MonoBehaviour
         _restartButtonObject.SetActive(true);
         _mainMenuButtonObject.SetActive(true);
         _gameOverObject.SetActive(true);
+        _pausePanel.SetActive(true);
+        _manageButtonsObject.SetActive(false);
     }
 
     private void RestartGame()

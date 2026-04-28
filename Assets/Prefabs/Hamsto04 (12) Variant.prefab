@@ -476,11 +476,15 @@ MonoBehaviour:
   _outline: {fileID: 2608968366951947934}
   Rigidbody: {fileID: 2873992957667258072}
   IsRun: 0
+  IsScroll: 0
   IsOnFire: 0
   IsDead: 0
   IsSliced: 0
+  IsInvincible: 0
+  IsPushed: 0
   RunningPlace: {fileID: 0}
   Animator: {fileID: 8332774296780889866}
+  _fireDeathDelay: 2
 --- !u!54 &2873992957667258072
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -602,7 +606,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Outline
   _maskShader: {fileID: 4800000, guid: 48d116f5ed1309c46baa057807ea3a89, type: 3}
   _fillShader: {fileID: 4800000, guid: 4e448dd6bcd53cf43b35464d04317ea6, type: 3}
-  outlineColor: {r: 0.042148173, g: 1, b: 0.015686274, a: 1}
+  outlineColor: {r: 0.28627452, g: 0.4431373, b: 0.6, a: 1}
   outlineWidth: 4.57
 --- !u!4 &8286180708183605038 stripped
 Transform:
