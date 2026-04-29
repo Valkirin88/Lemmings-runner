@@ -84,12 +84,47 @@ public class BloodDecalSpawner : MonoBehaviour
         }
 
     }
+
+    /// <summary>
+    /// Создаёт пятна крови в зоне без raycast. Удобно для trigger-зон вроде Bottom.
+    /// </summary>
+    public List<GameObject> SpawnDecalsOnSurface(Vector3 zoneCenter, Vector3 zoneSize, Vector3 surfaceNormal, Transform parent = null)
+    {
+        var spawnedDecals = new List<GameObject>();
+        int count = Random.Range(_minDecalsPerKill, _maxDecalsPerKill + 1);
+
+        float halfX = zoneSize.x / 2f;
+        float halfZ = zoneSize.z / 2f;
+        Vector3 normal = surfaceNormal.normalized;
+
+        if (normal == Vector3.zero)
+        {
+            normal = Vector3.up;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            Vector3 decalPosition = new Vector3(
+                zoneCenter.x + Random.Range(-halfX, halfX),
+                zoneCenter.y,
+                zoneCenter.z + Random.Range(-halfZ, halfZ)
+            );
+
+            GameObject decal = SpawnSingleDecal(decalPosition, normal, parent);
+            if (decal != null)
+            {
+                spawnedDecals.Add(decal);
+            }
+        }
+
+        return spawnedDecals;
+    }
     
     /// <summary>
     /// Создаёт одно пятно в указанной точке с указанной нормалью.
     /// parent — декаль становится ребёнком (двигается вместе с препятствием).
     /// </summary>
-    public void SpawnSingleDecal(Vector3 position, Vector3 normal, Transform parent = null)
+    public GameObject SpawnSingleDecal(Vector3 position, Vector3 normal, Transform parent = null)
     {
        
         // Удаляем старые декали если достигли лимита
@@ -145,6 +180,7 @@ public class BloodDecalSpawner : MonoBehaviour
         decal.Initialize(_decalLifetime, _fadeOutDuration, OnDecalExpired);
         
         _activeDecals.Enqueue(decal);
+        return decalObj;
     }
     
     private GameObject CreateDefaultDecal()

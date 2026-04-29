@@ -57,4 +57,43 @@ public class PlatformTextureScroller : MonoBehaviour
 
         _material.SetTextureOffset(_propertyId, _currentOffset);
     }
+
+    /// <summary>
+    /// Возвращает фактическую визуальную скорость текстуры в мировых единицах в секунду.
+    /// Учитывает _scrollScale, тайлинг материала и размер поверхности по выбранной оси.
+    /// Берётся в виде вектора с направлением движения, как смотрится на экране.
+    /// </summary>
+    public Vector3 GetVisualWorldScrollVelocity()
+    {
+        if (_material == null || !_material.HasProperty(_propertyId) || _renderer == null)
+            return Vector3.zero;
+
+        float speed = ScrollSpeedProvider.CurrentSpeed;
+        if (speed <= 0f)
+            return Vector3.zero;
+
+        Vector2 tiling = _material.GetTextureScale(_propertyId);
+        Bounds bounds = _renderer.bounds;
+
+        float surfaceSize;
+        float tilingValue;
+        Vector3 worldAxis;
+
+        if (_scrollAxis == 0)
+        {
+            surfaceSize = bounds.size.x;
+            tilingValue = Mathf.Max(0.0001f, Mathf.Abs(tiling.x));
+            worldAxis = Vector3.right;
+        }
+        else
+        {
+            surfaceSize = bounds.size.z;
+            tilingValue = Mathf.Max(0.0001f, Mathf.Abs(tiling.y));
+            worldAxis = Vector3.forward;
+        }
+
+        // offset.y растёт → визуально текстура движется в -V. Поэтому инвертируем _scrollDirection.
+        float worldSpeed = speed * _scrollScale * (surfaceSize / tilingValue);
+        return -_scrollDirection * worldSpeed * worldAxis;
+    }
 }

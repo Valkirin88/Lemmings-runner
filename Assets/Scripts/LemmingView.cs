@@ -14,11 +14,13 @@ public class LemmingView : MonoBehaviour
     [SerializeField]
     private LemmingConfig _config;
 
+    [SerializeField] private GameObject _auraObject;
+
     [Header("Highlight Settings")]
     [SerializeField]
     private Outline _outline; // Компонент обводки
-    
-    private bool _wasPickedUp; // Был ли лемминг когда-либо подобран
+
+    private bool _wasPickedUp; // Был ли лемминг когда-либо подобран — пока false, аура включена
 
     private GameObject _fireObject;
     
@@ -60,6 +62,8 @@ public class LemmingView : MonoBehaviour
     {
         // Инициализируем подсветку в Awake, до Start
         InitializeHighlight();
+        // По умолчанию аура включена (лемминг ждёт, чтобы его подобрали)
+        SetAuraActive(true);
     }
     
     private void Start()
@@ -69,6 +73,7 @@ public class LemmingView : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
             _wasPickedUp = true; // Лидер уже "подобран"
             DisableHighlight(); // Лидер без подсветки
+            SetAuraActive(false); // Лидеру аура не нужна
         }
 
         _followSpeed = _config.FollowSpeed;
@@ -80,16 +85,11 @@ public class LemmingView : MonoBehaviour
     
     private void InitializeHighlight()
     {
-        // Если компонент Outline не назначен - пробуем найти
+        // Если компонент Outline не назначен - пробуем найти.
+        // Состояние enabled не трогаем — берём из инспектора.
         if (_outline == null)
         {
             _outline = GetComponent<Outline>();
-        }
-        
-        // Включаем обводку (в Start выключим для лидера)
-        if (_outline != null)
-        {
-            _outline.enabled = true;
         }
     }
     
@@ -98,6 +98,14 @@ public class LemmingView : MonoBehaviour
         if (_outline != null)
         {
             _outline.enabled = false;
+        }
+    }
+
+    private void SetAuraActive(bool isActive)
+    {
+        if (_auraObject != null)
+        {
+            _auraObject.SetActive(isActive);
         }
     }
 
@@ -203,6 +211,7 @@ public class LemmingView : MonoBehaviour
         {
             if (other.TryGetComponent(out LemmingView lemmingView))
             {
+                // Подбираем только если лемминг ещё не был подобран другим леммингом
                 if (!lemmingView.IsRun && !lemmingView._wasPickedUp)
                 {
                     lemmingView.PickUp();
@@ -231,8 +240,9 @@ public class LemmingView : MonoBehaviour
         // Разворачиваем лемминга вперед в направлении бега
         transform.rotation = Quaternion.LookRotation(Vector3.forward);
         
-        // Выключаем подсветку
+        // Выключаем подсветку и ауру — лемминга уже подобрали
         DisableHighlight();
+        SetAuraActive(false);
     }
 
     private void UpdateMovement()

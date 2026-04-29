@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using Unity.Services.Core;
 using Unity.Services.Authentication;
@@ -7,32 +8,39 @@ public class LeaderboardServerSender
 {
     private string LeaderboardId => GameInfo.UnityLeaderboardName;
 
+    private bool _isInitialized;
+    private Task _initializationTask;
+
     public LeaderboardServerSender()
     {
-        InitializeUnityServices();
+        _initializationTask = InitializeUnityServicesAsync();
     }
 
-    private void InitializeUnityServices()
+    private async Task InitializeUnityServicesAsync()
     {
         try
         {
-            // Инициализация Unity Services
-            UnityServices.InitializeAsync();
-            
-            // Аутентификация через Device ID
-            SignInWithDeviceId();
-            
-            Debug.Log($"Player ID: {AuthenticationService.Instance.PlayerId}");
+            // Дожидаемся инициализации Unity Services перед обращением к AuthenticationService
+            if (UnityServices.State != ServicesInitializationState.Initialized)
+            {
+                await UnityServices.InitializeAsync();
+            }
+
+            await SignInWithDeviceIdAsync();
+
+            _isInitialized = AuthenticationService.Instance.IsSignedIn;
+
+            if (_isInitialized)
+                Debug.Log($"Player ID: {AuthenticationService.Instance.PlayerId}");
         }
         catch (System.Exception e)
         {
             Debug.LogError($"Ошибка инициализации: {e.Message}");
         }
     }
-    
-    private void SignInWithDeviceId()
+
+    private async Task SignInWithDeviceIdAsync()
     {
-        // Проверяем, не залогинен ли уже
         if (AuthenticationService.Instance.IsSignedIn)
         {
             Debug.Log("Игрок уже залогинен");
@@ -41,9 +49,8 @@ public class LeaderboardServerSender
 
         try
         {
-            // Логинимся анонимно (Unity автоматически использует Device ID для идентификации)
-            AuthenticationService.Instance.SignInAnonymouslyAsync();
-            
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
             Debug.Log($"Успешная аутентификация! Player ID: {AuthenticationService.Instance.PlayerId}");
         }
         catch (AuthenticationException ex)
@@ -56,17 +63,22 @@ public class LeaderboardServerSender
         }
     }
 
-    public void SendScoreToServer(int score)
+    public async void SendScoreToServer(int score)
     {
-        SubmitScore(LeaderboardId, score);
+        if (_initializationTask != null)
+            await _initializationTask;
+
+        if (!_isInitialized)
+            return;
+
+        await SubmitScoreAsync(LeaderboardId, score);
     }
 
-    // Отправка очков на сервер
-    private void SubmitScore(string leaderboardId, int score)
+    private async Task SubmitScoreAsync(string leaderboardId, int score)
     {
         try
         {
-            LeaderboardsService.Instance.AddPlayerScoreAsync(leaderboardId, score);
+            await LeaderboardsService.Instance.AddPlayerScoreAsync(leaderboardId, score);
         }
         catch (System.Exception e)
         {
