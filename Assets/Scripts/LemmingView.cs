@@ -225,7 +225,7 @@ public class LemmingView : MonoBehaviour
         if (other.TryGetComponent(out AppleCurrency scoreBonus))
         {
             OnScoreBonusGot?.Invoke(scoreBonus);
-            Destroy(scoreBonus.gameObject);
+            scoreBonus.PickUp(transform);
         }
     }
     

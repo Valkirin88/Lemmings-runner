@@ -6,6 +6,9 @@ public class BottomBloodDecalScroller : MonoBehaviour
     private float _speedMultiplier = 1f;
     private PlatformTextureScroller _textureScroller;
 
+    private Vector3 _virtualWorldPosition;
+    private bool _initialized;
+
     public void Initialize(Vector3 direction, float speedMultiplier, PlatformTextureScroller textureScroller = null)
     {
         _direction = direction.sqrMagnitude > 0.001f ? direction.normalized : Vector3.back;
@@ -13,23 +16,31 @@ public class BottomBloodDecalScroller : MonoBehaviour
         _textureScroller = textureScroller;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        Vector3 velocity = GetVelocity();
-        if (velocity.sqrMagnitude <= 0f) return;
+        if (!_initialized)
+        {
+            _virtualWorldPosition = transform.position;
+            _initialized = true;
+        }
 
-        transform.position += velocity * Time.deltaTime;
+        Vector3 velocity = GetVelocity();
+        _virtualWorldPosition += velocity * Time.deltaTime;
+
+        // Принудительно задаём мировую позицию — даже если родитель движется,
+        // декаль едет ровно с той скоростью, что задаёт нам _textureScroller.
+        transform.position = _virtualWorldPosition;
     }
 
     private Vector3 GetVelocity()
     {
-        if (_textureScroller != null)
-        {
-            // Едем ровно с той же скоростью, с которой визуально движется текстура.
-            return _textureScroller.GetVisualWorldScrollVelocity() * _speedMultiplier;
-        }
+        // Скорость берётся из текстурного скроллера (если задан) либо из ScrollSpeedProvider.
+        // Направление всегда берётся из настроек Bottom — так его проще флипнуть в инспекторе.
+        float speed = _textureScroller != null
+            ? _textureScroller.GetVisualWorldSpeed()
+            : ScrollSpeedProvider.CurrentSpeed;
 
-        float speed = ScrollSpeedProvider.CurrentSpeed * _speedMultiplier;
+        speed *= _speedMultiplier;
         if (speed <= 0f) return Vector3.zero;
         return _direction * speed;
     }

@@ -30,6 +30,14 @@ public class PlatformTextureScroller : MonoBehaviour
 
     [SerializeField]
     private Renderer _renderer;
+
+    [Header("Скорость для эффектов (например, кровь на полу)")]
+    [SerializeField]
+    [Tooltip("Если > 0, используется как мировая скорость движения узора при ScrollSpeedProvider.CurrentSpeed = 1. " +
+             "Удобно для мешей с произвольными UV (например Cube), когда авто-расчёт расходится с тем, что видно. " +
+             "Если 0, используется автоматический расчёт по bounds и tiling.")]
+    private float _visualWorldSpeedAtScrollOne = 0f;
+
     private Material _material;
     private int _propertyId;
     private Vector2 _currentOffset;
@@ -59,41 +67,41 @@ public class PlatformTextureScroller : MonoBehaviour
     }
 
     /// <summary>
-    /// Возвращает фактическую визуальную скорость текстуры в мировых единицах в секунду.
-    /// Учитывает _scrollScale, тайлинг материала и размер поверхности по выбранной оси.
-    /// Берётся в виде вектора с направлением движения, как смотрится на экране.
+    /// Возвращает модуль визуальной скорости текстуры в мировых единицах в секунду.
+    /// Направление здесь не учитывается — задавайте его сами на стороне эффекта.
+    /// Если задан _visualWorldSpeedAtScrollOne — используется он (точная ручная калибровка).
+    /// Иначе считается автоматически через bounds и tiling (работает для плоских мешей).
     /// </summary>
-    public Vector3 GetVisualWorldScrollVelocity()
+    public float GetVisualWorldSpeed()
     {
-        if (_material == null || !_material.HasProperty(_propertyId) || _renderer == null)
-            return Vector3.zero;
-
         float speed = ScrollSpeedProvider.CurrentSpeed;
-        if (speed <= 0f)
-            return Vector3.zero;
+        if (speed <= 0f) return 0f;
+
+        if (_visualWorldSpeedAtScrollOne > 0f)
+        {
+            return speed * _visualWorldSpeedAtScrollOne;
+        }
+
+        if (_material == null || !_material.HasProperty(_propertyId) || _renderer == null)
+            return 0f;
 
         Vector2 tiling = _material.GetTextureScale(_propertyId);
         Bounds bounds = _renderer.bounds;
 
         float surfaceSize;
         float tilingValue;
-        Vector3 worldAxis;
 
         if (_scrollAxis == 0)
         {
             surfaceSize = bounds.size.x;
             tilingValue = Mathf.Max(0.0001f, Mathf.Abs(tiling.x));
-            worldAxis = Vector3.right;
         }
         else
         {
             surfaceSize = bounds.size.z;
             tilingValue = Mathf.Max(0.0001f, Mathf.Abs(tiling.y));
-            worldAxis = Vector3.forward;
         }
 
-        // offset.y растёт → визуально текстура движется в -V. Поэтому инвертируем _scrollDirection.
-        float worldSpeed = speed * _scrollScale * (surfaceSize / tilingValue);
-        return -_scrollDirection * worldSpeed * worldAxis;
+        return speed * _scrollScale * (surfaceSize / tilingValue);
     }
 }
