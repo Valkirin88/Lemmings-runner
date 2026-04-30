@@ -37,8 +37,17 @@ public class Chipper : MonoBehaviour, IObstacle
                 _caughtLemmings.RemoveAt(i);
                 continue;
             }
-            
-            // Перемещаем лемминга к цели
+
+            if (_target == null)
+            {
+                // Цель пропала (например при пересборке) — добиваем лемминга, чтобы не завис.
+                KillLemming(lemming);
+                _caughtLemmings.RemoveAt(i);
+                continue;
+            }
+
+            // Перемещаем лемминга к цели. Поскольку лемминг теперь является дочкой Chipper,
+            // он автоматически едет вместе со скроллом, а здесь мы делаем «дотяжку» к таргету.
             Vector3 direction = (_target.position - lemming.transform.position).normalized;
             float distance = Vector3.Distance(lemming.transform.position, _target.position);
             
@@ -52,10 +61,21 @@ public class Chipper : MonoBehaviour, IObstacle
             {
                 _particles.Play();
                 SpawnBlood();
-                lemming.Kill(destroyImmediately: true);
+                KillLemming(lemming);
                 _caughtLemmings.RemoveAt(i);
             }
         }
+    }
+
+    private void KillLemming(LemmingView lemming)
+    {
+        if (lemming == null) return;
+        // Снимаем с родителя, иначе при Destroy(gameObject) у Chipper-а ребёнок может уйти вместе с ним.
+        if (lemming.transform.parent == transform)
+        {
+            lemming.transform.SetParent(null, true);
+        }
+        lemming.Kill(destroyImmediately: true);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -76,7 +96,11 @@ public class Chipper : MonoBehaviour, IObstacle
                     lemming.Rigidbody.linearVelocity = Vector3.zero;
                     lemming.Rigidbody.isKinematic = true;
                 }
-                
+
+                // Парентим к чипперу — теперь он едет вместе со скроллом, и относительная скорость
+                // в Update всегда равна _speed (чиппер не «убегает» от лемминга).
+                lemming.transform.SetParent(transform, true);
+
                 _caughtLemmings.Add(lemming);
             }
         }
@@ -97,6 +121,18 @@ public class Chipper : MonoBehaviour, IObstacle
 
     public void OnDestroy()
     {
+        // Если чиппер уезжает за экран и уничтожается, добиваем всех пойманных леммингов,
+        // чтобы они не зависали в воздухе кинематичными «трупами».
+        for (int i = 0; i < _caughtLemmings.Count; i++)
+        {
+            var lemming = _caughtLemmings[i];
+            if (lemming != null && !lemming.IsDead)
+            {
+                KillLemming(lemming);
+            }
+        }
+        _caughtLemmings.Clear();
+
         OnDestroyed?.Invoke(gameObject);
     }
 }

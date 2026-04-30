@@ -276,7 +276,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &80924118
 RectTransform:
   m_ObjectHideFlags: 0
@@ -838,21 +838,21 @@ MonoBehaviour:
   - prefab: {fileID: 6721551993907192608, guid: fd9ef35f4f8033242ae743f2859f26e6, type: 3}
     minScoreToUnlock: 0
   - prefab: {fileID: 7045587940966926872, guid: 4e569a7139dcc1641a615c576bc23862, type: 3}
-    minScoreToUnlock: 30
-  - prefab: {fileID: 16794479506804026, guid: 024f5f80e71ac314580f05b70774053c, type: 3}
-    minScoreToUnlock: 20
-  - prefab: {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
     minScoreToUnlock: 40
-  - prefab: {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
-    minScoreToUnlock: 60
-  - prefab: {fileID: 1532992724057033380, guid: 24724409234ad124587d5a5cd652738e, type: 3}
-    minScoreToUnlock: 0
-  - prefab: {fileID: 6721551993907192608, guid: a3bb4e83ec08d464d8aaf766bdcdd0bf, type: 3}
-    minScoreToUnlock: 10
-  - prefab: {fileID: 6918237779229540707, guid: 95892bd777a00de45b0e1f56d8f1d394, type: 3}
+  - prefab: {fileID: 16794479506804026, guid: 024f5f80e71ac314580f05b70774053c, type: 3}
+    minScoreToUnlock: 80
+  - prefab: {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
     minScoreToUnlock: 100
+  - prefab: {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
+    minScoreToUnlock: 140
+  - prefab: {fileID: 1532992724057033380, guid: 24724409234ad124587d5a5cd652738e, type: 3}
+    minScoreToUnlock: 120
+  - prefab: {fileID: 6721551993907192608, guid: a3bb4e83ec08d464d8aaf766bdcdd0bf, type: 3}
+    minScoreToUnlock: 20
+  - prefab: {fileID: 6918237779229540707, guid: 95892bd777a00de45b0e1f56d8f1d394, type: 3}
+    minScoreToUnlock: 160
   - prefab: {fileID: 2903682529211886889, guid: d8d6346b90fca1d46b184fe4f9f15c0b, type: 3}
-    minScoreToUnlock: 50
+    minScoreToUnlock: 60
   _lemmingPrefabs:
   - {fileID: 8283856537501685944, guid: fdc36fc87bf036945b4edc9a8e43ae49, type: 3}
   - {fileID: 8283856537501685944, guid: edd74249871871549865a776bf39638d, type: 3}

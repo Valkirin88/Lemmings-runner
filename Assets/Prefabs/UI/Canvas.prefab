@@ -932,11 +932,11 @@ RectTransform:
   - {fileID: 4051478930958084418}
   - {fileID: 1907647915777440778}
   - {fileID: 7800131315718484684}
-  - {fileID: 235129824805584090}
   - {fileID: 6725548409391202278}
   - {fileID: 2344979248808919155}
   - {fileID: 4382062144018020728}
   - {fileID: 6962663029830605458}
+  - {fileID: 235129824805584090}
   - {fileID: 5498218217947144443}
   - {fileID: 5136900772040930904}
   m_Father: {fileID: 0}
@@ -1022,6 +1022,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentScoreText: {fileID: 1401581940759005393}
+  _pauseTextObject: {fileID: 0}
+  _lemmingsQuantityText: {fileID: 0}
   _restartButton: {fileID: 3771512670468647761}
   _resumeButton: {fileID: 1053199332122881111}
   _pauseButton: {fileID: 92528973450845932}
@@ -1030,6 +1032,7 @@ MonoBehaviour:
   _mainMenuButtonObject: {fileID: 9036046221019981887}
   _pauseButtonObject: {fileID: 4684855592517497001}
   _resumeButtonObject: {fileID: 6165009266932379824}
+  _manageButtonsObject: {fileID: 0}
   _pausePanel: {fileID: 1140804006311065899}
   _gameOverObject: {fileID: 6970510510342862239}
   _finishObject: {fileID: 1874202547160228979}
