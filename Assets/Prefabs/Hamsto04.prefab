@@ -2455,18 +2455,6 @@ PrefabInstance:
       value: MagicZoneGreen
       objectReference: {fileID: 0}
     - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.31941676
-      objectReference: {fileID: 0}
-    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.31941676
-      objectReference: {fileID: 0}
-    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.31941676
-      objectReference: {fileID: 0}
-    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}

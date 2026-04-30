@@ -13,6 +13,10 @@ public class UIHandler : MonoBehaviour
 
     [SerializeField]
     private GameObject _pauseTextObject;
+
+    [SerializeField]
+    private TMP_Text _lemmingsQuantityText;
+    
     
     [SerializeField]
     private Button _restartButton;
@@ -108,9 +112,10 @@ public class UIHandler : MonoBehaviour
 
     public void ShowCurrentQuantity(int quantity)
     {
-        // if (_lastDisplayedQuantity == quantity) return;
-        // _lastDisplayedQuantity = quantity;
-        // _currentScoreText.text = quantity.ToString();
+        if (_lemmingsQuantityText == null) return;
+        if (_lastDisplayedQuantity == quantity) return;
+        _lastDisplayedQuantity = quantity;
+        _lemmingsQuantityText.text = quantity.ToString();
     }
 
     private void Update()

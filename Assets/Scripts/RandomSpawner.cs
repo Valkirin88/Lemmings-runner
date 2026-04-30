@@ -55,8 +55,18 @@ public class RandomSpawner : MonoBehaviour
 
     [SerializeField]
     [Range(0f, 1f)]
-    [Tooltip("Вероятность появления лемминга в каждой ячейке сетки")]
+    [Tooltip("Базовая вероятность появления лемминга в каждой ячейке сетки. " +
+             "Если задан массив _lemmingProbabilityByScore — это значение игнорируется.")]
     private float _lemmingSpawnProbability = 0.2f;
+
+    [SerializeField]
+    [Tooltip("Пороги очков для шкалы вероятности появления лемминга (например 0, 10, 50, 100). " +
+             "Длина должна совпадать с _lemmingProbabilityByScore. Оставь массивы пустыми, чтобы использовать _lemmingSpawnProbability.")]
+    private int[] _lemmingProbabilityScoreThresholds = new int[0];
+
+    [SerializeField]
+    [Tooltip("Вероятность спавна лемминга для каждого порога (0..1). Между порогами интерполируется линейно.")]
+    private float[] _lemmingProbabilityByScore = new float[0];
 
     [SerializeField]
     [Range(0f, 1f)]
@@ -141,30 +151,54 @@ public class RandomSpawner : MonoBehaviour
 
     private float GetSpawnInterval()
     {
+        return LerpValueByScore(_scoreThresholds, _intervalSeconds, fallback: 2f);
+    }
+
+    /// <summary>
+    /// Возвращает вероятность спавна лемминга. Если массивы порогов/вероятностей заданы — берёт значение по очкам,
+    /// иначе возвращает базовое _lemmingSpawnProbability.
+    /// </summary>
+    private float GetLemmingSpawnProbability()
+    {
+        if (_lemmingProbabilityScoreThresholds != null && _lemmingProbabilityByScore != null
+            && _lemmingProbabilityScoreThresholds.Length > 0 && _lemmingProbabilityByScore.Length > 0)
+        {
+            float p = LerpValueByScore(_lemmingProbabilityScoreThresholds, _lemmingProbabilityByScore, _lemmingSpawnProbability);
+            return Mathf.Clamp01(p);
+        }
+        return _lemmingSpawnProbability;
+    }
+
+    /// <summary>
+    /// Линейно интерполирует значение из массива values по текущему счёту, опираясь на массив thresholds.
+    /// До первого порога — values[0], после последнего — values[n-1].
+    /// </summary>
+    private float LerpValueByScore(int[] thresholds, float[] values, float fallback)
+    {
+        if (thresholds == null || values == null || thresholds.Length == 0 || values.Length == 0)
+            return fallback;
+
         int score = _scoreProvider != null ? _scoreProvider.Score : 0;
 
-        if (_scoreThresholds == null || _intervalSeconds == null || _scoreThresholds.Length == 0 || _intervalSeconds.Length == 0)
-            return 2f;
+        int n = Mathf.Min(thresholds.Length, values.Length);
+        if (n == 0) return fallback;
 
-        int n = Mathf.Min(_scoreThresholds.Length, _intervalSeconds.Length);
-        if (n == 0) return 2f;
-
-        if (score <= _scoreThresholds[0])
-            return _intervalSeconds[0];
-        if (score >= _scoreThresholds[n - 1])
-            return _intervalSeconds[n - 1];
+        if (score <= thresholds[0])
+            return values[0];
+        if (score >= thresholds[n - 1])
+            return values[n - 1];
 
         for (int i = 0; i < n - 1; i++)
         {
-            if (score >= _scoreThresholds[i] && score < _scoreThresholds[i + 1])
+            if (score >= thresholds[i] && score < thresholds[i + 1])
             {
-                int scoreDelta = _scoreThresholds[i + 1] - _scoreThresholds[i];
-                float t = scoreDelta > 0 ? (float)(score - _scoreThresholds[i]) / scoreDelta : 0f;
-                return Mathf.Lerp(_intervalSeconds[i], _intervalSeconds[i + 1], t);
+                int scoreDelta = thresholds[i + 1] - thresholds[i];
+                float t = scoreDelta > 0 ? (float)(score - thresholds[i]) / scoreDelta : 0f;
+                return Mathf.Lerp(values[i], values[i + 1], t);
             }
         }
 
-        return _intervalSeconds[n - 1];
+        return values[n - 1];
     }
 
     private void OnDestroy()
@@ -209,8 +243,9 @@ public class RandomSpawner : MonoBehaviour
     private void SpawnSingle()
     {
         var availableObstacles = GetAvailableObstacleEntries();
+        float lemmingProbability = GetLemmingSpawnProbability();
         bool spawnObstacle = availableObstacles.Count > 0 && Random.value < _obstacleSpawnProbability;
-        bool spawnLemming = _lemmingPrefabs.Count > 0 && Random.value < _lemmingSpawnProbability;
+        bool spawnLemming = _lemmingPrefabs.Count > 0 && Random.value < lemmingProbability;
         bool spawnBonus = _bonusPrefabs.Count > 0 && Random.value < _bonusSpawnProbability;
 
         if (spawnObstacle)
@@ -254,6 +289,7 @@ public class RandomSpawner : MonoBehaviour
         Vector3 min = bounds.min;
         var availableObstacles = GetAvailableObstacleEntries();
         bool anyObstacleAvailable = availableObstacles.Count > 0;
+        float lemmingProbability = GetLemmingSpawnProbability();
 
         for (int x = 0; x < cellsX; x++)
         {
@@ -278,7 +314,7 @@ public class RandomSpawner : MonoBehaviour
                     );
 
                     bool spawnObstacle = anyObstacleAvailable && Random.value < _obstacleSpawnProbability;
-                    bool spawnLemming = _lemmingPrefabs.Count > 0 && Random.value < _lemmingSpawnProbability;
+                    bool spawnLemming = _lemmingPrefabs.Count > 0 && Random.value < lemmingProbability;
                     bool spawnBonus = _bonusPrefabs.Count > 0 && Random.value < _bonusSpawnProbability;
 
                     if (spawnObstacle)

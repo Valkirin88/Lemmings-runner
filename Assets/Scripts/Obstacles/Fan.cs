@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -15,6 +16,9 @@ public class Fan : MonoBehaviour, IObstacle
     
     private Vector3 _actualWindDirection;
     private LemmingPlaceView _currentTarget;
+    // Лемминги, чьи коллайдеры физически сейчас внутри триггера фена.
+    // Если хотя бы один лемминг ушёл из зоны (например, перепрыгнул фен) — ветер прекращается.
+    private readonly HashSet<LemmingView> _lemmingsInside = new HashSet<LemmingView>();
     
     // Кэшированные значения для оптимизации
     private Quaternion _cachedRotation;
@@ -41,8 +45,12 @@ public class Fan : MonoBehaviour, IObstacle
             ForceUpdateWindDirection();
         }
         
-        // Применяем силу пока цель в зоне
-        if (_currentTarget != null)
+        // Удаляем уничтоженных леммингов из множества (например, убитых внутри фена).
+        _lemmingsInside.RemoveWhere(l => l == null);
+
+        // Дуем только если есть привязанный LemmingPlaceView, не активна неуязвимость
+        // и хотя бы один лемминг физически находится внутри триггера фена.
+        if (_currentTarget != null && !_currentTarget.IsInteractable && _lemmingsInside.Count > 0)
         {
             Vector3 windForce = _actualWindDirection * _windForce;
             _currentTarget.AddExternalForce(windForce);
@@ -83,10 +91,19 @@ public class Fan : MonoBehaviour, IObstacle
         var placeView = other.GetComponentInParent<LemmingPlaceView>();
         if (placeView == null)
             placeView = other.GetComponent<LemmingPlaceView>();
-            
-        if (placeView != null  && placeView.IsInteractable)
+
+        // IsInteractable выставляется способностью «неуязвимость» — пока она активна, ветер не сдувает.
+        if (placeView != null && !placeView.IsInteractable)
         {
             _currentTarget = placeView;
+        }
+
+        var lemming = other.GetComponentInParent<LemmingView>();
+        if (lemming == null)
+            lemming = other.GetComponent<LemmingView>();
+        if (lemming != null)
+        {
+            _lemmingsInside.Add(lemming);
         }
     }
     
@@ -99,6 +116,14 @@ public class Fan : MonoBehaviour, IObstacle
         if (placeView != null && placeView == _currentTarget)
         {
             _currentTarget = null;
+        }
+
+        var lemming = other.GetComponentInParent<LemmingView>();
+        if (lemming == null)
+            lemming = other.GetComponent<LemmingView>();
+        if (lemming != null)
+        {
+            _lemmingsInside.Remove(lemming);
         }
     }
 
