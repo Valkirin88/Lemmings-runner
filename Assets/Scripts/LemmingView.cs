@@ -303,7 +303,7 @@ public class LemmingView : MonoBehaviour
     private IEnumerator KillFromFireAfterDelay()
     {
         yield return new WaitForSeconds(_fireDeathDelay);
-        if (!IsDead)
+        if (!IsDead && !IsInvincible)
             KillWithotBlood();
     }
 
@@ -323,8 +323,12 @@ public class LemmingView : MonoBehaviour
     }
     
     /// <param name="destroyImmediately">true — убрать объект сразу (например при убийстве препятствием), иначе горящий исчезнет через 2 сек</param>
-    public void Kill(bool destroyImmediately = false)
+    /// <param name="ignoreInvincibility">true — смерть от падения (Bottom), обходит неуязвимость</param>
+    public void Kill(bool destroyImmediately = false, bool ignoreInvincibility = false)
     {
+        if (IsInvincible && !ignoreInvincibility)
+            return;
+
         if (IsDead)
         {
             if (destroyImmediately)
@@ -349,9 +353,9 @@ public class LemmingView : MonoBehaviour
             Destroy(gameObject, 2f);
     }
 
-    public void KillWithotBlood()
+    public void KillWithotBlood(bool ignoreInvincibility = false)
     {
-        if (IsDead) return;
+        if ((IsInvincible && !ignoreInvincibility) || IsDead) return;
         
         IsDead = true;
         

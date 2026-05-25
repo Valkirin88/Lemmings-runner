@@ -44,7 +44,7 @@ public class WoodLog : MonoBehaviour, IObstacle
         var lemmingView = collision.gameObject.GetComponent<LemmingView>();
         if (lemmingView == null) return;
 
-        if (lemmingView.IsRun || lemmingView.IsOnFire)
+        if ((lemmingView.IsRun || lemmingView.IsOnFire) && !lemmingView.IsInvincible)
         {
             lemmingView.Kill(destroyImmediately: true);
             SpawnBloodAtCollision(collision);

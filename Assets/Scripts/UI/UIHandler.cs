@@ -81,7 +81,6 @@ public class UIHandler : MonoBehaviour
         _mainMenuButtonObject.SetActive(true);
         _restartButtonObject.SetActive(true);
         _resumeButtonObject.SetActive(true);
-        _mainMenuButtonObject.SetActive(false);
         _manageButtonsObject.SetActive(false);
         _pauseTextObject.SetActive(true);
     }

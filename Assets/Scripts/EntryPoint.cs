@@ -68,6 +68,8 @@ public class EntryPoint : MonoInstaller
 
     private void Awake()
     {
+        SetSettings();
+        
         _inputController = new InputController(_accelerateButton, _jumpButton, _leftButton, _rightButton);
         _lemmingsEventsHandler = new LemmingsEventsHandler(_leaderLemmingView);
         _lemmingController = new LemmingController(_lemmingsEventsHandler, _inputController);
@@ -92,6 +94,16 @@ public class EntryPoint : MonoInstaller
         _scoreHandler.Update();
         _abilitiesHandler.Update();
     }
+    
+    private void SetSettings()
+    {
+        Time.fixedDeltaTime = 1 / 120f;
+        Physics2D.velocityIterations = 12;
+        Physics2D.positionIterations = 6;
+        Application.targetFrameRate = 60; // Фиксированный FPS
+        QualitySettings.vSyncCount = 0;   // Отключить VSync
+    }
+
 
     private void OnDestroy()
     {

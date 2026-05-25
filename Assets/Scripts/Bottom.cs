@@ -22,7 +22,7 @@ public class Bottom : MonoBehaviour
       if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView))
       {
          SpawnBlood(other.transform.position);
-         lemmingView.KillWithotBlood();
+         lemmingView.KillWithotBlood(ignoreInvincibility: true);
       }
    }
 

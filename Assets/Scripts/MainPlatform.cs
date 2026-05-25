@@ -9,7 +9,7 @@ public class MainPlatform : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         var lemming = collision.gameObject.GetComponent<LemmingView>() ?? collision.gameObject.GetComponentInParent<LemmingView>();
-        if (lemming == null || !lemming.IsPushed || lemming.IsDead) return;
+        if (lemming == null || !lemming.IsPushed || lemming.IsDead || lemming.IsInvincible) return;
 
         Vector3 contactPoint = collision.GetContact(0).point;
         if (BloodDecalSpawner.Instance != null)

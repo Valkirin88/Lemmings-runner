@@ -13,7 +13,7 @@ public class IncreaseLemmingsNumber : IAbility
     private readonly LemmingPlaceHandler _lemmingPlaceHandler;
     private readonly LemmingsEventsHandler _lemmingsEventsHandler;
 
-    private int _additionalLemmingsCount = 3;
+    private int _additionalLemmingsCount = 1;
     
     public IncreaseLemmingsNumber(RandomSpawner randomSpawner,
         LemmingPlaceHandler lemmingPlaceHandler,

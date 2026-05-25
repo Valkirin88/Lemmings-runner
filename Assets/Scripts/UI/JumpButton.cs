@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class JumpButton : MonoBehaviour
@@ -14,13 +15,27 @@ public class JumpButton : MonoBehaviour
 
    private float _cooldownTimer;
    private bool _isPushed;
+   private EventTrigger _trigger;
+   private EventTrigger.Entry _entryDown;
    
    private void Start()
    {
       _jumpButton.interactable = true;
       _cooldownImage.fillAmount = 0;
-      
-      _jumpButton.onClick.AddListener(StartTimer);
+
+      _trigger = _jumpButton.gameObject.GetComponent<EventTrigger>();
+      if (_trigger == null)
+         _trigger = _jumpButton.gameObject.AddComponent<EventTrigger>();
+
+      _entryDown = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+      _entryDown.callback.AddListener(_ => StartTimer());
+      _trigger.triggers.Add(_entryDown);
+   }
+
+   private void OnDestroy()
+   {
+      if (_trigger != null && _entryDown != null)
+         _trigger.triggers.Remove(_entryDown);
    }
 
    private void StartTimer()

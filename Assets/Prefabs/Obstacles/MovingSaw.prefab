@@ -14808,7 +14808,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c813fd837a0c4d43a50cb45fea7c6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CircularSawMoving
-  _rotationSpeed: 500
+  _rotationSpeed: 200
   _speed: 1
   _firstEdge: {fileID: 7998294748822027274}
   _secondEdge: {fileID: 5322411990542478428}

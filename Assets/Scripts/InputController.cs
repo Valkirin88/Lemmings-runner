@@ -22,12 +22,15 @@ public class InputController :IDisposable
     private Button _leftButton;
     private Button _rightButton;
 
+    private EventTrigger _jumpTrigger;
     private EventTrigger _leftTrigger;
     private EventTrigger _rightTrigger;
+    private EventTrigger.Entry _jumpEntryDown;
     private EventTrigger.Entry _leftEntryDown;
     private EventTrigger.Entry _leftEntryUp;
     private EventTrigger.Entry _rightEntryDown;
     private EventTrigger.Entry _rightEntryUp;
+    private UnityAction<BaseEventData> _jumpActionDown;
     private UnityAction<BaseEventData> _leftActionDown;
     private UnityAction<BaseEventData> _leftActionUp;
     private UnityAction<BaseEventData> _rightActionDown;
@@ -39,11 +42,24 @@ public class InputController :IDisposable
         _leftButton = leftButton;
         _rightButton = rightButton;
 
-        _jumpButton.onClick.AddListener(Jump);
+        SetupPressButton(_jumpButton, Jump, out _jumpTrigger, out _jumpEntryDown, out _jumpActionDown);
         SetupHoldButton(_leftButton, () => OnMoveLeft?.Invoke(true), () => OnMoveLeft?.Invoke(false),
             out _leftTrigger, out _leftEntryDown, out _leftEntryUp, out _leftActionDown, out _leftActionUp);
         SetupHoldButton(_rightButton, () => OnMoveRight?.Invoke(true), () => OnMoveRight?.Invoke(false),
             out _rightTrigger, out _rightEntryDown, out _rightEntryUp, out _rightActionDown, out _rightActionUp);
+    }
+
+    private void SetupPressButton(Button button, Action onPointerDown,
+        out EventTrigger trigger, out EventTrigger.Entry entryDown, out UnityAction<BaseEventData> actionDown)
+    {
+        trigger = button.gameObject.GetComponent<EventTrigger>();
+        if (trigger == null)
+            trigger = button.gameObject.AddComponent<EventTrigger>();
+
+        actionDown = _ => onPointerDown();
+        entryDown = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+        entryDown.callback.AddListener(actionDown);
+        trigger.triggers.Add(entryDown);
     }
 
     private void SetupHoldButton(Button button, Action onPointerDown, Action onPointerUp,
@@ -191,7 +207,11 @@ public class InputController :IDisposable
 
     public void Dispose()
     {
-        _jumpButton.onClick.RemoveListener(Jump);
+        if (_jumpTrigger != null)
+        {
+            _jumpEntryDown?.callback.RemoveListener(_jumpActionDown);
+            _jumpTrigger.triggers.Remove(_jumpEntryDown);
+        }
 
         if (_leftTrigger != null)
         {

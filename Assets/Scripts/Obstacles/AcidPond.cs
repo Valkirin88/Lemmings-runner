@@ -75,7 +75,8 @@ public class AcidPond : MonoBehaviour, IObstacle
     {
         var lemming = collision.gameObject.GetComponent<LemmingView>();
         if (lemming == null) return;
-        if (!lemming.IsRun && !lemming.IsOnFire && lemming.IsInvincible) return;
+        if (!lemming.IsRun && !lemming.IsOnFire) return;
+        if (lemming.IsInvincible) return;
         _bloodParticles.Play();
         SpawnBlood();
         lemming.Kill(destroyImmediately: true);

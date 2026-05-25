@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class AbilityButton : MonoBehaviour
@@ -21,6 +21,8 @@ public class AbilityButton : MonoBehaviour
    private AbilitiiesConfig _currentAbilitiesConfig;
    private float _cooldownTimer;
    private bool _isPushed;
+   private EventTrigger _trigger;
+   private EventTrigger.Entry _entryDown;
    
    public void Initialize(AbilitiesHandler abilitiesHandler)
    {
@@ -31,8 +33,20 @@ public class AbilityButton : MonoBehaviour
       _currentAbilitiesConfig = _abilitiesHandler.GetRandomAbility();
       _currentAbilityImage.sprite = _currentAbilitiesConfig.Image;
       _cooldownTime = _currentAbilitiesConfig.DurationTime;
-      
-      _abilityButton.onClick.AddListener(StartTimer);
+
+      _trigger = _abilityButton.gameObject.GetComponent<EventTrigger>();
+      if (_trigger == null)
+         _trigger = _abilityButton.gameObject.AddComponent<EventTrigger>();
+
+      _entryDown = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+      _entryDown.callback.AddListener(_ => StartTimer());
+      _trigger.triggers.Add(_entryDown);
+   }
+
+   private void OnDestroy()
+   {
+      if (_trigger != null && _entryDown != null)
+         _trigger.triggers.Remove(_entryDown);
    }
 
    private void StartTimer()

@@ -14739,7 +14739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59bfd032efed0b8468bca0dfe558825a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 500
+  _speed: 200
   _crossSectionLemmingMaterial: {fileID: 2100000, guid: 5ee42708b8969824f92b3dd3e184cd5f, type: 2}
   _bloodParticles: {fileID: 6689127495440806733}
   _bloodZone: {fileID: 4546411388636875222}
