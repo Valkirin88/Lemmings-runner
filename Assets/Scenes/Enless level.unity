@@ -705,7 +705,7 @@ MonoBehaviour:
   - prefab: {fileID: 16794479506804026, guid: 024f5f80e71ac314580f05b70774053c, type: 3}
     minScoreToUnlock: 80
   - prefab: {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
-    minScoreToUnlock: 100
+    minScoreToUnlock: 0
   - prefab: {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
     minScoreToUnlock: 140
   - prefab: {fileID: 1532992724057033380, guid: 24724409234ad124587d5a5cd652738e, type: 3}
@@ -716,6 +716,8 @@ MonoBehaviour:
     minScoreToUnlock: 160
   - prefab: {fileID: 2903682529211886889, guid: d8d6346b90fca1d46b184fe4f9f15c0b, type: 3}
     minScoreToUnlock: 60
+  - prefab: {fileID: 6513282058118621707, guid: d960023ef2321c04bad5e3a76e94496e, type: 3}
+    minScoreToUnlock: 0
   _lemmingPrefabs:
   - {fileID: 8283856537501685944, guid: fdc36fc87bf036945b4edc9a8e43ae49, type: 3}
   - {fileID: 8283856537501685944, guid: edd74249871871549865a776bf39638d, type: 3}
@@ -3287,8 +3289,8 @@ MonoBehaviour:
   _decalPrefab: {fileID: 0}
   _decalSprites:
   - {fileID: 21300000, guid: d092c0a8b032d94458cae4d834c93293, type: 3}
-  _minSize: 0.11
-  _maxSize: 0.5
+  _minSize: 0.1
+  _maxSize: 0.2
   _decalLifetime: 10
   _fadeOutDuration: 3
   _maxDecals: 100
@@ -3296,8 +3298,8 @@ MonoBehaviour:
   _groundLayers:
     serializedVersion: 2
     m_Bits: 256
-  _minDecalsPerKill: 5
-  _maxDecalsPerKill: 10
+  _minDecalsPerKill: 2
+  _maxDecalsPerKill: 4
 --- !u!4 &1023439026
 Transform:
   m_ObjectHideFlags: 0
@@ -5091,6 +5093,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7634320681454058693, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: _maxSize
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 7634320681454058693, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: _minSize
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7634320681454058693, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: _maxSplattersPerKill
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7634320681454058693, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: _minSplattersPerKill
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8609126347665668362, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
       propertyPath: m_SizeDelta.x
       value: 150
@@ -5108,7 +5126,8 @@ PrefabInstance:
       value: 114
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 7912443383551208581, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}

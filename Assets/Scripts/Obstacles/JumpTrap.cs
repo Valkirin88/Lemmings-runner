@@ -46,6 +46,7 @@ public class JumpTrap : MonoBehaviour, IObstacle
             if (lemming == null || lemming.IsDead) continue;
             lemming.RunningPlace = null;
             lemming.IsPushed = true;
+            lemming.ReportDanger();
             if (lemming.Animator != null)
                 lemming.Animator.applyRootMotion = false;
             lemming.Rigidbody.constraints &= ~(RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ);

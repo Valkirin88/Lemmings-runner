@@ -162,8 +162,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JumpTrap
   _delay: 0.2
   _pushForceUp: 10
-  _pushForceForward: 6
-  _pushForceSide: 4
+  _pushForceForward: 5
+  _pushForceSide: 3
   _tumbleSpeed: 6
   _animator: {fileID: 2468002891440536870}
 --- !u!65 &9136335347793176630

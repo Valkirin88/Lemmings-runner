@@ -19,13 +19,18 @@ public class BloodZone : MonoBehaviour
     /// </summary>
     public void SpawnBlood()
     {
+        SpawnBloodAt(transform.position);
+    }
+
+    public void SpawnBloodAt(Vector3 worldPosition)
+    {
         if (BloodDecalSpawner.Instance == null)
         {
             Debug.LogError("[BloodZone] BloodDecalSpawner.Instance не найден! Создайте объект с компонентом BloodDecalSpawner на сцене.");
             return;
         }
-        
-        BloodDecalSpawner.Instance.SpawnDecalsInZone(transform.position, _zoneSize, transform);
+
+        BloodDecalSpawner.Instance.SpawnDecalsInZone(worldPosition, _zoneSize, transform);
     }
     
     private void OnDrawGizmos()

@@ -12,6 +12,9 @@ public class LemmingView : MonoBehaviour
     public event Action<AppleCurrency> OnScoreBonusGot;
     
     [SerializeField]
+    private float _fireDeathDelay = 2f;
+    
+    [SerializeField]
     private LemmingConfig _config;
 
     [SerializeField] private GameObject _auraObject;
@@ -19,7 +22,7 @@ public class LemmingView : MonoBehaviour
     [Header("Highlight Settings")]
     [SerializeField]
     private Outline _outline; // Компонент обводки
-
+    
     private bool _wasPickedUp; // Был ли лемминг когда-либо подобран — пока false, аура включена
 
     private GameObject _fireObject;
@@ -267,6 +270,11 @@ public class LemmingView : MonoBehaviour
 
     public void CaughtByBird()
     {
+        ReportDanger();
+    }
+
+    public void ReportDanger()
+    {
         OnLemmingOnDanger?.Invoke();
     }
     
@@ -284,8 +292,7 @@ public class LemmingView : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private float _fireDeathDelay = 2f;
+    
 
     public void SetFire(GameObject fireObject)
     {
@@ -293,7 +300,7 @@ public class LemmingView : MonoBehaviour
         _fireObject.transform.SetParent(transform);
         _fireObject.transform.localPosition = Vector3.zero;
         _fireObject.SetActive(true);
-        OnLemmingOnDanger?.Invoke();
+        ReportDanger();
         RunningPlace = null;
         IsOnFire = true;
         
