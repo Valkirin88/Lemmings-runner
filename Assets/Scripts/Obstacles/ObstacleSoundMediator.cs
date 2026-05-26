@@ -20,6 +20,12 @@ public class EventsSoundMediator : IDisposable
             _obstacles.OnObstacleAdded += OnObstacleAdded;
 
         _lemmingsEventsHandler.OnCurrencyGot += PlayBonusSound;
+        _lemmingsEventsHandler.OnLemmingCountAdd += PlayNewLemming;
+    }
+
+    private void PlayNewLemming(LemmingView obj)
+    {
+        _soundHandler.PlayAddLemming();
     }
 
     private void PlayBonusSound(int score)
@@ -84,5 +90,6 @@ public class EventsSoundMediator : IDisposable
         _birds.Clear();
         
         _lemmingsEventsHandler.OnCurrencyGot -= PlayBonusSound;
+        _lemmingsEventsHandler.OnLemmingCountAdd -= PlayNewLemming;
     }
 }

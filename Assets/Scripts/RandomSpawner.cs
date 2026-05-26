@@ -249,12 +249,7 @@ public class RandomSpawner : MonoBehaviour
         bool spawnBonus = _bonusPrefabs.Count > 0 && Random.value < _bonusSpawnProbability;
 
         if (spawnObstacle)
-        {
-            Vector3 pos = GetRandomPositionAtLowerBound();
-            TrySpawnObstacle(pos);
-            if (Random.value < _doubleObstacleProbability)
-                TrySpawnObstacle(pos + _doubleObstacleOffset);
-        }
+            TrySpawnObstacleWithDouble(GetRandomPositionAtLowerBound());
 
         if (spawnLemming)
             TrySpawnLemming(GetRandomPositionAtLowerBound());
@@ -320,9 +315,7 @@ public class RandomSpawner : MonoBehaviour
                     if (spawnObstacle)
                     {
                         Vector3 obstaclePos = new Vector3(cellCenter.x + randomOffset.x, LowerBoundY, cellCenter.z + randomOffset.z);
-                        TrySpawnObstacle(obstaclePos);
-                        if (Random.value < _doubleObstacleProbability)
-                            TrySpawnObstacle(obstaclePos + _doubleObstacleOffset);
+                        TrySpawnObstacleWithDouble(obstaclePos);
                     }
 
                     if (spawnLemming)
@@ -341,21 +334,121 @@ public class RandomSpawner : MonoBehaviour
         }
     }
 
-    private void TrySpawnObstacle(Vector3 position)
+    private void TrySpawnObstacleWithDouble(Vector3 position)
     {
+        if (!TrySpawnObstacle(position, out Vector3 spawnedPosition, out bool isBonfire))
+            return;
+
+        if (Random.value >= _doubleObstacleProbability)
+            return;
+
+        Vector3 secondPosition = isBonfire
+            ? spawnedPosition + new Vector3(0f, 0f, _doubleObstacleOffset.z)
+            : position + _doubleObstacleOffset;
+
+        secondPosition.y = LowerBoundY;
+        TrySpawnObstacle(secondPosition, out _, out _, spawnedPosition);
+    }
+
+    private Bounds GetSpawnBounds() => new Bounds(_spawnAreaCenter, _spawnAreaSize);
+
+    private bool IsInsideSpawnAreaXZ(Vector3 position)
+    {
+        Bounds bounds = GetSpawnBounds();
+        return position.x >= bounds.min.x && position.x <= bounds.max.x
+               && position.z >= bounds.min.z && position.z <= bounds.max.z;
+    }
+
+    private bool IsFarEnoughFrom(Vector3 position, Vector3? other)
+    {
+        if (!other.HasValue || _minDistanceToObstacles <= 0f)
+            return true;
+
+        float dx = position.x - other.Value.x;
+        float dz = position.z - other.Value.z;
+        return dx * dx + dz * dz >= _minDistanceToObstacles * _minDistanceToObstacles;
+    }
+
+    private bool IsValidObstacleSpawnPosition(Vector3 position, Vector3? keepAwayFrom, bool onlyCheckDistanceToPrevious)
+    {
+        if (!IsInsideSpawnAreaXZ(position))
+            return false;
+
+        if (!onlyCheckDistanceToPrevious && WouldOverlapObstacle(position))
+            return false;
+
+        if (keepAwayFrom.HasValue && !IsFarEnoughFrom(position, keepAwayFrom))
+            return false;
+
+        return true;
+    }
+
+    private bool TryFindNearestGridSpawnPosition(Vector3 preferred, Vector3? keepAwayFrom, bool onlyCheckDistanceToPrevious, out Vector3 result)
+    {
+        var candidates = new List<Vector3>();
+        Bounds bounds = GetSpawnBounds();
+        int cellsX = Mathf.Max(1, Mathf.FloorToInt(_spawnAreaSize.x / _gridCellSize));
+        int cellsZ = Mathf.Max(1, Mathf.FloorToInt(_spawnAreaSize.z / _gridCellSize));
+        Vector3 min = bounds.min;
+
+        for (int x = 0; x < cellsX; x++)
+        {
+            for (int z = 0; z < cellsZ; z++)
+            {
+                Vector3 cellCenter = min + new Vector3(
+                    (x + 0.5f) * _gridCellSize,
+                    0f,
+                    (z + 0.5f) * _gridCellSize);
+
+                Vector3 candidate = new Vector3(cellCenter.x, LowerBoundY, cellCenter.z);
+                if (!IsInsideSpawnAreaXZ(candidate))
+                    continue;
+
+                candidates.Add(candidate);
+            }
+        }
+
+        candidates.Sort((a, b) =>
+        {
+            float da = (a.x - preferred.x) * (a.x - preferred.x) + (a.z - preferred.z) * (a.z - preferred.z);
+            float db = (b.x - preferred.x) * (b.x - preferred.x) + (b.z - preferred.z) * (b.z - preferred.z);
+            return da.CompareTo(db);
+        });
+
+        foreach (var candidate in candidates)
+        {
+            if (!IsValidObstacleSpawnPosition(candidate, keepAwayFrom, onlyCheckDistanceToPrevious))
+                continue;
+
+            result = candidate;
+            return true;
+        }
+
+        result = preferred;
+        return false;
+    }
+
+    private bool TrySpawnObstacle(Vector3 position, out Vector3 spawnedPosition, out bool isBonfire, Vector3? keepAwayFrom = null)
+    {
+        spawnedPosition = position;
+        isBonfire = false;
+
         var available = GetAvailableObstacleEntries();
-        if (available.Count == 0) return;
+        if (available.Count == 0) return false;
 
         var entry = available[Random.Range(0, available.Count)];
         var prefab = entry.prefab;
         if (prefab == null || prefab.GetComponentInChildren<IObstacle>() == null)
         {
             Debug.LogWarning($"[RandomSpawner] Prefab {prefab?.name} не содержит IObstacle, пропуск.");
-            return;
+            return false;
         }
+
+        isBonfire = prefab.GetComponentInChildren<Bonfire>() != null;
 
         bool isFan = prefab.GetComponentInChildren<Fan>() != null;
         Vector3 spawnPos = position;
+        spawnPos.y = LowerBoundY;
 
         bool fanSpawnOnRight = false;
         if (isFan && _fanLeftEdge != null && _fanRightEdge != null)
@@ -363,6 +456,22 @@ public class RandomSpawner : MonoBehaviour
             fanSpawnOnRight = Random.value < 0.5f;
             spawnPos.x = fanSpawnOnRight ? _fanRightEdge.position.x : _fanLeftEdge.position.x;
             spawnPos.z = position.z;
+        }
+
+        bool secondInPair = keepAwayFrom.HasValue;
+        // Вентиляторы — только по краям (_fanLeftEdge / _fanRightEdge), вне spawn area по X
+        bool needsGridSnap = !isFan
+                             && (!IsInsideSpawnAreaXZ(spawnPos)
+                                 || (secondInPair && !IsFarEnoughFrom(spawnPos, keepAwayFrom))
+                                 || (!secondInPair && WouldOverlapObstacle(spawnPos)));
+
+        if (needsGridSnap)
+        {
+            if (!TryFindNearestGridSpawnPosition(spawnPos, keepAwayFrom, secondInPair, out Vector3 resolvedGridPos))
+                return false;
+
+            spawnPos.x = resolvedGridPos.x;
+            spawnPos.z = resolvedGridPos.z;
         }
 
         if (prefab.GetComponentInChildren<Bird>() != null)
@@ -373,9 +482,6 @@ public class RandomSpawner : MonoBehaviour
             spawnPos.y += 0.4f;
         else if (prefab.GetComponentInChildren<JumpTrap>() != null)
             spawnPos.y -= 0.9f;
-
-        if (_minDistanceToObstacles > 0f && WouldOverlapObstacle(spawnPos))
-            return;
 
         Quaternion rotation = Quaternion.identity;
         if (isFan)
@@ -403,6 +509,9 @@ public class RandomSpawner : MonoBehaviour
 
         if (_obstaclesSet != null)
             _obstaclesSet.AddObstacle(instance);
+
+        spawnedPosition = instance.transform.position;
+        return true;
     }
 
     private bool WouldOverlapObstacle(Vector3 position)

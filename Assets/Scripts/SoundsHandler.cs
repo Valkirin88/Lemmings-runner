@@ -6,6 +6,8 @@ public class SoundsHandler : MonoBehaviour
     [SerializeField]
     private AudioClip _bonusGotClip;
     [SerializeField]
+    private AudioClip _lemmingGotClip;
+    [SerializeField]
     private AudioClip _fireScreamClip;
     [SerializeField]
     private List<AudioClip> _bloodSplatterClips;
@@ -24,8 +26,11 @@ public class SoundsHandler : MonoBehaviour
     {
         _audioSource.PlayOneShot(_fireScreamClip);
         _audioSource.volume.Equals(80);
+    }
 
-
+    public void PlayAddLemming()
+    {
+        _audioSource.PlayOneShot(_lemmingGotClip);
     }
     
     public void PlaySplatter()
