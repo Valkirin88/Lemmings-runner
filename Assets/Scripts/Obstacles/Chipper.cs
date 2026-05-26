@@ -38,6 +38,13 @@ public class Chipper : MonoBehaviour, IObstacle
                 continue;
             }
 
+            if (lemming.IsInvincible)
+            {
+                ReleaseLemming(lemming);
+                _caughtLemmings.RemoveAt(i);
+                continue;
+            }
+
             if (_target == null)
             {
                 // Цель пропала (например при пересборке) — добиваем лемминга, чтобы не завис.
@@ -67,9 +74,23 @@ public class Chipper : MonoBehaviour, IObstacle
         }
     }
 
-    private void KillLemming(LemmingView lemming)
+    private void ReleaseLemming(LemmingView lemming)
     {
         if (lemming == null) return;
+
+        if (lemming.transform.parent == transform)
+            lemming.transform.SetParent(null, true);
+
+        if (lemming.Rigidbody != null)
+            lemming.Rigidbody.isKinematic = false;
+
+        lemming.IsRun = true;
+        lemming.IsScroll = false;
+    }
+
+    private void KillLemming(LemmingView lemming)
+    {
+        if (lemming == null || lemming.IsInvincible) return;
         // Снимаем с родителя, иначе при Destroy(gameObject) у Chipper-а ребёнок может уйти вместе с ним.
         if (lemming.transform.parent == transform)
         {

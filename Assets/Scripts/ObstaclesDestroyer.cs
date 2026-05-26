@@ -13,7 +13,8 @@ public class ObstaclesDestroyer : MonoBehaviour
             return;
         }
 
-        if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView))
+        if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView)
+            && !lemmingView.IsInvincible)
         {
             Destroy(lemmingView.gameObject);
         }

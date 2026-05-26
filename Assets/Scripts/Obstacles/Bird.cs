@@ -96,7 +96,7 @@ public class Bird : MonoBehaviour, IObstacle
     
     private void HuntLemming()
     {
-        if (_targetLemming == null || _targetLemming.IsDead)
+        if (_targetLemming == null || _targetLemming.IsDead || _targetLemming.IsInvincible)
         {
             StopHunting();
             return;
@@ -126,7 +126,7 @@ public class Bird : MonoBehaviour, IObstacle
         if (_targetLemming == null) return;
         
         // Проверяем что лемминг ещё жив и бежит
-        if (_targetLemming.IsDead || !_targetLemming.IsRun)
+        if (_targetLemming.IsDead || !_targetLemming.IsRun || _targetLemming.IsInvincible)
         {
             StopHunting();
             return;

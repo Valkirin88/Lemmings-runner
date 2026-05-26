@@ -19,7 +19,7 @@ public class JumpTrap : MonoBehaviour, IObstacle
     private void OnTriggerEnter(Collider other)
     {
         var lemmingView = other.GetComponent<LemmingView>() ?? other.GetComponentInParent<LemmingView>();
-        if (lemmingView == null || !lemmingView.IsRun || lemmingView.IsDead) return;
+        if (lemmingView == null || !CanPush(lemmingView)) return;
 
         if (!_isActivated)
         {
@@ -43,7 +43,7 @@ public class JumpTrap : MonoBehaviour, IObstacle
         _animator.SetTrigger("Activate");
         foreach (var lemming in _lemmingsToPush)
         {
-            if (lemming == null || lemming.IsDead) continue;
+            if (lemming == null || !CanPush(lemming)) continue;
             lemming.RunningPlace = null;
             lemming.IsPushed = true;
             lemming.ReportDanger();
@@ -58,6 +58,11 @@ public class JumpTrap : MonoBehaviour, IObstacle
             lemming.Rigidbody.angularVelocity = UnityEngine.Random.insideUnitSphere * _tumbleSpeed;
         }
         _lemmingsToPush.Clear();
+    }
+
+    private static bool CanPush(LemmingView lemming)
+    {
+        return lemming.IsRun && !lemming.IsDead && !lemming.IsInvincible;
     }
 
     public BloodZone BloodZone { get; }

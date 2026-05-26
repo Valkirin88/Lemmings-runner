@@ -50,13 +50,23 @@ public class Fan : MonoBehaviour, IObstacle
 
         // Дуем только если есть привязанный LemmingPlaceView, не активна неуязвимость
         // и хотя бы один лемминг физически находится внутри триггера фена.
-        if (_currentTarget != null && !_currentTarget.IsInteractable && _lemmingsInside.Count > 0)
+        if (_currentTarget != null && !_currentTarget.IsInteractable && HasAffectedLemmingInside())
         {
             Vector3 windForce = _actualWindDirection * _windForce;
             _currentTarget.AddExternalForce(windForce);
         }
     }
     
+    private bool HasAffectedLemmingInside()
+    {
+        foreach (var lemming in _lemmingsInside)
+        {
+            if (lemming != null && !lemming.IsInvincible)
+                return true;
+        }
+        return false;
+    }
+
     private bool NeedsDirectionUpdate()
     {
         return _cachedUseLocalDirection != _useLocalDirection ||
@@ -101,7 +111,7 @@ public class Fan : MonoBehaviour, IObstacle
         var lemming = other.GetComponentInParent<LemmingView>();
         if (lemming == null)
             lemming = other.GetComponent<LemmingView>();
-        if (lemming != null)
+        if (lemming != null && !lemming.IsInvincible)
         {
             _lemmingsInside.Add(lemming);
         }

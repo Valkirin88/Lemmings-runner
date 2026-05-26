@@ -21,7 +21,8 @@ public class Bonfire : MonoBehaviour, IObstacle
     {
         if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
-            _lemmingsInZone.Add(lemmingView);
+            if (!lemmingView.IsInvincible)
+                _lemmingsInZone.Add(lemmingView);
         }
     }
 
