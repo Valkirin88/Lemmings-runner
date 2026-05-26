@@ -18,6 +18,7 @@ public class MusicHandler : MonoBehaviour
     private AudioClip _lastClip;
     private AudioClip _newClip;
     private AudioClip _lastMenuClip;
+    private bool _playingMenuMusic;
 
     private void Start()
     {
@@ -26,10 +27,9 @@ public class MusicHandler : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(this.gameObject);
             SceneManager.sceneLoaded += OnSceneLoaded;
+            _playingMenuMusic = IsMenuScene();
             if (!_source.isPlaying)
-            {
                 PlayMusic();
-            }
         }
         else
             Destroy(gameObject);
@@ -43,6 +43,11 @@ public class MusicHandler : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        bool isMenu = IsMenuScene(scene.buildIndex);
+        if (_source.isPlaying && isMenu == _playingMenuMusic)
+            return;
+
+        _playingMenuMusic = isMenu;
         _source.Stop();
         PlayMusic();
     }
@@ -53,13 +58,9 @@ public class MusicHandler : MonoBehaviour
             PlayMusic();
     }
 
-    private bool IsMenuScene()
-    {
-        var isMenuScene = false;
-        if (SceneManager.GetActiveScene().buildIndex == 0 || SceneManager.GetActiveScene().buildIndex == 2)
-            isMenuScene = true;
-        return isMenuScene;
-    }
+    private bool IsMenuScene() => IsMenuScene(SceneManager.GetActiveScene().buildIndex);
+
+    private static bool IsMenuScene(int buildIndex) => buildIndex == 0 || buildIndex == 2;
 
     private AudioClip GetGameClip()
     {
@@ -95,7 +96,8 @@ public class MusicHandler : MonoBehaviour
 
     private void PlayMusic()
     {
-        if (IsMenuScene())
+        _playingMenuMusic = IsMenuScene();
+        if (_playingMenuMusic)
         {
             AudioClip clip = GetMenuClip();
             if (clip != null)

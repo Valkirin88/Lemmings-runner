@@ -17,6 +17,8 @@ public class UIHandler : MonoBehaviour
     [SerializeField]
     private TMP_Text _lemmingsQuantityText;
     
+    [SerializeField]
+    private TMP_Text _totalScoreText;
     
     [SerializeField]
     private Button _restartButton;
@@ -151,6 +153,8 @@ public class UIHandler : MonoBehaviour
         _gameOverObject.SetActive(true);
         _pausePanel.SetActive(true);
         _manageButtonsObject.SetActive(false);
+        _totalScoreText.text = _score.ToString();
+        _currentScoreText.gameObject.SetActive(false);
     }
 
     private void RestartGame()
