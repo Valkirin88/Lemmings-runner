@@ -79,6 +79,11 @@ public class RandomSpawner : MonoBehaviour
     private float _doubleObstacleProbability = 0.25f;
 
     [SerializeField]
+    [Range(0f, 1f)]
+    [Tooltip("Вероятность спавна третьего препятствия при срабатывании двойного спавна")]
+    private float _tripleObstacleProbability = 0.1f;
+
+    [SerializeField]
     [Tooltip("Смещение второго препятствия при двойном спавне (X, Y, Z)")]
     private Vector3 _doubleObstacleOffset = new Vector3(0f, 0f, 2.5f);
 
@@ -238,7 +243,7 @@ public class RandomSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Спавнит один или два объекта в случайных точках области.
+    /// Спавнит один, два или три объекта в случайных точках области.
     /// </summary>
     private void SpawnSingle()
     {
@@ -336,18 +341,29 @@ public class RandomSpawner : MonoBehaviour
 
     private void TrySpawnObstacleWithDouble(Vector3 position)
     {
-        if (!TrySpawnObstacle(position, out Vector3 spawnedPosition, out bool isBonfire))
+        if (!TrySpawnObstacle(position, out Vector3 firstSpawnedPosition, out bool firstIsBonfire))
             return;
 
         if (Random.value >= _doubleObstacleProbability)
             return;
 
-        Vector3 secondPosition = isBonfire
-            ? spawnedPosition + new Vector3(0f, 0f, _doubleObstacleOffset.z)
+        Vector3 secondPosition = firstIsBonfire
+            ? firstSpawnedPosition + new Vector3(0f, 0f, _doubleObstacleOffset.z)
             : position + _doubleObstacleOffset;
 
         secondPosition.y = LowerBoundY;
-        TrySpawnObstacle(secondPosition, out _, out _, spawnedPosition);
+        if (!TrySpawnObstacle(secondPosition, out Vector3 secondSpawnedPosition, out bool secondIsBonfire, firstSpawnedPosition))
+            return;
+
+        if (Random.value >= _tripleObstacleProbability)
+            return;
+
+        Vector3 thirdPosition = secondIsBonfire
+            ? secondSpawnedPosition + new Vector3(0f, 0f, _doubleObstacleOffset.z)
+            : secondPosition + _doubleObstacleOffset;
+
+        thirdPosition.y = LowerBoundY;
+        TrySpawnObstacle(thirdPosition, out _, out _, secondSpawnedPosition);
     }
 
     private Bounds GetSpawnBounds() => new Bounds(_spawnAreaCenter, _spawnAreaSize);
