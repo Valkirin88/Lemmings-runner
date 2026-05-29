@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MakeLemmingsInvinsible
   m_EditorClassIdentifier: Assembly-CSharp::AbilitiiesConfig
   _abilityId: 1
-  _image: {fileID: 21300000, guid: e468bc7b2106c48a89b154d46cdd3116, type: 3}
+  _image: {fileID: 21300000, guid: d37d796d73226409db87305ea223ac96, type: 3}
   _name: MakeLemmingsInvinsible
   _durationTime: 5

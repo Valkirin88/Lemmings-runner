@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class SoundsHandler : MonoBehaviour
 {
@@ -8,12 +9,16 @@ public class SoundsHandler : MonoBehaviour
     [SerializeField]
     private AudioClip _lemmingGotClip;
     [SerializeField]
-    private AudioClip _fireScreamClip;
+    private List<AudioClip> _screamClips;
+    [SerializeField]
+    [Min(0f)]
+    private float _screamCooldownSeconds = 0.5f;
     [SerializeField]
     private List<AudioClip> _bloodSplatterClips;
     [SerializeField]
     private AudioSource _audioSource;
     private LemmingsEventsHandler _lemmingsEventsHandler;
+    private float _lastScreamTime = float.NegativeInfinity;
    
     public void Initialize(LemmingsEventsHandler lemmingsEventsHandler)
     {
@@ -24,7 +29,13 @@ public class SoundsHandler : MonoBehaviour
 
     private void PlayFireScream()
     {
-        _audioSource.PlayOneShot(_fireScreamClip);
+        if (_screamClips == null || _screamClips.Count == 0)
+            return;
+        if (Time.time - _lastScreamTime < _screamCooldownSeconds)
+            return;
+
+        _lastScreamTime = Time.time;
+        _audioSource.PlayOneShot(_screamClips[Random.Range(0, _screamClips.Count)]);
         _audioSource.volume.Equals(80);
     }
 

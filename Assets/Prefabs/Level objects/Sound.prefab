@@ -45,7 +45,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5732fb551d72f914bb7e845026b58031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundsHandler
-  _fireScreamClip: {fileID: 8300000, guid: 80ead8d29fb33d94db0386634d880cef, type: 3}
+  _dangerScreamClips:
+  - {fileID: 8300000, guid: e4720f333e32aa3468bb52afa6070ef5, type: 3}
+  - {fileID: 8300000, guid: c256f1431220dfc4ebff22c11d3de2b0, type: 3}
+  - {fileID: 8300000, guid: 6c1ba9308d3167843ae3c598c3a22173, type: 3}
+  _dangerScreamPitchMin: 0.92
+  _dangerScreamPitchMax: 1.08
   _bloodSplatterClips:
   - {fileID: 8300000, guid: 906befba68275e54fb8f01d37770c759, type: 3}
   - {fileID: 8300000, guid: bf6cdac653e83b14fbd9e627bc247ff1, type: 3}

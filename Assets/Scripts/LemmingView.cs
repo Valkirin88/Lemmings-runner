@@ -370,9 +370,4 @@ public class LemmingView : MonoBehaviour
 
             Destroy(gameObject);
      }
-
-    private void OnDestroy()
-    {
-        
-    }
 }

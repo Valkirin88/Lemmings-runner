@@ -748,6 +748,7 @@ MonoBehaviour:
   - 0.6
   _bonusSpawnProbability: 0.186
   _doubleObstacleProbability: 0.25
+  _tripleObstacleProbability: 0.1
   _doubleObstacleOffset: {x: 1.5, y: 0, z: 2.5}
   _gridCellSize: 2
   _scoreProvider: {fileID: 1954252298}
@@ -2136,9 +2137,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5732fb551d72f914bb7e845026b58031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundsHandler
-  _bonusGotClip: {fileID: 8300000, guid: b41631e4e5b1ef346b460fba1579f107, type: 3}
+  _bonusGotClip: {fileID: 8300000, guid: 3302e0b991280014d8cca9f5abf8082d, type: 3}
   _lemmingGotClip: {fileID: 8300000, guid: 02a8b12025def1e4a925904bea014d79, type: 3}
-  _fireScreamClip: {fileID: 8300000, guid: 6c1ba9308d3167843ae3c598c3a22173, type: 3}
+  _screamClips:
+  - {fileID: 8300000, guid: 6c1ba9308d3167843ae3c598c3a22173, type: 3}
+  - {fileID: 8300000, guid: 3cb5bbad7a3550d4c8d1c6edd75a146e, type: 3}
+  - {fileID: 8300000, guid: 1c43ac7c86c3fcf4cb4f94014b2c472d, type: 3}
+  _screamCooldownSeconds: 0.5
   _bloodSplatterClips:
   - {fileID: 8300000, guid: 906befba68275e54fb8f01d37770c759, type: 3}
   - {fileID: 8300000, guid: bf6cdac653e83b14fbd9e627bc247ff1, type: 3}
