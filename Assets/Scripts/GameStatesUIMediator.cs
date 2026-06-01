@@ -11,6 +11,8 @@ public class GameStatesUIMediator : IDisposable
     
     private int _lemmingQuantity;
     private GameState _gameState;
+    private float _gameOverDelayRemaining = -1f;
+    private const float GameOverDelaySeconds = 1f;
     
     public LemmingsEventsHandler LemmingsEventsHandler => _lemmingsEventsHandler;
 
@@ -61,14 +63,34 @@ public class GameStatesUIMediator : IDisposable
     private void CheckGameOver()
     {
         _lemmingQuantity = LemmingsEventsHandler.RunningLemmingViews.Count;
-        if (_lemmingQuantity <= 0 && _gameState == GameState.Game)
+
+        if (_gameState != GameState.Game)
         {
-            _scoreHandler.SaveScoreResult();
-            _leaderboardServerSender.SendScoreToServer(_scoreHandler.Score);
-            _gameState = GameState.GameOver;
-            _uiHandler.GameState = _gameState;
-            
+            _gameOverDelayRemaining = -1f;
+            return;
         }
+
+        if (_lemmingQuantity > 0)
+        {
+            _gameOverDelayRemaining = -1f;
+            return;
+        }
+
+        if (_gameOverDelayRemaining < 0f)
+        {
+            _gameOverDelayRemaining = GameOverDelaySeconds;
+            return;
+        }
+
+        _gameOverDelayRemaining -= UnityEngine.Time.deltaTime;
+        if (_gameOverDelayRemaining > 0f)
+            return;
+
+        _gameOverDelayRemaining = -1f;
+        _scoreHandler.SaveScoreResult();
+        _leaderboardServerSender.SendScoreToServer(_scoreHandler.Score);
+        _gameState = GameState.GameOver;
+        _uiHandler.GameState = _gameState;
     }
     
     

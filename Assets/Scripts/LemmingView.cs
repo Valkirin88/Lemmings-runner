@@ -42,7 +42,9 @@ public class LemmingView : MonoBehaviour
     private float _jumpForce;
     
     private bool _isJumping;
-    
+    private int _platformContactCount;
+    private bool _fallScreamReported;
+
     public Rigidbody Rigidbody;
 
     // Внешние силы (ветер, и т.д.)
@@ -318,8 +320,20 @@ public class LemmingView : MonoBehaviour
         OnLemmingOnDanger?.Invoke();
     }
     
+    private static bool IsPlatformCollider(Collider collider)
+    {
+        if (collider == null)
+            return false;
+
+        return collider.GetComponent<PlatformTextureScroller>() != null
+               || collider.GetComponentInParent<PlatformTextureScroller>() != null;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
+        if (IsPlatformCollider(collision.collider))
+            _platformContactCount++;
+
         // Проверяем приземление
         foreach (var contact in collision.contacts)
         {
@@ -327,9 +341,38 @@ public class LemmingView : MonoBehaviour
             if (contact.normal.y > 0.5f)
             {
                 _isJumping = false;
+                _fallScreamReported = false;
                 break;
             }
         }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (!IsPlatformCollider(collision.collider))
+            return;
+
+        _platformContactCount = Mathf.Max(0, _platformContactCount - 1);
+        if (_platformContactCount > 0)
+            return;
+
+        TryReportFallFromPlatform();
+    }
+
+    private void TryReportFallFromPlatform()
+    {
+        if (_fallScreamReported || IsDead || !IsRun || IsPushed)
+            return;
+
+        if (Rigidbody == null)
+            return;
+
+        // Прыжок — кратко теряем контакт с платформой, крик не нужен
+        if (_isJumping || Rigidbody.linearVelocity.y > 0.15f)
+            return;
+
+        _fallScreamReported = true;
+        ReportDanger();
     }
 
     

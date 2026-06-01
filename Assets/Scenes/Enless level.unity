@@ -700,24 +700,24 @@ MonoBehaviour:
   _obstacleSpawnEntries:
   - prefab: {fileID: 6721551993907192608, guid: fd9ef35f4f8033242ae743f2859f26e6, type: 3}
     minScoreToUnlock: 0
-  - prefab: {fileID: 7045587940966926872, guid: 4e569a7139dcc1641a615c576bc23862, type: 3}
-    minScoreToUnlock: 80
-  - prefab: {fileID: 16794479506804026, guid: 024f5f80e71ac314580f05b70774053c, type: 3}
-    minScoreToUnlock: 160
-  - prefab: {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
-    minScoreToUnlock: 60
-  - prefab: {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
-    minScoreToUnlock: 180
-  - prefab: {fileID: 1532992724057033380, guid: 24724409234ad124587d5a5cd652738e, type: 3}
-    minScoreToUnlock: 120
-  - prefab: {fileID: 6721551993907192608, guid: a3bb4e83ec08d464d8aaf766bdcdd0bf, type: 3}
-    minScoreToUnlock: 40
-  - prefab: {fileID: 6918237779229540707, guid: 95892bd777a00de45b0e1f56d8f1d394, type: 3}
-    minScoreToUnlock: 100
-  - prefab: {fileID: 2903682529211886889, guid: d8d6346b90fca1d46b184fe4f9f15c0b, type: 3}
-    minScoreToUnlock: 140
   - prefab: {fileID: 6513282058118621707, guid: d960023ef2321c04bad5e3a76e94496e, type: 3}
     minScoreToUnlock: 20
+  - prefab: {fileID: 6721551993907192608, guid: a3bb4e83ec08d464d8aaf766bdcdd0bf, type: 3}
+    minScoreToUnlock: 40
+  - prefab: {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
+    minScoreToUnlock: 80
+  - prefab: {fileID: 7045587940966926872, guid: 4e569a7139dcc1641a615c576bc23862, type: 3}
+    minScoreToUnlock: 120
+  - prefab: {fileID: 2903682529211886889, guid: d8d6346b90fca1d46b184fe4f9f15c0b, type: 3}
+    minScoreToUnlock: 160
+  - prefab: {fileID: 16794479506804026, guid: 024f5f80e71ac314580f05b70774053c, type: 3}
+    minScoreToUnlock: 200
+  - prefab: {fileID: 6918237779229540707, guid: 95892bd777a00de45b0e1f56d8f1d394, type: 3}
+    minScoreToUnlock: 240
+  - prefab: {fileID: 1532992724057033380, guid: 24724409234ad124587d5a5cd652738e, type: 3}
+    minScoreToUnlock: 280
+  - prefab: {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
+    minScoreToUnlock: 320
   _lemmingPrefabs:
   - {fileID: 8283856537501685944, guid: fdc36fc87bf036945b4edc9a8e43ae49, type: 3}
   - {fileID: 8283856537501685944, guid: edd74249871871549865a776bf39638d, type: 3}
@@ -753,10 +753,18 @@ MonoBehaviour:
   _gridCellSize: 2
   _scoreProvider: {fileID: 1954252298}
   _useScalingDifficulty: 1
-  _scoreThresholds: 0000000032000000640000007d00000096000000af000000c8000000e1000000fa00000013010000
+  _scoreThresholds: 000000001400000028000000320000005000000064000000780000008c000000a0000000b4000000c8000000dc000000f000000004010000180100002c01000040010000540100006801000090010000a4010000b8010000cc010000
   _intervalSeconds:
   - 2
   - 1.5
+  - 1.8
+  - 1.4
+  - 1.7
+  - 1.3
+  - 1.6
+  - 1.2
+  - 1.5
+  - 1.1
   - 1.4
   - 1
   - 1.3
@@ -765,6 +773,11 @@ MonoBehaviour:
   - 0.8
   - 1.1
   - 0.7
+  - 0.7
+  - 1.5
+  - 1
+  - 0.7
+  - 0.5
   _spawnedObjectsParent: {fileID: 0}
   _obstaclesSet: {fileID: 2132151162}
   _minDistanceToObstacles: 1.5
@@ -1542,7 +1555,8 @@ MonoBehaviour:
   _abilitiesFX: {fileID: 2432396}
   _abilityButton: {fileID: 1954252301}
   _soundHandler: {fileID: 548589187}
-  _destroyAllObstaclesSound: {fileID: 0}
+  _bottom: {fileID: 1069124576}
+  _destroyAllObstaclesSound: {fileID: 8300000, guid: 6593e830587b13e46b9644a33c5c80f7, type: 3}
   _obstaclesSet: {fileID: 2132151162}
   _randomSpawner: {fileID: 314118684}
 --- !u!4 &450451194
@@ -2139,6 +2153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundsHandler
   _bonusGotClip: {fileID: 8300000, guid: 3302e0b991280014d8cca9f5abf8082d, type: 3}
   _lemmingGotClip: {fileID: 8300000, guid: 02a8b12025def1e4a925904bea014d79, type: 3}
+  _jumpClip: {fileID: 8300000, guid: fad457cdf6fa55f4b94315c29211403b, type: 3}
   _screamClips:
   - {fileID: 8300000, guid: 6c1ba9308d3167843ae3c598c3a22173, type: 3}
   - {fileID: 8300000, guid: 3cb5bbad7a3550d4c8d1c6edd75a146e, type: 3}
@@ -2148,6 +2163,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 906befba68275e54fb8f01d37770c759, type: 3}
   - {fileID: 8300000, guid: bf6cdac653e83b14fbd9e627bc247ff1, type: 3}
   _audioSource: {fileID: 548589186}
+  _screamAudioSource: {fileID: 0}
 --- !u!1 &615366830
 GameObject:
   m_ObjectHideFlags: 0
@@ -4699,6 +4715,7 @@ MonoBehaviour:
   - {fileID: 1752959429}
   - {fileID: 527474415}
   - {fileID: 1363081335}
+  _refillDelaySeconds: 1
 --- !u!1 &1752959424
 GameObject:
   m_ObjectHideFlags: 0
@@ -5214,6 +5231,10 @@ PrefabInstance:
       propertyPath: _totalScoreText
       value: 
       objectReference: {fileID: 1658691405}
+    - target: {fileID: 2458115081464145336, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
+      propertyPath: _cooldownTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2474341238384089940, guid: 588e1a408c981c34f93780c80ec3eca9, type: 3}
       propertyPath: m_Name
       value: Canvas

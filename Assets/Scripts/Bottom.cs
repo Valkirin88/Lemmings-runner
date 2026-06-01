@@ -17,10 +17,20 @@ public class Bottom : MonoBehaviour
    [SerializeField] [Tooltip("Доп. множитель скорости крови. 1 = ровно как у текстуры (если _textureScroller задан).")]
    private float _bloodScrollSpeedMultiplier = 1f;
 
+   private SoundsHandler _soundsHandler;
+
+   public void Initialize(SoundsHandler soundsHandler)
+   {
+      _soundsHandler = soundsHandler;
+   }
+
    private void OnTriggerEnter(Collider other)
    {
-      if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView))
+      if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView) && !lemmingView.IsDead)
       {
+         if (_soundsHandler != null)
+            _soundsHandler.StopScream();
+
          SpawnBlood(other.transform.position);
          lemmingView.KillWithotBlood(ignoreInvincibility: true);
       }

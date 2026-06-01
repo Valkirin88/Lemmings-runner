@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,12 +8,17 @@ public class LemmingPlaceHandler : MonoBehaviour
     [SerializeField]
     private List<RunPlace> _lemmingPlaces;
 
+    [SerializeField]
+    [Min(0f)]
+    [Tooltip("Через сколько секунд после смерти лемминга его место займёт следующий")]
+    private float _refillDelaySeconds = 1f;
+
     private LemmingsEventsHandler _lemmingsEventsHandler;
     private GameStatesUIMediator _gameStatesUIMediator;
     private LemmingPlaceView _lemmingPlaceView;
     private static LemmingPlaceHandler _activeInstance;
 
-    public static void RepositionFormationIfActive() => _activeInstance?.RepositionAllRunningLemmings();
+    public static void RepositionFormationIfActive() => _activeInstance?.ScheduleReposition();
 
     public void Initialize(GameStatesUIMediator gameStatesUIMediator, LemmingPlaceView lemmingPlaceView = null)
     {
@@ -36,6 +42,23 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private void ReplaceLemmingsState(LemmingView lemmingView, int removedIndex)
     {
+        ScheduleReposition();
+    }
+
+    private void ScheduleReposition()
+    {
+        if (_refillDelaySeconds <= 0f || !isActiveAndEnabled)
+        {
+            RepositionAllRunningLemmings();
+            return;
+        }
+
+        StartCoroutine(RepositionAfterDelay());
+    }
+
+    private IEnumerator RepositionAfterDelay()
+    {
+        yield return new WaitForSeconds(_refillDelaySeconds);
         RepositionAllRunningLemmings();
     }
 

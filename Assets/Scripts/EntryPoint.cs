@@ -45,6 +45,9 @@ public class EntryPoint : MonoInstaller
     private SoundsHandler _soundHandler;
 
     [SerializeField]
+    private Bottom _bottom;
+
+    [SerializeField]
     private AudioClip _destroyAllObstaclesSound;
     
     [SerializeField]
@@ -72,13 +75,15 @@ public class EntryPoint : MonoInstaller
         
         _inputController = new InputController(_accelerateButton, _jumpButton, _leftButton, _rightButton);
         _lemmingsEventsHandler = new LemmingsEventsHandler(_leaderLemmingView);
-        _lemmingController = new LemmingController(_lemmingsEventsHandler, _inputController);
+        _lemmingController = new LemmingController(_lemmingsEventsHandler, _inputController, _soundHandler);
         _leaderboardServerSender = new LeaderboardServerSender();
         _scoreHandler = new ScoreHandler(_lemmingsEventsHandler);
         _gameStatesUIMediator = new GameStatesUIMediator(_endTrack, _uiHandler, _lemmingsEventsHandler, _scoreHandler,_leaderboardServerSender);
         _lemmingPlaceHandler.Initialize(_gameStatesUIMediator, _lemmingPlaceView);
         _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig, _gameStatesUIMediator);
         _soundHandler.Initialize(_lemmingsEventsHandler);
+        if (_bottom != null)
+            _bottom.Initialize(_soundHandler);
         _eventsSoundMediator = new EventsSoundMediator(_soundHandler, _obstaclesSet, _lemmingsEventsHandler);
         _randomSpawner.Initialize(_obstaclesSet);
         _currencyHandler = new CurrencyHandler(_lemmingsEventsHandler);

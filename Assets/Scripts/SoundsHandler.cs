@@ -9,6 +9,8 @@ public class SoundsHandler : MonoBehaviour
     [SerializeField]
     private AudioClip _lemmingGotClip;
     [SerializeField]
+    private AudioClip _jumpClip;
+    [SerializeField]
     private List<AudioClip> _screamClips;
     [SerializeField]
     [Min(0f)]
@@ -17,9 +19,24 @@ public class SoundsHandler : MonoBehaviour
     private List<AudioClip> _bloodSplatterClips;
     [SerializeField]
     private AudioSource _audioSource;
+
+    [SerializeField]
+    [Tooltip("Отдельный источник для криков — его можно остановить (PlayOneShot не останавливается)")]
+    private AudioSource _screamAudioSource;
+
     private LemmingsEventsHandler _lemmingsEventsHandler;
     private float _lastScreamTime = float.NegativeInfinity;
-   
+
+    private void Awake()
+    {
+        if (_screamAudioSource == null)
+        {
+            _screamAudioSource = gameObject.AddComponent<AudioSource>();
+            _screamAudioSource.playOnAwake = false;
+            _screamAudioSource.loop = false;
+        }
+    }
+
     public void Initialize(LemmingsEventsHandler lemmingsEventsHandler)
     {
         _lemmingsEventsHandler = lemmingsEventsHandler;
@@ -35,13 +52,25 @@ public class SoundsHandler : MonoBehaviour
             return;
 
         _lastScreamTime = Time.time;
-        _audioSource.PlayOneShot(_screamClips[Random.Range(0, _screamClips.Count)]);
-        _audioSource.volume.Equals(80);
+        _screamAudioSource.clip = _screamClips[Random.Range(0, _screamClips.Count)];
+        _screamAudioSource.Play();
+    }
+
+    public void StopScream()
+    {
+        if (_screamAudioSource != null && _screamAudioSource.isPlaying)
+            _screamAudioSource.Stop();
     }
 
     public void PlayAddLemming()
     {
         _audioSource.PlayOneShot(_lemmingGotClip);
+    }
+
+    public void PlayJump()
+    {
+        if (_jumpClip != null)
+            _audioSource.PlayOneShot(_jumpClip);
     }
     
     public void PlaySplatter()
