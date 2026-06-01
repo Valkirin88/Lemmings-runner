@@ -474,11 +474,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundsHandler
   _bonusGotClip: {fileID: 0}
-  _fireScreamClip: {fileID: 8300000, guid: 4245c216887ea784aad17367fa7285f7, type: 3}
+  _lemmingGotClip: {fileID: 0}
+  _jumpClip: {fileID: 0}
+  _screamClips: []
+  _screamCooldownSeconds: 0.5
   _bloodSplatterClips:
   - {fileID: 8300000, guid: bf6cdac653e83b14fbd9e627bc247ff1, type: 3}
   - {fileID: 8300000, guid: 906befba68275e54fb8f01d37770c759, type: 3}
   _audioSource: {fileID: 224580284}
+  _screamAudioSource: {fileID: 0}
 --- !u!1 &283368788
 GameObject:
   m_ObjectHideFlags: 0
@@ -910,7 +914,7 @@ PrefabInstance:
     - target: {fileID: 6246918420602559530, guid: e2152c4e8ec97be46ab3b26d92ff5259, type: 3}
       propertyPath: m_text
       value: "\u0412\u0430\u0448\u0435 \u043C\u0435\u0441\u0442\u043E \u0438 \u043B\u0443\u0447\u0448\u0438\u0439
-        \u0440\u0435\u0437\u0443\u043B\u044C\u0430\u0442"
+        \u0440\u0435\u0437\u0443\u043B\u044C\u0442\u0430\u0442"
       objectReference: {fileID: 0}
     - target: {fileID: 6246918420602559530, guid: e2152c4e8ec97be46ab3b26d92ff5259, type: 3}
       propertyPath: m_fontSize

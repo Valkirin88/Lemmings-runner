@@ -194,6 +194,9 @@ public class UIHandler : MonoBehaviour
         _manageButtonsObject.SetActive(false);
         _totalScoreText.text = _score.ToString();
         _currentScoreText.gameObject.SetActive(false);
+        
+        _totalScoreText.rectTransform.SetAsLastSibling();
+        _restartButtonObject.transform.parent.SetAsLastSibling();
     }
 
     private void RestartGame()
