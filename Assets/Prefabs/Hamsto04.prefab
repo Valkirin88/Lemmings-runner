@@ -904,6 +904,7 @@ GameObject:
   - component: {fileID: 3417968856102874651}
   - component: {fileID: 4878001595609191718}
   - component: {fileID: 2375516500218971187}
+  - component: {fileID: -4806174741297358457}
   m_Layer: 6
   m_Name: Hamsto04
   m_TagString: Untagged
@@ -969,13 +970,14 @@ MonoBehaviour:
   _config: {fileID: 11400000, guid: a25e6e3d681d51041a2900f46ab90e19, type: 2}
   _auraObject: {fileID: 751464436879249402}
   _outline: {fileID: 0}
+  _invincibleOutlineColor: {r: 0.35, g: 0.85, b: 1, a: 1}
+  _isInvincible: 0
   Rigidbody: {fileID: 3690955771139997662}
   IsRun: 1
   IsScroll: 0
   IsOnFire: 0
   IsDead: 0
   IsSliced: 0
-  _invincibleAlpha: 0.65
   IsPushed: 0
   RunningPlace: {fileID: 0}
   Animator: {fileID: 6650058888881574986}
@@ -1086,6 +1088,22 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-4806174741297358457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3436809084443138963}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179c0028abd14af4a9fad8f1f6cb576e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  _maskShader: {fileID: 4800000, guid: 48d116f5ed1309c46baa057807ea3a89, type: 3}
+  _fillShader: {fileID: 4800000, guid: 4e448dd6bcd53cf43b35464d04317ea6, type: 3}
+  outlineColor: {r: 0.28627452, g: 0.4431373, b: 0.6, a: 1}
+  outlineWidth: 4.57
 --- !u!1 &3530074372262030269
 GameObject:
   m_ObjectHideFlags: 0

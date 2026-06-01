@@ -558,6 +558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c87a59c1bce5704a87ff2df343cde67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fireDeathDelay: 2
   _config: {fileID: 11400000, guid: a25e6e3d681d51041a2900f46ab90e19, type: 2}
   _auraObject: {fileID: 1771165181182997850}
   _outline: {fileID: 1430182703426842350}
@@ -571,7 +572,6 @@ MonoBehaviour:
   IsPushed: 0
   RunningPlace: {fileID: 0}
   Animator: {fileID: 8332774296780889866}
-  _fireDeathDelay: 2
 --- !u!54 &2873992957667258072
 Rigidbody:
   m_ObjectHideFlags: 0

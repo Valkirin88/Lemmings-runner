@@ -22,8 +22,16 @@ public class LemmingView : MonoBehaviour
     [Header("Highlight Settings")]
     [SerializeField]
     private Outline _outline; // Компонент обводки
-    
+
+    [SerializeField]
+    private Color _invincibleOutlineColor = new Color(0.35f, 0.85f, 1f, 1f);
+
+    [SerializeField]
+    private bool _isInvincible;
+
     private bool _wasPickedUp; // Был ли лемминг когда-либо подобран — пока false, аура включена
+    private Color _defaultOutlineColor;
+    private bool _defaultOutlineColorCached;
 
     private GameObject _fireObject;
     
@@ -51,7 +59,20 @@ public class LemmingView : MonoBehaviour
     public bool IsOnFire;
     public bool IsDead;
     public bool IsSliced;
-    public bool IsInvincible;
+
+    public bool IsInvincible
+    {
+        get => _isInvincible;
+        set
+        {
+            if (_isInvincible == value)
+                return;
+
+            _isInvincible = value;
+            UpdateInvincibilityOutline();
+        }
+    }
+
     /// <summary>
     /// true = лемминга подбросило препятствие (например JumpTrap).
     /// </summary>
@@ -75,8 +96,8 @@ public class LemmingView : MonoBehaviour
         {
             transform.rotation = Quaternion.LookRotation(Vector3.forward);
             _wasPickedUp = true; // Лидер уже "подобран"
-            DisableHighlight(); // Лидер без подсветки
             SetAuraActive(false); // Лидеру аура не нужна
+            UpdateInvincibilityOutline();
         }
 
         _followSpeed = _config.FollowSpeed;
@@ -96,12 +117,31 @@ public class LemmingView : MonoBehaviour
         }
     }
     
-    private void DisableHighlight()
+    private void UpdateInvincibilityOutline()
     {
-        if (_outline != null)
+        if (_outline == null)
+            InitializeHighlight();
+        if (_outline == null)
+            return;
+
+        if (_isInvincible)
         {
-            _outline.enabled = false;
+            if (!_defaultOutlineColorCached)
+            {
+                _defaultOutlineColor = _outline.OutlineColor;
+                _defaultOutlineColorCached = true;
+            }
+
+            _outline.OutlineColor = _invincibleOutlineColor;
+            _outline.enabled = true;
+            return;
         }
+
+        if (_defaultOutlineColorCached)
+            _outline.OutlineColor = _defaultOutlineColor;
+
+        // Вне неуязвимости обводка только у леммингов, которые ещё ждут подбора
+        _outline.enabled = !_wasPickedUp && !IsRun;
     }
 
     private void SetAuraActive(bool isActive)
@@ -243,9 +283,9 @@ public class LemmingView : MonoBehaviour
         // Разворачиваем лемминга вперед в направлении бега
         transform.rotation = Quaternion.LookRotation(Vector3.forward);
         
-        // Выключаем подсветку и ауру — лемминга уже подобрали
-        DisableHighlight();
+        // Выключаем ауру — лемминга уже подобрали; обводка остаётся только при неуязвимости
         SetAuraActive(false);
+        UpdateInvincibilityOutline();
     }
 
     private void UpdateMovement()
