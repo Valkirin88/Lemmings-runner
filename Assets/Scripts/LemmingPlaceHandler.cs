@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,10 +10,13 @@ public class LemmingPlaceHandler : MonoBehaviour
     private LemmingsEventsHandler _lemmingsEventsHandler;
     private GameStatesUIMediator _gameStatesUIMediator;
     private LemmingPlaceView _lemmingPlaceView;
-    private Coroutine _repositionCoroutine;
+    private static LemmingPlaceHandler _activeInstance;
+
+    public static void RepositionFormationIfActive() => _activeInstance?.RepositionAllRunningLemmings();
 
     public void Initialize(GameStatesUIMediator gameStatesUIMediator, LemmingPlaceView lemmingPlaceView = null)
     {
+        _activeInstance = this;
         _gameStatesUIMediator = gameStatesUIMediator;
         _lemmingPlaceView = lemmingPlaceView;
         _lemmingsEventsHandler = _gameStatesUIMediator.LemmingsEventsHandler;
@@ -34,25 +36,28 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private void ReplaceLemmingsState(LemmingView lemmingView, int removedIndex)
     {
-        if (_repositionCoroutine != null)
-            StopCoroutine(_repositionCoroutine);
-        _repositionCoroutine = StartCoroutine(DelayedRepositionAll());
+        RepositionAllRunningLemmings();
     }
 
-    private IEnumerator DelayedRepositionAll()
+    private static bool ShouldOccupyFormationPlace(LemmingView view)
     {
-        yield return new WaitForSeconds(1f);
-        _repositionCoroutine = null;
+        return view != null && view.IsRun && !view.IsOnFire && !view.IsDead;
+    }
 
-        var views = _lemmingsEventsHandler.RunningLemmingViews;
+    private void RepositionAllRunningLemmings()
+    {
         for (int p = 0; p < _lemmingPlaces.Count; p++)
             _lemmingPlaces[p].IsEmpty = true;
 
         int placeIdx = 0;
-        foreach (var view in views)
+        foreach (var view in _lemmingsEventsHandler.RunningLemmingViews)
         {
-            if (view == null || placeIdx >= _lemmingPlaces.Count) break;
-            if (view.IsOnFire) continue;
+            if (!ShouldOccupyFormationPlace(view))
+                continue;
+
+            if (placeIdx >= _lemmingPlaces.Count)
+                break;
+
             var place = _lemmingPlaces[placeIdx];
             place.IsEmpty = false;
             view.RunningPlace = place.transform;
@@ -67,21 +72,27 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private int GetFormationIndex(LemmingView lemmingView)
     {
-        var views = _lemmingsEventsHandler.RunningLemmingViews;
         int formationIdx = 0;
-        for (int i = 0; i < views.Count; i++)
+        foreach (var view in _lemmingsEventsHandler.RunningLemmingViews)
         {
-            if (views[i] == lemmingView) return formationIdx;
-            if (!views[i].IsOnFire) formationIdx++;
+            if (view == lemmingView)
+                return formationIdx;
+
+            if (ShouldOccupyFormationPlace(view))
+                formationIdx++;
         }
+
         return -1;
     }
 
     private void SetNewPosition(LemmingView lemmingView)
     {
-        if (lemmingView.IsOnFire) return;
+        if (!ShouldOccupyFormationPlace(lemmingView))
+            return;
+
         int index = GetFormationIndex(lemmingView);
-        if (index < 0 || index >= _lemmingPlaces.Count) return;
+        if (index < 0 || index >= _lemmingPlaces.Count)
+            return;
 
         RunPlace place = _lemmingPlaces[index];
         place.IsEmpty = false;
@@ -100,8 +111,9 @@ public class LemmingPlaceHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (_repositionCoroutine != null)
-            StopCoroutine(_repositionCoroutine);
+        if (_activeInstance == this)
+            _activeInstance = null;
+
         _lemmingsEventsHandler.OnLemmingCountAdd -= PlaceNewLemmingState;
         _lemmingsEventsHandler.OnLemmingCountRemove -= ReplaceLemmingsState;
         

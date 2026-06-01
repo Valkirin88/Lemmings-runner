@@ -303,6 +303,7 @@ public class LemmingView : MonoBehaviour
         ReportDanger();
         RunningPlace = null;
         IsOnFire = true;
+        LemmingPlaceHandler.RepositionFormationIfActive();
         
        StartCoroutine(KillFromFireAfterDelay());
     }
@@ -325,6 +326,9 @@ public class LemmingView : MonoBehaviour
         // Делаем кинематическим
         Rigidbody.isKinematic = true;
         
+        RunningPlace = null;
+        LemmingPlaceHandler.RepositionFormationIfActive();
+
         // Уведомляем о захвате (для перестроения)
         OnLemmingCapturedByBird?.Invoke(this);
     }

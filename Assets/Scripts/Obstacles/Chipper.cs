@@ -86,6 +86,7 @@ public class Chipper : MonoBehaviour, IObstacle
 
         lemming.IsRun = true;
         lemming.IsScroll = false;
+        LemmingPlaceHandler.RepositionFormationIfActive();
     }
 
     private void KillLemming(LemmingView lemming)
@@ -110,7 +111,8 @@ public class Chipper : MonoBehaviour, IObstacle
                 lemming.IsRun = false;
                 lemming.IsScroll = false;
                 lemming.RunningPlace = null;
-                
+                LemmingPlaceHandler.RepositionFormationIfActive();
+
                 // Останавливаем физику
                 if (lemming.Rigidbody != null)
                 {

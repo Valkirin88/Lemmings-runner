@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: DestroyAllObstacles
   m_EditorClassIdentifier: Assembly-CSharp::AbilitiiesConfig
   _abilityId: 0
-  _image: {fileID: 21300000, guid: 630ef2ff4a21c7f4e960aaeb4ad9fecd, type: 3}
+  _image: {fileID: 21300000, guid: 365a1a3b8795c2e4ebe4b75b8c05c9a9, type: 3}
   _name: DestroyAllObstacles
   _durationTime: 10

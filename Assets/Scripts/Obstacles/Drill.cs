@@ -158,6 +158,7 @@ public class Drill : MonoBehaviour, IObstacle
         lemming.IsScroll = false;
         lemming.IsPushed = false;
         lemming.RunningPlace = null;
+        LemmingPlaceHandler.RepositionFormationIfActive();
 
         if (lemming.Animator != null)
             lemming.Animator.SetBool("IsRun", false);
