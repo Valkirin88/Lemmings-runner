@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Запись для спавна препятствия: префаб + минимальное кол-во очков для разблокировки.
+/// Запись для спавна препятствия: префаб + минимальное кол-во очков для разблокировки (если фазы не заданы).
 /// </summary>
 [System.Serializable]
 public class ObstacleSpawnEntry
@@ -16,9 +16,25 @@ public class ObstacleSpawnEntry
 }
 
 /// <summary>
+/// Фаза: в диапазоне очков могут спавниться только перечисленные препятствия.
+/// </summary>
+[System.Serializable]
+public class ObstacleScorePhase
+{
+    [Tooltip("С какого счёта (включительно)")]
+    public int minScore;
+
+    [Tooltip("До какого счёта (включительно). 0 — до конца игры")]
+    public int maxScore;
+
+    [Tooltip("Префабы препятствий, доступные только в этой фазе")]
+    public List<GameObject> obstacles = new List<GameObject>();
+}
+
+/// <summary>
 /// Спавнит префабы препятствий (IObstacle) и леммингов в заданной области с заданной вероятностью.
 /// Область задаётся через инспектор (центр + размер бокса).
-/// Каждый вид препятствий разблокируется при наборе заданного кол-ва очков.
+/// Препятствия: в заданных фазах очков — только выбранные; вне фаз — по minScoreToUnlock у каждой записи.
 /// </summary>
 public class RandomSpawner : MonoBehaviour
 {
@@ -33,8 +49,12 @@ public class RandomSpawner : MonoBehaviour
 
     [Header("Префабы препятствий")]
     [SerializeField]
-    [Tooltip("Список препятствий: префаб + минимальные очки для появления. При 0 очков доступны только записи с minScoreToUnlock = 0")]
+    [Tooltip("Список препятствий: префаб + мин. очки. Используется, если список фаз пуст")]
     private List<ObstacleSpawnEntry> _obstacleSpawnEntries = new List<ObstacleSpawnEntry>();
+
+    [SerializeField]
+    [Tooltip("Фазы по очкам: в диапазоне — только выбранные препятствия. Вне всех фаз — список выше по minScoreToUnlock. Если пусто — только список выше")]
+    private List<ObstacleScorePhase> _obstacleScorePhases = new List<ObstacleScorePhase>();
 
     [Header("Префабы леммингов")]
     [SerializeField]
@@ -141,6 +161,8 @@ public class RandomSpawner : MonoBehaviour
     {
         if (_obstacleSpawnEntries == null)
             _obstacleSpawnEntries = new List<ObstacleSpawnEntry>();
+        if (_obstacleScorePhases == null)
+            _obstacleScorePhases = new List<ObstacleScorePhase>();
     }
 #endif
 
@@ -225,21 +247,71 @@ public class RandomSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// Возвращает список записей препятствий, доступных при текущем счёте (префаб не null, есть IObstacle, счёт >= minScoreToUnlock).
+    /// Префабы препятствий при текущем счёте: активная фаза — только её список; иначе — minScoreToUnlock.
     /// </summary>
-    private List<ObstacleSpawnEntry> GetAvailableObstacleEntries()
+    private List<GameObject> GetAvailableObstaclePrefabs()
     {
         int score = _scoreProvider != null ? _scoreProvider.Score : 0;
-        var list = new List<ObstacleSpawnEntry>();
-        if (_obstacleSpawnEntries == null) return list;
+
+        if (_obstacleScorePhases != null && _obstacleScorePhases.Count > 0)
+        {
+            var phase = GetActiveScorePhase(score);
+            if (phase != null)
+                return GetObstaclePrefabsFromPhase(phase);
+        }
+
+        return GetObstaclePrefabsFromEntries(score);
+    }
+
+    private List<GameObject> GetObstaclePrefabsFromPhase(ObstacleScorePhase phase)
+    {
+        var list = new List<GameObject>();
+        if (phase?.obstacles == null)
+            return list;
+
+        foreach (var prefab in phase.obstacles)
+        {
+            if (prefab != null && prefab.GetComponentInChildren<IObstacle>() != null)
+                list.Add(prefab);
+        }
+
+        return list;
+    }
+
+    private List<GameObject> GetObstaclePrefabsFromEntries(int score)
+    {
+        var list = new List<GameObject>();
+        if (_obstacleSpawnEntries == null)
+            return list;
+
         foreach (var entry in _obstacleSpawnEntries)
         {
             if (entry?.prefab == null || entry.prefab.GetComponentInChildren<IObstacle>() == null)
                 continue;
-            if (score >= entry.minScoreToUnlock)
-                list.Add(entry);
+            if (score < entry.minScoreToUnlock)
+                continue;
+            list.Add(entry.prefab);
         }
+
         return list;
+    }
+
+    private ObstacleScorePhase GetActiveScorePhase(int score)
+    {
+        ObstacleScorePhase best = null;
+        foreach (var phase in _obstacleScorePhases)
+        {
+            if (phase == null)
+                continue;
+            if (score < phase.minScore)
+                continue;
+            if (phase.maxScore > 0 && score > phase.maxScore)
+                continue;
+            if (best == null || phase.minScore > best.minScore)
+                best = phase;
+        }
+
+        return best;
     }
 
     /// <summary>
@@ -247,7 +319,7 @@ public class RandomSpawner : MonoBehaviour
     /// </summary>
     private void SpawnSingle()
     {
-        var availableObstacles = GetAvailableObstacleEntries();
+        var availableObstacles = GetAvailableObstaclePrefabs();
         float lemmingProbability = GetLemmingSpawnProbability();
         bool spawnObstacle = availableObstacles.Count > 0 && Random.value < _obstacleSpawnProbability;
         bool spawnLemming = _lemmingPrefabs.Count > 0 && Random.value < lemmingProbability;
@@ -287,7 +359,7 @@ public class RandomSpawner : MonoBehaviour
         int cellsZ = Mathf.Max(1, Mathf.FloorToInt(_spawnAreaSize.z / _gridCellSize));
 
         Vector3 min = bounds.min;
-        var availableObstacles = GetAvailableObstacleEntries();
+        var availableObstacles = GetAvailableObstaclePrefabs();
         bool anyObstacleAvailable = availableObstacles.Count > 0;
         float lemmingProbability = GetLemmingSpawnProbability();
 
@@ -449,11 +521,10 @@ public class RandomSpawner : MonoBehaviour
         spawnedPosition = position;
         isBonfire = false;
 
-        var available = GetAvailableObstacleEntries();
+        var available = GetAvailableObstaclePrefabs();
         if (available.Count == 0) return false;
 
-        var entry = available[Random.Range(0, available.Count)];
-        var prefab = entry.prefab;
+        var prefab = available[Random.Range(0, available.Count)];
         if (prefab == null || prefab.GetComponentInChildren<IObstacle>() == null)
         {
             Debug.LogWarning($"[RandomSpawner] Prefab {prefab?.name} не содержит IObstacle, пропуск.");

@@ -844,6 +844,31 @@ MonoBehaviour:
     minScoreToUnlock: 280
   - prefab: {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
     minScoreToUnlock: 320
+  _obstacleScorePhases:
+  - minScore: 340
+    maxScore: 380
+    obstacles:
+    - {fileID: 16794479506804026, guid: 024f5f80e71ac314580f05b70774053c, type: 3}
+  - minScore: 380
+    maxScore: 420
+    obstacles:
+    - {fileID: 6918237779229540707, guid: 95892bd777a00de45b0e1f56d8f1d394, type: 3}
+  - minScore: 440
+    maxScore: 460
+    obstacles:
+    - {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
+  - minScore: 480
+    maxScore: 500
+    obstacles:
+    - {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
+  - minScore: 480
+    maxScore: 500
+    obstacles:
+    - {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
+  - minScore: 480
+    maxScore: 500
+    obstacles:
+    - {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
   _lemmingPrefabs:
   - {fileID: 8283856537501685944, guid: fdc36fc87bf036945b4edc9a8e43ae49, type: 3}
   - {fileID: 8283856537501685944, guid: edd74249871871549865a776bf39638d, type: 3}
@@ -879,7 +904,7 @@ MonoBehaviour:
   _gridCellSize: 2
   _scoreProvider: {fileID: 1954252298}
   _useScalingDifficulty: 1
-  _scoreThresholds: 000000001400000028000000320000005000000064000000780000008c000000a0000000b4000000c8000000dc000000f000000004010000180100002c01000040010000540100006801000090010000a4010000b8010000cc010000
+  _scoreThresholds: 000000001400000028000000320000005000000064000000780000008c000000a0000000b4000000c8000000dc000000f000000004010000180100002c0100004001000054010000680100007c010000a4010000b8010000c2010000cc010000d6010000
   _intervalSeconds:
   - 2
   - 1.4
@@ -898,10 +923,12 @@ MonoBehaviour:
   - 1.2
   - 0.8
   - 1.1
-  - 0.7
-  - 0.7
-  - 1.5
   - 1
+  - 0.7
+  - 1
+  - 0.6
+  - 0.7
+  - 0.5
   - 0.7
   - 0.5
   _spawnedObjectsParent: {fileID: 0}

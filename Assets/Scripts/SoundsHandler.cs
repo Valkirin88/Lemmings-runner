@@ -16,6 +16,10 @@ public class SoundsHandler : MonoBehaviour
     [Min(0f)]
     private float _screamCooldownSeconds = 0.5f;
     [SerializeField]
+    [Range(0f, 1f)]
+    [Tooltip("Громкость всех криков в списке, кроме первого")]
+    private float _screamVolumeExceptFirst = 0.8f;
+    [SerializeField]
     private List<AudioClip> _bloodSplatterClips;
     [SerializeField]
     private AudioSource _audioSource;
@@ -52,7 +56,9 @@ public class SoundsHandler : MonoBehaviour
             return;
 
         _lastScreamTime = Time.time;
-        _screamAudioSource.clip = _screamClips[Random.Range(0, _screamClips.Count)];
+        int clipIndex = Random.Range(0, _screamClips.Count);
+        _screamAudioSource.clip = _screamClips[clipIndex];
+        _screamAudioSource.volume = clipIndex == 0 ? 1f : _screamVolumeExceptFirst;
         _screamAudioSource.Play();
     }
 
