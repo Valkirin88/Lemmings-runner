@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ScoreHandler : IDisposable
 {
-    public event Action<int> OnScoreChanged;
+    public event Action<int, int> OnScoreChanged;
     
     private readonly LemmingsEventsHandler _lemmingsEventsHandler;
     private float _currentTimeforScore;
@@ -22,7 +22,7 @@ public class ScoreHandler : IDisposable
     private void IncreaseScore(int score)
     {
         _score = Score + score;
-        OnScoreChanged?.Invoke(_score);
+        OnScoreChanged?.Invoke(_score, score);
     }
 
     public void Update()

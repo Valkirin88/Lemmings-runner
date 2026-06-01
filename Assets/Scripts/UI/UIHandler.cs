@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -49,8 +50,17 @@ public class UIHandler : MonoBehaviour
     [SerializeField]
     private GameObject _finishObject;
 
-    
-    
+    [Header("Тряска очков")]
+    [SerializeField]
+    [Tooltip("Минимальный прирост за раз, при котором очки трясутся (трясёт при приросте > этого значения)")]
+    private int _scoreShakeThreshold = 4;
+    [SerializeField]
+    private float _scoreShakeDuration = 0.4f;
+    [SerializeField]
+    private float _scoreShakeStrength = 25f;
+    [SerializeField]
+    private int _scoreShakeVibrato = 18;
+
     public GameState GameState;
     
     private int _lastDisplayedQuantity = -1;
@@ -58,6 +68,9 @@ public class UIHandler : MonoBehaviour
     private int _currentLevel;
     
     private int _score;
+    private Vector2 _scoreTextBasePosition;
+    private bool _scoreBasePositionCaptured;
+    private Tween _scoreShakeTween;
 
     public int Score => _score;
 
@@ -71,7 +84,7 @@ public class UIHandler : MonoBehaviour
         _restartButtonObject.SetActive(false);
         GameState = GameState.Game;
         _currentLevel = SceneManager.GetActiveScene().buildIndex;
-        ShowScore(_score);
+        ShowScore(_score, 0);
     }
 
     private void ShowPause()
@@ -105,10 +118,36 @@ public class UIHandler : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void ShowScore(int score)
+    public void ShowScore(int score, int added)
     {
         _score = score;
         _currentScoreText.text = Score.ToString();
+
+        if (added > _scoreShakeThreshold)
+            ShakeScoreText();
+    }
+
+    private void ShakeScoreText()
+    {
+        if (_currentScoreText == null)
+            return;
+
+        var rectTransform = _currentScoreText.rectTransform;
+
+        if (!_scoreBasePositionCaptured)
+        {
+            _scoreTextBasePosition = rectTransform.anchoredPosition;
+            _scoreBasePositionCaptured = true;
+        }
+
+        _scoreShakeTween?.Kill();
+        rectTransform.anchoredPosition = _scoreTextBasePosition;
+
+        _scoreShakeTween = rectTransform
+            .DOShakeAnchorPos(_scoreShakeDuration, _scoreShakeStrength, _scoreShakeVibrato, 90f, false, true)
+            .SetUpdate(true)
+            .OnComplete(() => rectTransform.anchoredPosition = _scoreTextBasePosition)
+            .OnKill(() => rectTransform.anchoredPosition = _scoreTextBasePosition);
     }
 
     public void ShowCurrentQuantity(int quantity)
@@ -166,6 +205,8 @@ public class UIHandler : MonoBehaviour
 
     private void OnDestroy()
     {
+        _scoreShakeTween?.Kill();
+
         _restartButton.onClick.RemoveListener(RestartGame);
         _pauseButton.onClick.RemoveListener(ShowPause);
         _mainMenuButton.onClick.RemoveListener(ShowMainMenu);
