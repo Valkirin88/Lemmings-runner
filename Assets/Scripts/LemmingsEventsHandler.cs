@@ -16,28 +16,6 @@ public class LemmingsEventsHandler
     private LemmingView _leaderLemmingView;
     public List<LemmingView> RunningLemmingViews => _runningLemmingViews;
 
-    /// <summary>
-    /// Живые лемминги в списке. Удаляет «битые» ссылки (уничтожен без Kill).
-    /// </summary>
-    public int GetLivingLemmingCount()
-    {
-        int count = 0;
-        for (int i = _runningLemmingViews.Count - 1; i >= 0; i--)
-        {
-            var view = _runningLemmingViews[i];
-            if (view == null)
-            {
-                _runningLemmingViews.RemoveAt(i);
-                continue;
-            }
-
-            if (!view.IsDead)
-                count++;
-        }
-
-        return count;
-    }
-
     public LemmingsEventsHandler(LemmingView leaderLemmingView)
     {
         _runningLemmingViews = new List<LemmingView>();
@@ -82,10 +60,7 @@ public class LemmingsEventsHandler
     private void RemoveLemmingInList(LemmingView lemmingView)
     {
         int removedIndex = _runningLemmingViews.IndexOf(lemmingView);
-        if (removedIndex < 0)
-            return;
-
-        RunningLemmingViews.RemoveAt(removedIndex);
+        RunningLemmingViews.Remove(lemmingView);
         UnsubscribeOnNewLemmingsCaught(lemmingView);
         UnsubscribeScoreBonusGet(lemmingView);
         lemmingView.OnLemmingOnDanger -= FireLemming;
