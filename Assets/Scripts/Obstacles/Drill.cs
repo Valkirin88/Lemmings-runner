@@ -75,14 +75,14 @@ public class Drill : MonoBehaviour, IObstacle
                 continue;
             }
 
-            lemming.transform.localPosition = state.LocalStickOffset;
-            lemming.transform.localRotation = state.LocalStickRotation;
-
             if (lemming.IsDead)
             {
                 _caughtLemmings.RemoveAt(i);
                 continue;
             }
+
+            lemming.transform.localPosition = state.LocalStickOffset;
+            lemming.transform.localRotation = state.LocalStickRotation;
 
             // Горящий лемминг умирает от огня (KillFromFireAfterDelay), не от сверла
             if (lemming.IsOnFire)
@@ -190,7 +190,8 @@ public class Drill : MonoBehaviour, IObstacle
         if (lemming.transform.parent == transform)
             lemming.transform.SetParent(null, true);
 
-        lemming.KillWithotBlood();
+        // Захваченный лемминг умирает даже если включили неуязвимость после захвата.
+        lemming.KillWithotBlood(ignoreInvincibility: true);
     }
 
     private void PlayCatchEffects(Vector3 worldPosition)

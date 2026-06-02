@@ -156,6 +156,8 @@ public class LemmingView : MonoBehaviour
 
     private void Update()
     {
+        RecoverIfStuck();
+
         if (IsRun)
         {
             Animator.SetBool("IsRun", true);
@@ -169,6 +171,27 @@ public class LemmingView : MonoBehaviour
                 transform.rotation = Quaternion.LookRotation(Vector3.back);
             }
         }
+    }
+
+    /// <summary>
+    /// Подстраховка: живой подобранный лемминг застрял в «лимбо» (не бежит, не скроллится,
+    /// не горит, не подброшен и не пойман препятствием) — возвращаем его в бег,
+    /// иначе он навсегда висит в списке и блокирует Game Over.
+    /// Пойманные препятствием лемминги кинематичны — их не трогаем.
+    /// </summary>
+    private void RecoverIfStuck()
+    {
+        if (IsDead || IsRun || IsScroll || IsOnFire || IsPushed)
+            return;
+
+        if (!_wasPickedUp)
+            return;
+
+        if (Rigidbody == null || Rigidbody.isKinematic)
+            return;
+
+        IsRun = true;
+        LemmingPlaceHandler.RepositionFormationIfActive();
     }
 
     private void FixedUpdate()

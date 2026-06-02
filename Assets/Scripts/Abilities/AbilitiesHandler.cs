@@ -20,8 +20,7 @@ public class AbilitiesHandler : IDisposable
     {
         // Если нет леммингов, игра по сути в состоянии "всё умерли" — абилку не запускаем.
         return _lemmingsEventsHandler != null
-               && _lemmingsEventsHandler.RunningLemmingViews != null
-               && _lemmingsEventsHandler.RunningLemmingViews.Count > 0;
+               && _lemmingsEventsHandler.GetLivingLemmingCount() > 0;
     }
     
     

@@ -172,7 +172,8 @@ public class Bird : MonoBehaviour, IObstacle
         if (_targetLemming != null)
         {
             _targetLemming.transform.SetParent(null);
-            _targetLemming.Kill();
+            // Захваченный лемминг умирает даже если включили неуязвимость после захвата.
+            _targetLemming.Kill(ignoreInvincibility: true);
         }
         
         _targetLemming = null;
@@ -215,10 +216,13 @@ public class Bird : MonoBehaviour, IObstacle
 
     public void OnDestroy()
     {
-        if (_isCarrying && _targetLemming != null)
+        if (_isCarrying && _targetLemming != null && !_targetLemming.IsDead)
         {
-            UnityEngine.Debug.Log($"[Bird] Птица уничтожена с леммингом (лемминг не был удалён из списка — возможен пропуск Game Over)");
+            _targetLemming.transform.SetParent(null);
+            _targetLemming.KillWithotBlood(ignoreInvincibility: true);
         }
+
+        _targetLemming = null;
         OnDestroyed?.Invoke(gameObject);
     }
 

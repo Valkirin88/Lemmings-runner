@@ -14,9 +14,10 @@ public class ObstaclesDestroyer : MonoBehaviour
         }
 
         if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView)
+            && !lemmingView.IsDead
             && !lemmingView.IsInvincible)
         {
-            Destroy(lemmingView.gameObject);
+            lemmingView.Kill(destroyImmediately: true);
         }
 
         if (other.TryGetComponent<AppleCurrency>(out AppleCurrency scoreBonus))
