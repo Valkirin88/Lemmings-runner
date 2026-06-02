@@ -215,10 +215,13 @@ public class Bird : MonoBehaviour, IObstacle
 
     public void OnDestroy()
     {
-        if (_isCarrying && _targetLemming != null)
+        if (_isCarrying && _targetLemming != null && !_targetLemming.IsDead)
         {
-            UnityEngine.Debug.Log($"[Bird] Птица уничтожена с леммингом (лемминг не был удалён из списка — возможен пропуск Game Over)");
+            _targetLemming.transform.SetParent(null);
+            _targetLemming.KillWithotBlood();
         }
+
+        _targetLemming = null;
         OnDestroyed?.Invoke(gameObject);
     }
 

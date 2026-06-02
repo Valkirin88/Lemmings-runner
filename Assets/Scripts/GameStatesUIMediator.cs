@@ -62,7 +62,7 @@ public class GameStatesUIMediator : IDisposable
 
     private void CheckGameOver()
     {
-        _lemmingQuantity = LemmingsEventsHandler.RunningLemmingViews.Count;
+        _lemmingQuantity = LemmingsEventsHandler.GetLivingLemmingCount();
 
         if (_gameState != GameState.Game)
         {

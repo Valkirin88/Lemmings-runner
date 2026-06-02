@@ -9,6 +9,8 @@ using UnityEngine.UI;
 
 public class UIHandler : MonoBehaviour
 {
+    public event Action OnGameOver;
+    
     [SerializeField]
     private TMP_Text _currentScoreText;
 
