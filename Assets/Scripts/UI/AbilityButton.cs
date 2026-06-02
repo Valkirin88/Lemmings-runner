@@ -53,6 +53,9 @@ public class AbilityButton : MonoBehaviour
    {
       if (!_isPushed)
       {
+         if (_abilitiesHandler != null && !_abilitiesHandler.CanActivateAbility())
+            return;
+         
          _abilitiesHandler.ActivateAbility();
          _currentAbilityImage.enabled = false;
          _isPushed = true;
@@ -78,8 +81,14 @@ public class AbilityButton : MonoBehaviour
 
    private void Update()
    {
-      if (!_isPushed) return;
-      
+      // Пока нет кулдауна — следим, есть ли вообще живые лемминги.
+      if (!_isPushed)
+      {
+         if (_abilitiesHandler != null)
+            _abilityButton.interactable = _abilitiesHandler.CanActivateAbility();
+         return;
+      }
+
       if (_cooldownTimer > 0)
       {
          _cooldownTimer -= Time.deltaTime;

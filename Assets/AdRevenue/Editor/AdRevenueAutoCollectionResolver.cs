@@ -44,6 +44,16 @@ namespace Io.AppMetrica.AdRevenueAdapter.Editor {
         }
 
         private static void ApplyDefines() {
+            var autoEnabledDefines = SupportedAdNetworks.Values
+                .Where(adNetwork => adNetwork.IsAvailable)
+                .Select(adNetwork => adNetwork.AutoEnabledDefineName)
+                .ToArray();
+
+            var autoDisabledDefines = SupportedAdNetworks.Values
+                .Where(adNetwork => !adNetwork.IsAvailable)
+                .Select(adNetwork => adNetwork.AutoEnabledDefineName)
+                .ToArray();
+
             foreach (var supportedTarget in SupportedBuildTargets) {
 #if UNITY_2021_3_OR_NEWER
                 PlayerSettings.GetScriptingDefineSymbols(supportedTarget, out var currentDefines);
@@ -52,16 +62,6 @@ namespace Io.AppMetrica.AdRevenueAdapter.Editor {
                     .GetScriptingDefineSymbolsForGroup(supportedTarget)
                     .Split(DefineSplits, System.StringSplitOptions.RemoveEmptyEntries);
 #endif
-                var autoEnabledDefines = SupportedAdNetworks.Values
-                    .Where(adNetwork => adNetwork.IsAvailable)
-                    .Select(adNetwork => adNetwork.AutoEnabledDefineName)
-                    .ToArray();
-                
-                var autoDisabledDefines = SupportedAdNetworks.Values
-                    .Where(adNetwork => !adNetwork.IsAvailable)
-                    .Select(adNetwork => adNetwork.AutoEnabledDefineName)
-                    .ToArray();
-
                 var newDefines = currentDefines
                     .Union(autoEnabledDefines)
                     .Except(autoDisabledDefines)
@@ -71,7 +71,6 @@ namespace Io.AppMetrica.AdRevenueAdapter.Editor {
 #else
                 PlayerSettings.SetScriptingDefineSymbolsForGroup(supportedTarget, string.Join(";", newDefines));
 #endif
-                AssetDatabase.SaveAssets();
             }
         }
     }

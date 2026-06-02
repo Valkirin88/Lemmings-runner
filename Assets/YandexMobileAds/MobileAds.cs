@@ -31,24 +31,34 @@ namespace YandexMobileAds
         }
 
         /// <summary>
-        /// The SDK automatically collects location data if the user allowed the app to track the location. This option is disabled by default.
+        /// Enables or disables location tracking for ad loading. This option is disabled by default.
         /// </summary>
-        /// <param name="consent">Enables or disables collecting location data.</param>
-        public static void SetLocationConsent(bool consent)
+        /// <param name="enabled">Enables or disables location tracking.</param>
+        public static void SetLocationTracking(bool enabled)
         {
             IMobileAdsClient mobileAds = YandexMobileAdsClientFactory.CreateMobileAdsClient();
-            mobileAds.SetLocationConsent(consent);
+            mobileAds.SetLocationTracking(enabled);
         }
 
         /// <summary>
-        /// The SDK automatically collects personal data if the user didn't restrict them. By default restriction is disabled
+        /// Sets whether the user is age-restricted. If true, personal data will not be collected.
         /// </summary>
-        /// <param name="ageRestrictedUser">Restrict or allow collecting personal data.</param>
-        public static void SetAgeRestrictedUser(bool ageRestrictedUser)
+        /// <param name="ageRestricted">Restrict or allow collecting personal data.</param>
+        public static void SetAgeRestricted(bool ageRestricted)
         {
             IMobileAdsClient mobileAds = YandexMobileAdsClientFactory.CreateMobileAdsClient();
-            mobileAds.SetAgeRestrictedUser(ageRestrictedUser);
+            mobileAds.SetAgeRestricted(ageRestricted);
         }
+
+        /// <summary>
+        /// Устаревшее имя. Используй <see cref="SetLocationTracking"/>.
+        /// </summary>
+        public static void SetLocationConsent(bool consent) => SetLocationTracking(consent);
+
+        /// <summary>
+        /// Устаревшее имя. Используй <see cref="SetAgeRestricted"/>.
+        /// </summary>
+        public static void SetAgeRestrictedUser(bool ageRestrictedUser) => SetAgeRestricted(ageRestrictedUser);
 
         /// <summary>
         /// Shows Debug Panel. Available only for Android

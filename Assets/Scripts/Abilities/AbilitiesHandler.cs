@@ -15,6 +15,14 @@ public class AbilitiesHandler : IDisposable
     private readonly AudioClip _destroyAllObstaclesClip;
     
     private IAbility _currentAbility;
+
+    public bool CanActivateAbility()
+    {
+        // Если нет леммингов, игра по сути в состоянии "всё умерли" — абилку не запускаем.
+        return _lemmingsEventsHandler != null
+               && _lemmingsEventsHandler.RunningLemmingViews != null
+               && _lemmingsEventsHandler.RunningLemmingViews.Count > 0;
+    }
     
     
     public AbilitiesHandler(ObstaclesSet obstaclesSet, RandomSpawner randomSpawner, LemmingPlaceHandler lemmingPlaceHandler,
