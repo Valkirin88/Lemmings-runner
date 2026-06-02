@@ -15,4 +15,4 @@ MonoBehaviour:
   _abilityId: 2
   _image: {fileID: 21300000, guid: 77e380f465163db4d8342cdc602a222d, type: 3}
   _name: IncreaseLemmingsNumber
-  _durationTime: 5
+  _durationTime: 10
