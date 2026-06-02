@@ -12,7 +12,7 @@ public class GameStatesUIMediator : IDisposable
     private int _lemmingQuantity;
     private GameState _gameState;
     private float _gameOverDelayRemaining = -1f;
-    private const float GameOverDelaySeconds = 1f;
+    private const float GameOverDelaySeconds = 0.5f;
     
     public LemmingsEventsHandler LemmingsEventsHandler => _lemmingsEventsHandler;
 

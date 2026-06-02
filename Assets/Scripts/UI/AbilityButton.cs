@@ -54,14 +54,19 @@ public class AbilityButton : MonoBehaviour
       if (!_isPushed)
       {
          if (_abilitiesHandler != null && !_abilitiesHandler.CanActivateAbility())
-            return;
-         
-         _abilitiesHandler.ActivateAbility();
-         _currentAbilityImage.enabled = false;
-         _isPushed = true;
-         _cooldownImage.fillAmount = 1;
-         _cooldownTimer = _cooldownTime;
-         _abilityButton.interactable = false;
+         {
+            _currentAbilityImage.enabled = false;
+            _abilityButton.interactable = false;
+         }
+         else
+         {
+            _abilitiesHandler.ActivateAbility();
+            _currentAbilityImage.enabled = false;
+            _isPushed = true;
+            _cooldownImage.fillAmount = 1;
+            _cooldownTimer = _cooldownTime;
+            _abilityButton.interactable = false;
+         }
       }
    }
 
