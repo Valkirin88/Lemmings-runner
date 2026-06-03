@@ -17,7 +17,8 @@ public class ObstaclesDestroyer : MonoBehaviour
             && !lemmingView.IsDead
             && !lemmingView.IsInvincible)
         {
-            lemmingView.Kill(destroyImmediately: true);
+            // Зона «сброса» сзади отряда — не игровая смерть, без капель на UI
+            lemmingView.KillWithotBlood();
         }
 
         if (other.TryGetComponent<AppleCurrency>(out AppleCurrency scoreBonus))
