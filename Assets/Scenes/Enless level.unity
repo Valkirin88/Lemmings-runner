@@ -853,17 +853,45 @@ MonoBehaviour:
     maxScore: 420
     obstacles:
     - {fileID: 6918237779229540707, guid: 95892bd777a00de45b0e1f56d8f1d394, type: 3}
-  - minScore: 480
+  - minScore: 460
     maxScore: 500
     obstacles:
     - {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
-  - minScore: 440
-    maxScore: 460
+  - minScore: 520
+    maxScore: 560
     obstacles:
-    - {fileID: 6320067290962624957, guid: f6a8d03f1b948994d8c125ee256bbb7c, type: 3}
-  - minScore: 480
-    maxScore: 520
+    - {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
+  - minScore: 580
+    maxScore: 610
     obstacles:
+    - {fileID: 6513282058118621707, guid: d960023ef2321c04bad5e3a76e94496e, type: 3}
+  - minScore: 630
+    maxScore: 670
+    obstacles:
+    - {fileID: 6721551993907192608, guid: a3bb4e83ec08d464d8aaf766bdcdd0bf, type: 3}
+  - minScore: 690
+    maxScore: 730
+    obstacles:
+    - {fileID: 2903682529211886889, guid: d8d6346b90fca1d46b184fe4f9f15c0b, type: 3}
+    - {fileID: 6721551993907192608, guid: fd9ef35f4f8033242ae743f2859f26e6, type: 3}
+  - minScore: 750
+    maxScore: 790
+    obstacles:
+    - {fileID: 6721551993907192608, guid: a3bb4e83ec08d464d8aaf766bdcdd0bf, type: 3}
+    - {fileID: 6721551993907192608, guid: fd9ef35f4f8033242ae743f2859f26e6, type: 3}
+  - minScore: 810
+    maxScore: 850
+    obstacles:
+    - {fileID: 2903682529211886889, guid: d8d6346b90fca1d46b184fe4f9f15c0b, type: 3}
+    - {fileID: 3532555430189200272, guid: 88585395a53f7e2469773f64bc64f993, type: 3}
+  - minScore: 920
+    maxScore: 940
+    obstacles:
+    - {fileID: 7045587940966926872, guid: 4e569a7139dcc1641a615c576bc23862, type: 3}
+  - minScore: 960
+    maxScore: 1000
+    obstacles:
+    - {fileID: 2903682529211886889, guid: d8d6346b90fca1d46b184fe4f9f15c0b, type: 3}
     - {fileID: 6513282058118621707, guid: d960023ef2321c04bad5e3a76e94496e, type: 3}
   _lemmingPrefabs:
   - {fileID: 8283856537501685944, guid: fdc36fc87bf036945b4edc9a8e43ae49, type: 3}
@@ -900,40 +928,107 @@ MonoBehaviour:
   _gridCellSize: 2
   _scoreProvider: {fileID: 1954252298}
   _useScalingDifficulty: 1
-  _scoreThresholds: 000000001400000028000000320000005000000064000000780000008c000000a0000000b4000000c8000000dc000000f000000004010000180100002c0100004001000054010000680100007c010000a4010000b8010000c2010000cc010000d6010000e0010000ea010000f4010000fe01000008020000120200001c020000
-  _intervalSeconds:
-  - 2
-  - 1.4
-  - 1.8
-  - 1.3
-  - 1.7
-  - 1.2
-  - 1.6
-  - 1.1
-  - 1.5
-  - 1
-  - 1.4
-  - 0.9
-  - 1.3
-  - 0.8
-  - 1.2
-  - 0.8
-  - 1.1
-  - 1
-  - 0.7
-  - 1
-  - 0.6
-  - 0.7
-  - 0.5
-  - 0.7
-  - 0.5
-  - 0.8
-  - 0.7
-  - 0.6
-  - 0.5
-  - 0.7
-  - 0.6
-  - 0.5
+  _spawnIntervals:
+  - score: 0
+    interval: 2
+  - score: 20
+    interval: 1.4
+  - score: 40
+    interval: 1.8
+  - score: 50
+    interval: 1.3
+  - score: 80
+    interval: 1.7
+  - score: 100
+    interval: 1.2
+  - score: 120
+    interval: 1.6
+  - score: 140
+    interval: 1.1
+  - score: 160
+    interval: 1.5
+  - score: 180
+    interval: 1
+  - score: 200
+    interval: 1.4
+  - score: 220
+    interval: 0.9
+  - score: 240
+    interval: 1.3
+  - score: 260
+    interval: 0.8
+  - score: 280
+    interval: 1.2
+  - score: 300
+    interval: 0.8
+  - score: 320
+    interval: 1.1
+  - score: 340
+    interval: 1
+  - score: 360
+    interval: 0.8
+  - score: 380
+    interval: 1
+  - score: 400
+    interval: 0.8
+  - score: 420
+    interval: 1
+  - score: 460
+    interval: 1
+  - score: 480
+    interval: 0.8
+  - score: 500
+    interval: 1.3
+  - score: 520
+    interval: 1
+  - score: 540
+    interval: 0.8
+  - score: 560
+    interval: 1.3
+  - score: 510
+    interval: 0.5
+  - score: 580
+    interval: 1
+  - score: 590
+    interval: 0.8
+  - score: 610
+    interval: 1.3
+  - score: 630
+    interval: 1
+  - score: 650
+    interval: 0.8
+  - score: 670
+    interval: 1.3
+  - score: 690
+    interval: 1
+  - score: 710
+    interval: 0.8
+  - score: 730
+    interval: 1.3
+  - score: 750
+    interval: 1
+  - score: 770
+    interval: 0.8
+  - score: 790
+    interval: 1.3
+  - score: 810
+    interval: 1
+  - score: 830
+    interval: 0.8
+  - score: 850
+    interval: 1.3
+  - score: 920
+    interval: 1
+  - score: 930
+    interval: 0.8
+  - score: 940
+    interval: 1.3
+  - score: 960
+    interval: 1
+  - score: 980
+    interval: 0.8
+  - score: 1000
+    interval: 1.3
   _spawnedObjectsParent: {fileID: 0}
   _obstaclesSet: {fileID: 2132151162}
   _minDistanceToObstacles: 1.5

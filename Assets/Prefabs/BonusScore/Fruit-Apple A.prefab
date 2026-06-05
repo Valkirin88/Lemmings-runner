@@ -73,6 +73,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreBonus
   _score: 5
+  _shrinkDuration: 0.25
+  _shrinkRotationMultiplier: 6
+  _followOffset: {x: 0, y: 0.4, z: 0}
 --- !u!1 &4871131331328621852
 GameObject:
   m_ObjectHideFlags: 0

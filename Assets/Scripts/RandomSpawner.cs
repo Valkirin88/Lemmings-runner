@@ -16,6 +16,19 @@ public class ObstacleSpawnEntry
 }
 
 /// <summary>
+/// Пара «очки → интервал спавна». В инспекторе порог и интервал лежат рядом в одном элементе.
+/// </summary>
+[System.Serializable]
+public class SpawnIntervalEntry
+{
+    [Tooltip("Кол-во очков (порог)")]
+    public int score;
+
+    [Tooltip("Интервал спавна в секундах при этом счёте")]
+    public float interval = 1f;
+}
+
+/// <summary>
 /// Фаза: в диапазоне очков могут спавниться только перечисленные препятствия.
 /// </summary>
 [System.Serializable]
@@ -122,12 +135,33 @@ public class RandomSpawner : MonoBehaviour
     private bool _useScalingDifficulty = true;
 
     [SerializeField]
-    [Tooltip("Пороги очков (0, 10, 50, 100...)")]
-    private int[] _scoreThresholds = { 0, 10, 50, 100 };
+    [Tooltip("Пары «очки → интервал спавна». Порог и интервал лежат рядом в одном элементе. " +
+             "Между порогами интервал интерполируется линейно. Порядок по очкам не важен — сортируется автоматически.")]
+    private List<SpawnIntervalEntry> _spawnIntervals = new List<SpawnIntervalEntry>
+    {
+        new SpawnIntervalEntry { score = 0, interval = 2f },
+        new SpawnIntervalEntry { score = 10, interval = 1f },
+        new SpawnIntervalEntry { score = 50, interval = 0.5f },
+        new SpawnIntervalEntry { score = 100, interval = 0.3f },
+    };
 
     [SerializeField]
-    [Tooltip("Интервал спавна в сек для каждого порога (2, 1, 0.5, 0.3...)")]
-    private float[] _intervalSeconds = { 2f, 1f, 0.5f, 0.3f };
+    [Min(1)]
+    [Tooltip("Каждые столько очков интервал спавна дополнительно уменьшается на «шаг» ниже")]
+    private int _intervalDecreaseScoreStep = 1000;
+
+    [SerializeField]
+    [Min(0f)]
+    [Tooltip("На сколько секунд уменьшается интервал за каждую набранную «ступень» очков")]
+    private float _intervalDecreasePerStep = 0.1f;
+
+    [SerializeField]
+    [Min(0.05f)]
+    [Tooltip("Нижняя граница интервала спавна — ниже не опускается")]
+    private float _minSpawnInterval = 0.1f;
+
+    private int[] _intervalScoresCache;
+    private float[] _intervalValuesCache;
 
     [Header("Опции")]
     [SerializeField]
@@ -168,6 +202,7 @@ public class RandomSpawner : MonoBehaviour
 
     private void Start()
     {
+        RebuildIntervalCache();
         Spawn();
 
         if (_useScalingDifficulty)
@@ -176,9 +211,46 @@ public class RandomSpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Строит отсортированные по очкам массивы из списка пар для интерполяции интервала.
+    /// </summary>
+    private void RebuildIntervalCache()
+    {
+        if (_spawnIntervals == null || _spawnIntervals.Count == 0)
+        {
+            _intervalScoresCache = new int[0];
+            _intervalValuesCache = new float[0];
+            return;
+        }
+
+        var sorted = new List<SpawnIntervalEntry>(_spawnIntervals);
+        sorted.Sort((a, b) => a.score.CompareTo(b.score));
+
+        _intervalScoresCache = new int[sorted.Count];
+        _intervalValuesCache = new float[sorted.Count];
+        for (int i = 0; i < sorted.Count; i++)
+        {
+            _intervalScoresCache[i] = sorted[i].score;
+            _intervalValuesCache[i] = sorted[i].interval;
+        }
+    }
+
     private float GetSpawnInterval()
     {
-        return LerpValueByScore(_scoreThresholds, _intervalSeconds, fallback: 2f);
+        if (_intervalScoresCache == null)
+            RebuildIntervalCache();
+
+        float interval = LerpValueByScore(_intervalScoresCache, _intervalValuesCache, fallback: 2f);
+
+        // Каждые _intervalDecreaseScoreStep очков дополнительно убавляем интервал
+        if (_intervalDecreasePerStep > 0f && _intervalDecreaseScoreStep > 0)
+        {
+            int score = _scoreProvider != null ? _scoreProvider.Score : 0;
+            int steps = score / _intervalDecreaseScoreStep;
+            interval -= steps * _intervalDecreasePerStep;
+        }
+
+        return Mathf.Max(_minSpawnInterval, interval);
     }
 
     /// <summary>
