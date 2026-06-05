@@ -88,7 +88,15 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
             return;
         }
         
-       _slicedLemmingsHandler.HandleSlicedLemmings(_slicedObjects[0], _slicedObjects[1], _bloodParticles);
+       _slicedLemmingsHandler.HandleSlicedLemmings(_slicedObjects[0], _slicedObjects[1], _bloodParticles, GetSourcePhysicsMaterial());
+    }
+
+    private PhysicsMaterial GetSourcePhysicsMaterial()
+    {
+        if (_slicedObject == null)
+            return null;
+        var collider = _slicedObject.GetComponentInChildren<Collider>();
+        return collider != null ? collider.sharedMaterial : null;
     }
 
     public GameObject[] Slice(Vector3 planeWorldPosition, Vector3 planeWorldDirection, TextureRegion region)

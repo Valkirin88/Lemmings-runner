@@ -3,26 +3,48 @@ using UnityEngine;
 public class SlicedLemmingsHandler 
 {
     private const float DESTROY_DELAY = 5f;
+    private const float SLICED_DYNAMIC_FRICTION = 0.06f;
     
     private GameObject _gameObject1;
     private GameObject _gameObject2;
     private Rigidbody _rigidbody1;
     private Rigidbody _rigidbody2;
     private ParticleSystem _bloodParticlesPrefab;
+    private PhysicsMaterial _slicedPhysicsMaterial;
     
     
 
-    public void HandleSlicedLemmings(GameObject gameObject1, GameObject gameObject2, ParticleSystem bloodParticles)
+    public void HandleSlicedLemmings(GameObject gameObject1, GameObject gameObject2, ParticleSystem bloodParticles, PhysicsMaterial sourceMaterial = null)
     {
         _gameObject1 = gameObject1;
         _gameObject2 = gameObject2;
         _bloodParticlesPrefab = bloodParticles;
+        _slicedPhysicsMaterial = CreateSlicedMaterial(sourceMaterial);
         
         AddCapsuleColliders();
         AddRigidbodies();
         AddBloodParticles();
         AdjustRigidboies();
         DestroyAfterDelay();
+    }
+
+    /// <summary>
+    /// Клонирует физматериал родительского (разрубленного) лемминга и ставит dynamicFriction = 0.06.
+    /// Клон, чтобы не менять общий asset для всех объектов с этим материалом.
+    /// </summary>
+    private PhysicsMaterial CreateSlicedMaterial(PhysicsMaterial source)
+    {
+        if (source == null)
+            return null;
+
+        return new PhysicsMaterial(source.name + " (Sliced)")
+        {
+            dynamicFriction = SLICED_DYNAMIC_FRICTION,
+            staticFriction = source.staticFriction,
+            bounciness = source.bounciness,
+            frictionCombine = source.frictionCombine,
+            bounceCombine = source.bounceCombine,
+        };
     }
     
     private void AddBloodParticles()
@@ -59,6 +81,12 @@ public class SlicedLemmingsHandler
         CapsuleCollider capsuleCollider2 = _gameObject2.AddComponent<CapsuleCollider>();
         _gameObject1.layer = LayerMask.NameToLayer("Lemming");
         _gameObject2.layer = LayerMask.NameToLayer("Lemming");
+
+        if (_slicedPhysicsMaterial != null)
+        {
+            capsuleCollider.sharedMaterial = _slicedPhysicsMaterial;
+            capsuleCollider2.sharedMaterial = _slicedPhysicsMaterial;
+        }
     }
 
     private void AddRigidbodies()
