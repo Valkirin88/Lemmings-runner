@@ -60,6 +60,17 @@ public class GameStatesUIMediator : IDisposable
         _uiHandler.ShowCurrentQuantity(_lemmingQuantity);
     }
 
+    /// <summary>
+    /// Возвращает игру в рабочее состояние после GameOver (например, после рекламы «Продолжить»).
+    /// Синхронизирует авторитетное состояние медиатора с UIHandler, иначе мир остаётся «замороженным».
+    /// </summary>
+    public void ResumeAfterGameOver()
+    {
+        _gameOverDelayRemaining = -1f;
+        _gameState = GameState.Game;
+        _uiHandler.GameState = GameState.Game;
+    }
+
     private void CheckGameOver()
     {
         _lemmingQuantity = LemmingsEventsHandler.GetLivingLemmingCount();

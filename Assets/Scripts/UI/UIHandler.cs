@@ -9,6 +9,15 @@ using UnityEngine.UI;
 
 public class UIHandler : MonoBehaviour
 {
+    public event Action OnResumedAfterGameOver;
+    public event Action OnContinueGameplay;
+
+    [HideInInspector]
+    public bool IsAdsAvailable = true;
+
+    [HideInInspector]
+    public bool IsAdsNeeded;
+    
     [SerializeField]
     private TMP_Text _currentScoreText;
 
@@ -40,6 +49,9 @@ public class UIHandler : MonoBehaviour
     private GameObject _resumeButtonObject;
     [SerializeField]
     private GameObject _manageButtonsObject;
+
+    [SerializeField]
+    private GameObject _adsImageObject;
     
     [SerializeField]
     private GameObject _pausePanel;
@@ -47,8 +59,6 @@ public class UIHandler : MonoBehaviour
     [SerializeField]
     private GameObject _gameOverObject;
 
-    [SerializeField]
-    private GameObject _finishObject;
 
     [Header("Тряска очков")]
     [SerializeField]
@@ -71,6 +81,8 @@ public class UIHandler : MonoBehaviour
     private Vector2 _scoreTextBasePosition;
     private bool _scoreBasePositionCaptured;
     private Tween _scoreShakeTween;
+    private int _playAttempts;
+   
 
     public int Score => _score;
 
@@ -85,6 +97,7 @@ public class UIHandler : MonoBehaviour
         GameState = GameState.Game;
         _currentLevel = SceneManager.GetActiveScene().buildIndex;
         ShowScore(_score, 0);
+        _playAttempts = GameInfo.PlayAttempts;
     }
 
     private void ShowPause()
@@ -102,6 +115,19 @@ public class UIHandler : MonoBehaviour
 
     private void ResumeGame()
     {
+        if (GameState == GameState.GameOver)
+        {
+            if (IsAdsNeeded)
+            {
+                // Первое нажатие: показываем рекламу. Игра продолжится только после награды.
+                OnResumedAfterGameOver?.Invoke();
+                return;
+            }
+
+            // Второе нажатие (награда получена): синхронизируем состояние и оживляем леммингов.
+            OnContinueGameplay?.Invoke();
+        }
+
         GameState = GameState.Game;
         Time.timeScale = 1;
         _pausePanel.SetActive(false);
@@ -110,6 +136,17 @@ public class UIHandler : MonoBehaviour
         _resumeButtonObject.SetActive(false);
         _manageButtonsObject.SetActive(true);
         _pauseTextObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Вызывается при получении вознаграждения за рекламу: прячем картинку рекламы и тратим попытку.
+    /// Кнопка «Продолжить» остаётся — следующее нажатие возобновит игру.
+    /// </summary>
+    public void OnAdsRewardGranted()
+    {
+        if (_adsImageObject != null)
+            _adsImageObject.SetActive(false);
+        _playAttempts--;
     }
 
     private void ShowMainMenu()
@@ -180,8 +217,8 @@ public class UIHandler : MonoBehaviour
     }
     private void ShowFinish()
     {
-        _restartButtonObject.SetActive(true);
-        _finishObject.SetActive(true);
+        // _restartButtonObject.SetActive(true);
+        // _finishObject.SetActive(true);
     }
 
     private void ShowGameOver()
@@ -190,6 +227,14 @@ public class UIHandler : MonoBehaviour
         _restartButtonObject.SetActive(true);
         _mainMenuButtonObject.SetActive(true);
         _gameOverObject.SetActive(true);
+
+        // Кнопка «Продолжить» с рекламой доступна один раз: пока есть попытка и реклама ещё «нужна» (не получена награда)
+        if (_playAttempts > 0 && IsAdsAvailable && IsAdsNeeded)
+        {
+            _resumeButtonObject.SetActive(true);
+            _adsImageObject.SetActive(true);
+        }
+        
         _pausePanel.SetActive(true);
         _manageButtonsObject.SetActive(false);
         _totalScoreText.text = _score.ToString();
@@ -197,6 +242,8 @@ public class UIHandler : MonoBehaviour
         
         _totalScoreText.rectTransform.SetAsLastSibling();
         _restartButtonObject.transform.parent.SetAsLastSibling();
+        
+       
     }
 
     private void RestartGame()

@@ -55,6 +55,13 @@ public class EntryPoint : MonoInstaller
 
     [SerializeField]
     private RandomSpawner _randomSpawner;
+    
+    [SerializeField]
+    private AdsHandler _adsHandler;
+
+    [SerializeField]
+    [Tooltip("Сколько леммингов оживлять при продолжении после просмотра рекламы")]
+    private int _continueLemmingsCount = 1;
 
     private InputController _inputController;
     private LemmingController _lemmingController;
@@ -68,6 +75,7 @@ public class EntryPoint : MonoInstaller
     //mediators
     private GameStatesUIMediator _gameStatesUIMediator;
     private EventsSoundMediator _eventsSoundMediator;
+    private AdsUIMediator _adsUIMediator;
 
     private void Awake()
     {
@@ -89,6 +97,10 @@ public class EntryPoint : MonoInstaller
         _currencyHandler = new CurrencyHandler(_lemmingsEventsHandler);
         _abilitiesHandler = new AbilitiesHandler(_obstaclesSet,_randomSpawner,_lemmingPlaceHandler, _lemmingsEventsHandler, _lemmingPlaceView, _abilitiesConfigs, _abilitiesFX, _destroyAllObstaclesSound);
         _abilityButton.Initialize(_abilitiesHandler);
+        
+        _adsUIMediator = new AdsUIMediator(_lemmingPlaceHandler, _adsHandler, _uiHandler,
+            _lemmingsEventsHandler, _randomSpawner, _gameStatesUIMediator,
+            _obstaclesSet, _destroyAllObstaclesSound, _continueLemmingsCount);
     }
 
     private void Update()
@@ -119,5 +131,6 @@ public class EntryPoint : MonoInstaller
         _scoreHandler.Dispose();
         _currencyHandler.Dispose();
         _abilitiesHandler.Dispose();
+        _adsUIMediator.Dispose();
     }
 }
