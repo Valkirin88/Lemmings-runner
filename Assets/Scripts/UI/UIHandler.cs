@@ -136,6 +136,7 @@ public class UIHandler : MonoBehaviour
         _resumeButtonObject.SetActive(false);
         _manageButtonsObject.SetActive(true);
         _pauseTextObject.SetActive(false);
+        _gameOverObject.SetActive(false);
     }
 
     /// <summary>

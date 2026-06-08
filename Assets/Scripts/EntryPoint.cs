@@ -100,7 +100,8 @@ public class EntryPoint : MonoInstaller
         
         _adsUIMediator = new AdsUIMediator(_lemmingPlaceHandler, _adsHandler, _uiHandler,
             _lemmingsEventsHandler, _randomSpawner, _gameStatesUIMediator,
-            _obstaclesSet, _destroyAllObstaclesSound, _continueLemmingsCount);
+            _obstaclesSet, _destroyAllObstaclesSound,
+            _leaderLemmingView, _lemmingPlaceView, _continueLemmingsCount);
     }
 
     private void Update()
