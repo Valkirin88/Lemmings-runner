@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using EzySlice;
 
@@ -16,7 +17,15 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
     private Material _crossSectionLemmingMaterial;
     [SerializeField]
     private ParticleSystem _bloodParticles;
-
+    
+    [SerializeField]
+    private BloodZone _bloodZone;
+    
+    public event Action<AudioClip> OnMadeSound;
+    public event Action<GameObject> OnDestroyed;
+    
+    
+    public BloodZone BloodZone => _bloodZone;
 
     private Material _crossSectionMaterial;
 
@@ -28,7 +37,7 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
     private void Start()
     {
         _slicedLemmingsHandler = new SlicedLemmingsHandler();
-        _bloodParticles.transform.SetParent(null);
+        
         
         _crossSectionMaterial = _crossSectionLemmingMaterial;
     }
@@ -37,11 +46,16 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
     {
         if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
-            // Проверяем, что лемминг ещё не распилен (горящий тоже может быть распилен)
+            if (!lemmingView.IsRun && !lemmingView.IsOnFire) return;
+            if (lemmingView.IsInvincible) return;
+
             if (lemmingView.IsSliced) return;
             
             lemmingView.IsSliced = true;
+            _bloodParticles.transform.SetParent(null);
             _bloodParticles.Play();
+            Destroy(_bloodParticles.gameObject, 2f);
+            SpawnBlood();
             
             _slicedObject = lemmingView.gameObject;
             SliceLemming();
@@ -49,7 +63,7 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
             // Вызываем Kill для неубитых леммингов, а для горящих - сразу уничтожаем
             if (!lemmingView.IsDead)
             {
-                lemmingView.Kill();
+                lemmingView.Kill(destroyImmediately: true);
             }
             else
             {
@@ -74,7 +88,15 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
             return;
         }
         
-       _slicedLemmingsHandler.HandleSlicedLemmings(_slicedObjects[0], _slicedObjects[1], _bloodParticles);
+       _slicedLemmingsHandler.HandleSlicedLemmings(_slicedObjects[0], _slicedObjects[1], _bloodParticles, GetSourcePhysicsMaterial());
+    }
+
+    private PhysicsMaterial GetSourcePhysicsMaterial()
+    {
+        if (_slicedObject == null)
+            return null;
+        var collider = _slicedObject.GetComponentInChildren<Collider>();
+        return collider != null ? collider.sharedMaterial : null;
     }
 
     public GameObject[] Slice(Vector3 planeWorldPosition, Vector3 planeWorldDirection, TextureRegion region)
@@ -98,5 +120,23 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
     private void RotateSaw()
     {
         transform.Rotate(_rotationSpeed * Time.deltaTime * _sawRotation);
+    }
+    
+    public void SpawnBlood()
+    {
+        if (_bloodZone != null)
+        {
+            _bloodZone.SpawnBlood();
+        }
+    }
+
+    public void MakeSound()
+    {
+        
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke(gameObject);
     }
 }

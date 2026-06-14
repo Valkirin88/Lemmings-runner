@@ -7,47 +7,84 @@ public class LemmingPlaceHandler : MonoBehaviour
 {
     [SerializeField]
     private List<RunPlace> _lemmingPlaces;
-    
-    private LemmingsStateSet _lemmingsStateSet;
-    private GameStateCollector _gameStateCollector;
-    
-    public void Initialize(GameStateCollector gameStateCollector)
+
+    [SerializeField]
+    [Min(0f)]
+    [Tooltip("Через сколько секунд после смерти лемминга его место займёт следующий")]
+    private float _refillDelaySeconds = 1f;
+
+    private LemmingsEventsHandler _lemmingsEventsHandler;
+    private GameStatesUIMediator _gameStatesUIMediator;
+    private LemmingPlaceView _lemmingPlaceView;
+    private static LemmingPlaceHandler _activeInstance;
+
+    public static void RepositionFormationIfActive() => _activeInstance?.ScheduleReposition();
+
+    public void Initialize(GameStatesUIMediator gameStatesUIMediator, LemmingPlaceView lemmingPlaceView = null)
     {
-        _gameStateCollector = gameStateCollector;
-        _lemmingsStateSet = _gameStateCollector.LemmingsStateSet;
+        _activeInstance = this;
+        _gameStatesUIMediator = gameStatesUIMediator;
+        _lemmingPlaceView = lemmingPlaceView;
+        _lemmingsEventsHandler = _gameStatesUIMediator.LemmingsEventsHandler;
 
-        _lemmingsStateSet.OnLemmingCountAdd += PlaceNewLemmingState;
-        _lemmingsStateSet.OnLemmingCountRemove += ReplaceLemmingsState;
+        _lemmingsEventsHandler.OnLemmingCountAdd += PlaceNewLemmingState;
+        _lemmingsEventsHandler.OnLemmingCountRemove += ReplaceLemmingsState;
 
-        _gameStateCollector.EndTrack.OnFinished += StopLemmings;
+        _gameStatesUIMediator.EndTrack.OnFinished += StopLemmings;
         
         // Назначаем место первому леммингу (он уже в списке до подписки на событие)
-        if (_lemmingsStateSet.RunningLemmingViews.Count > 0)
+        if (_lemmingsEventsHandler.RunningLemmingViews.Count > 0)
         {
-            SetNewPosition(_lemmingsStateSet.RunningLemmingViews[0]);
+            var leader = _lemmingsEventsHandler.RunningLemmingViews[0];
+            SetNewPosition(leader);
         }
     }
 
-    private void ReplaceLemmingsState(LemmingView lemmingView)
+    private void ReplaceLemmingsState(LemmingView lemmingView, int removedIndex)
     {
-        // Релокация всех леммингов через 1 секунду
-        StartCoroutine(DelayedReposition());
+        ScheduleReposition();
     }
 
-    private IEnumerator DelayedReposition()
+    private void ScheduleReposition()
     {
-        yield return new WaitForSeconds(1f);
-        
-        // Освобождаем все места
-        foreach (var place in _lemmingPlaces)
+        if (_refillDelaySeconds <= 0f || !isActiveAndEnabled)
         {
-            place.IsEmpty = true;
+            RepositionAllRunningLemmings();
+            return;
         }
-        
-        // Назначаем новые места всем живым леммингам
-        foreach (var view in _lemmingsStateSet.RunningLemmingViews)
+
+        StartCoroutine(RepositionAfterDelay());
+    }
+
+    private IEnumerator RepositionAfterDelay()
+    {
+        yield return new WaitForSeconds(_refillDelaySeconds);
+        RepositionAllRunningLemmings();
+    }
+
+    private static bool ShouldOccupyFormationPlace(LemmingView view)
+    {
+        return view != null && view.IsRun && !view.IsOnFire && !view.IsDead;
+    }
+
+    private void RepositionAllRunningLemmings()
+    {
+        for (int p = 0; p < _lemmingPlaces.Count; p++)
+            _lemmingPlaces[p].IsEmpty = true;
+
+        int placeIdx = 0;
+        foreach (var view in _lemmingsEventsHandler.RunningLemmingViews)
         {
-            SetNewPosition(view);
+            if (!ShouldOccupyFormationPlace(view))
+                continue;
+
+            if (placeIdx >= _lemmingPlaces.Count)
+                break;
+
+            var place = _lemmingPlaces[placeIdx];
+            place.IsEmpty = false;
+            view.RunningPlace = place.transform;
+            placeIdx++;
         }
     }
 
@@ -56,33 +93,53 @@ public class LemmingPlaceHandler : MonoBehaviour
         SetNewPosition(lemmingView);
     }
 
+    private int GetFormationIndex(LemmingView lemmingView)
+    {
+        int formationIdx = 0;
+        foreach (var view in _lemmingsEventsHandler.RunningLemmingViews)
+        {
+            if (view == lemmingView)
+                return formationIdx;
+
+            if (ShouldOccupyFormationPlace(view))
+                formationIdx++;
+        }
+
+        return -1;
+    }
+
     private void SetNewPosition(LemmingView lemmingView)
     {
-        foreach (RunPlace place in _lemmingPlaces)
-        {
-            if (place.IsEmpty && !lemmingView.IsOnFire)
-            {
-                place.IsEmpty = false;
-                lemmingView.RunningPlace = place.transform;
-                return;
-            }
-        }
+        if (!ShouldOccupyFormationPlace(lemmingView))
+            return;
+
+        int index = GetFormationIndex(lemmingView);
+        if (index < 0 || index >= _lemmingPlaces.Count)
+            return;
+
+        RunPlace place = _lemmingPlaces[index];
+        place.IsEmpty = false;
+        lemmingView.RunningPlace = place.transform;
     }
 
     private void StopLemmings()
     {
-        foreach (var lemmingView in _lemmingsStateSet.RunningLemmingViews)
+        foreach (var lemmingView in _lemmingsEventsHandler.RunningLemmingViews)
         {
-            Debug.Log("StopLemmings   ");
             lemmingView.IsRun = false;
         }
+        if (_lemmingPlaceView != null)
+            _lemmingPlaceView.IsMoving = false;
     }
 
     private void OnDestroy()
     {
-        _lemmingsStateSet.OnLemmingCountAdd -= PlaceNewLemmingState;
-        _lemmingsStateSet.OnLemmingCountRemove -= ReplaceLemmingsState;
+        if (_activeInstance == this)
+            _activeInstance = null;
+
+        _lemmingsEventsHandler.OnLemmingCountAdd -= PlaceNewLemmingState;
+        _lemmingsEventsHandler.OnLemmingCountRemove -= ReplaceLemmingsState;
         
-        _gameStateCollector.EndTrack.OnFinished -= StopLemmings;
+        _gameStatesUIMediator.EndTrack.OnFinished -= StopLemmings;
     }
 }

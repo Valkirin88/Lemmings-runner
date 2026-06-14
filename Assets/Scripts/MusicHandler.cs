@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MusicHandler : MonoBehaviour
 {
@@ -7,12 +8,17 @@ public class MusicHandler : MonoBehaviour
     private AudioSource _source;
 
     [SerializeField]
-    private List<AudioClip> _audioClips;
+    private List<AudioClip> _audioClipsForGame;
+
+    [SerializeField]
+    private List<AudioClip> _audioClipsForMenu;
 
     private static MusicHandler instance;
 
     private AudioClip _lastClip;
     private AudioClip _newClip;
+    private AudioClip _lastMenuClip;
+    private bool _playingMenuMusic;
 
     private void Start()
     {
@@ -20,47 +26,88 @@ public class MusicHandler : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(this.gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            _playingMenuMusic = IsMenuScene();
             if (!_source.isPlaying)
-            {
                 PlayMusic();
-            }
         }
         else
             Destroy(gameObject);
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        // if (!GameInfo.IsMusicOn)
-        //     _source.Stop();
-        // else
-        // {
-            if(!_source.isPlaying)
-            PlayMusic();
-        // }
+        if (instance == this)
+            SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private AudioClip GetClip()
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        _newClip = _audioClips[Random.Range(0, _audioClips.Count)];
-        if (_audioClips.Count > 0)
+        bool isMenu = IsMenuScene(scene.buildIndex);
+        if (_source.isPlaying && isMenu == _playingMenuMusic)
+            return;
+
+        _playingMenuMusic = isMenu;
+        _source.Stop();
+        PlayMusic();
+    }
+
+    private void Update()
+    {
+        if (!_source.isPlaying)
+            PlayMusic();
+    }
+
+    private bool IsMenuScene() => IsMenuScene(SceneManager.GetActiveScene().buildIndex);
+
+    private static bool IsMenuScene(int buildIndex) => buildIndex == 0 || buildIndex == 2;
+
+    private AudioClip GetGameClip()
+    {
+        if (_audioClipsForGame == null || _audioClipsForGame.Count == 0)
+            return null;
+        _newClip = _audioClipsForGame[Random.Range(0, _audioClipsForGame.Count)];
+        if (_audioClipsForGame.Count > 1)
         {
             while (_lastClip == _newClip)
             {
-                _newClip = _audioClips[Random.Range(0, _audioClips.Count)];
+                _newClip = _audioClipsForGame[Random.Range(0, _audioClipsForGame.Count)];
             }
-            _lastClip = _newClip;
-            return _newClip;
         }
-        else
+        _lastClip = _newClip;
+        return _newClip;
+    }
+
+    private AudioClip GetMenuClip()
+    {
+        if (_audioClipsForMenu == null || _audioClipsForMenu.Count == 0)
+            return null;
+        _newClip = _audioClipsForMenu[Random.Range(0, _audioClipsForMenu.Count)];
+        if (_audioClipsForMenu.Count > 1)
         {
-            return _newClip;
+            while (_lastMenuClip == _newClip)
+            {
+                _newClip = _audioClipsForMenu[Random.Range(0, _audioClipsForMenu.Count)];
+            }
         }
+        _lastMenuClip = _newClip;
+        return _newClip;
     }
 
     private void PlayMusic()
     {
-        _source.PlayOneShot(GetClip());
+        _playingMenuMusic = IsMenuScene();
+        if (_playingMenuMusic)
+        {
+            AudioClip clip = GetMenuClip();
+            if (clip != null)
+                _source.PlayOneShot(clip);
+        }
+        else
+        {
+            AudioClip clip = GetGameClip();
+            if (clip != null)
+                _source.PlayOneShot(clip);
+        }
     }
-
 }

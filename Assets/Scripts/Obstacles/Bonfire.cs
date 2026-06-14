@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,13 +7,22 @@ public class Bonfire : MonoBehaviour, IObstacle
     [SerializeField]
     private GameObject _firePrefab;
     
+    [SerializeField]
+    private BloodZone _bloodZone;
+    
+    public event Action<AudioClip> OnMadeSound;
+    public event Action<GameObject> OnDestroyed;
+    
+    public BloodZone BloodZone => _bloodZone;
+    
     private List<LemmingView> _lemmingsInZone = new List<LemmingView>();
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
-            _lemmingsInZone.Add(lemmingView);
+            if (!lemmingView.IsInvincible)
+                _lemmingsInZone.Add(lemmingView);
         }
     }
 
@@ -36,11 +46,29 @@ public class Bonfire : MonoBehaviour, IObstacle
                 continue;
             }
             
-            if (!lemming.IsOnFire)
+            if (lemming.IsRun && !lemming.IsOnFire && !lemming.IsInvincible)
             {
                 GameObject fireObject = Instantiate(_firePrefab);
                 lemming.SetFire(fireObject);
             }
         }
+    }
+    
+    public void SpawnBlood()
+    {
+        if (_bloodZone != null)
+        {
+            _bloodZone.SpawnBlood();
+        }
+    }
+
+    public void MakeSound()
+    {
+        
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke(gameObject);
     }
 }

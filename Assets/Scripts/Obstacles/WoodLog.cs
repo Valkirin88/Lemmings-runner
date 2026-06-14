@@ -7,72 +7,58 @@ public class WoodLog : MonoBehaviour, IObstacle
     private ParticleSystem _bloodParticles;
     
     [SerializeField]
-    private float _rollSpeed = 5f;
+    private BloodZone _bloodZone;
+    public BloodZone BloodZone => _bloodZone;
     
     [SerializeField]
     private float _rotationSpeed = 200f;
     [SerializeField]
     private Rigidbody _rigidbody;
     
+    public event Action<AudioClip> OnMadeSound;
+    public event Action<GameObject> OnDestroyed;
     
-    private bool _isMoving = false;
-    
-    
-    private void Awake()
+    private Quaternion _bloodZoneInitialRotation;
+
+    private void Start()
     {
-        
         _rigidbody.isKinematic = true;
+        if (_bloodZone != null)
+            _bloodZoneInitialRotation = _bloodZone.transform.rotation;
     }
-    
+
     private void Update()
     {
-        if (_isMoving)
-        {
-            // Движение в направлении -Z
-            transform.position += Vector3.back * _rollSpeed * Time.deltaTime;
-            
-            // Вращение бревна вокруг оси X (имитация качения)
-            transform.Rotate(Vector3.right, _rotationSpeed * Time.deltaTime, Space.World);
-        }
+        transform.Rotate(Vector3.right, -_rotationSpeed * Time.deltaTime, Space.World);
+    }
+
+    private void LateUpdate()
+    {
+        if (_bloodZone != null)
+            _bloodZone.transform.rotation = _bloodZoneInitialRotation;
     }
     
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
+        // Горящий лемминг: коллайдер может быть у дочернего объекта (огонь), ищем лемминга в родителях
+        var lemmingView = collision.gameObject.GetComponent<LemmingView>();
+        if (lemmingView == null) return;
+
+        if ((lemmingView.IsRun || lemmingView.IsOnFire) && !lemmingView.IsInvincible)
         {
-            if (lemmingView.IsRun)
-            {
-                lemmingView.Kill();
-                SpawnBloodAtCollision(collision);
-            }
-            else
-            {
-                // Игнорируем столкновение с леммингами, которые не бегут
-                Collider logCollider = collision.contacts[0].thisCollider;
-                Collider lemmingCollider = collision.collider;
-                Physics.IgnoreCollision(logCollider, lemmingCollider);
-            }
+            lemmingView.Kill(destroyImmediately: true);
+            SpawnBloodAtCollision(collision);
+        }
+        else
+        {
+            // Игнорируем столкновение с леммингами, которые не бегут
+            Collider logCollider = collision.contacts[0].thisCollider;
+            Collider lemmingCollider = collision.collider;
+            Physics.IgnoreCollision(logCollider, lemmingCollider);
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
-        {
-            if (lemmingView.IsRun)
-            {
-                StartMoving();
-            }
-        }
-    }
 
-    private void StartMoving()
-    {
-        _isMoving = true;
-        _rigidbody.isKinematic = false;
-        _rigidbody.useGravity = true;
-    }
-    
     private void SpawnBloodAtCollision(Collision collision)
     {
         // Получаем точку столкновения
@@ -86,5 +72,25 @@ public class WoodLog : MonoBehaviour, IObstacle
         _bloodParticles.transform.rotation = Quaternion.LookRotation(Vector3.back);
         
         _bloodParticles.Play();
+        Destroy(_bloodParticles.gameObject, 2f);
+        SpawnBlood();
+    }
+    
+    public void SpawnBlood()
+    {
+        if (_bloodZone != null)
+        {
+            _bloodZone.SpawnBlood();
+        }
+    }
+
+    public void MakeSound()
+    {
+        
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke(gameObject);
     }
 }

@@ -5,14 +5,14 @@ public class LemmingPlaceController: IDisposable
     private readonly LemmingPlaceView _lemmingPlaceView;
     private readonly InputController _inputController;
     private readonly LemmingConfig _lemmingConfig;
-    private readonly GameStateCollector _gameStateCollector;
+    private readonly GameStatesUIMediator _gameStatesUIMediator;
     
-    public LemmingPlaceController(LemmingPlaceView lemmingPlaceView, InputController inputController, LemmingConfig lemmingConfig, GameStateCollector gameStateCollector)
+    public LemmingPlaceController(LemmingPlaceView lemmingPlaceView, InputController inputController, LemmingConfig lemmingConfig, GameStatesUIMediator gameStatesUIMediator)
     {
         _lemmingPlaceView = lemmingPlaceView;
         _inputController = inputController;
         _lemmingConfig = lemmingConfig;
-        _gameStateCollector = gameStateCollector;
+        _gameStatesUIMediator = gameStatesUIMediator;
         
         _lemmingPlaceView.SideSpeed = _lemmingConfig.SideSpeed;
         _lemmingPlaceView.ForwardSpeed = _lemmingConfig.ForwardSpeed;
@@ -51,16 +51,12 @@ public class LemmingPlaceController: IDisposable
 
     public void Update()
     {
-        if (_gameStateCollector.State == GameState.Game)
+        if (_gameStatesUIMediator.State == GameState.Game)
         {
             _lemmingPlaceView.IsMoving = true;
         }
         else
         {
-            if (_lemmingPlaceView.IsMoving)
-            {
-                UnityEngine.Debug.Log($"Stopping movement. State: {_gameStateCollector.State}");
-            }
             _lemmingPlaceView.IsMoving = false;
         }
     }

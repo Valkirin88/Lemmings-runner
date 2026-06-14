@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using EzySlice;
 
@@ -9,8 +10,14 @@ public class CircularSaw : MonoBehaviour, IObstacle
     private Material _crossSectionLemmingMaterial;
     [SerializeField]
     private ParticleSystem _bloodParticles;
+    
+    [SerializeField]
+    private BloodZone _bloodZone;
+    public BloodZone BloodZone => _bloodZone;
 
-
+    public event Action<AudioClip> OnMadeSound;
+    public event Action<GameObject> OnDestroyed;
+    
     private Material _crossSectionMaterial;
 
     private Vector3 _sawRotation = new Vector3(0,1,0);
@@ -21,7 +28,7 @@ public class CircularSaw : MonoBehaviour, IObstacle
     private void Start()
     {
         _slicedLemmingsHandler = new SlicedLemmingsHandler();
-        _bloodParticles.transform.SetParent(null);
+        
         
         _crossSectionMaterial = _crossSectionLemmingMaterial;
     }
@@ -30,24 +37,30 @@ public class CircularSaw : MonoBehaviour, IObstacle
     {
         if (collision.gameObject.TryGetComponent<LemmingView>(out LemmingView lemmingView))
         {
-            // Проверяем, что лемминг ещё не распилен (горящий тоже может быть распилен)
-            if (lemmingView.IsSliced) return;
-            
-            lemmingView.IsSliced = true;
-            _bloodParticles.Play();
-            
-            _slicedObject = lemmingView.gameObject;
-            SliceLemming();
-            
-            // Вызываем Kill для неубитых леммингов, а для горящих - сразу уничтожаем
-            if (!lemmingView.IsDead)
+            if (lemmingView.IsRun && !lemmingView.IsInvincible) 
             {
-                lemmingView.Kill();
-            }
-            else
-            {
-                // Горящий лемминг уже IsDead, просто уничтожаем оригинал
-                Destroy(lemmingView.gameObject);
+                if (!lemmingView.IsSliced) 
+                {
+                    lemmingView.IsSliced = true;
+                    _bloodParticles.transform.SetParent(null);
+                    _bloodParticles.Play();
+                    SpawnBlood();
+
+                    _slicedObject = lemmingView.gameObject;
+                    SliceLemming();
+                    Destroy(_bloodParticles.gameObject, 4f);
+
+                    // Вызываем Kill для неубитых леммингов, а для горящих - сразу уничтожаем
+                    if (!lemmingView.IsDead)
+                    {
+                        lemmingView.Kill(destroyImmediately: true);
+                    }
+                    else
+                    {
+                        // Горящий лемминг уже IsDead, просто уничтожаем оригинал
+                        Destroy(lemmingView.gameObject);
+                    }
+                }
             }
         }
     }
@@ -63,11 +76,18 @@ public class CircularSaw : MonoBehaviour, IObstacle
         
         if (_slicedObjects == null || _slicedObjects.Length < 2)
         {
-            Debug.LogError("Slice failed!");
             return;
         }
         
-       _slicedLemmingsHandler.HandleSlicedLemmings(_slicedObjects[0], _slicedObjects[1], _bloodParticles);
+       _slicedLemmingsHandler.HandleSlicedLemmings(_slicedObjects[0], _slicedObjects[1], _bloodParticles, GetSourcePhysicsMaterial());
+    }
+
+    private PhysicsMaterial GetSourcePhysicsMaterial()
+    {
+        if (_slicedObject == null)
+            return null;
+        var collider = _slicedObject.GetComponentInChildren<Collider>();
+        return collider != null ? collider.sharedMaterial : null;
     }
 
     public GameObject[] Slice(Vector3 planeWorldPosition, Vector3 planeWorldDirection, TextureRegion region)
@@ -83,5 +103,23 @@ public class CircularSaw : MonoBehaviour, IObstacle
     private void RotateSaw()
     {
         transform.Rotate(_speed * Time.deltaTime * _sawRotation);
+    }
+    
+    public void SpawnBlood()
+    {
+        if (_bloodZone != null)
+        {
+            _bloodZone.SpawnBlood();
+        }
+    }
+
+    public void MakeSound()
+    {
+        
+    }
+
+    public void OnDestroy()
+    {
+        OnDestroyed?.Invoke(gameObject);
     }
 }

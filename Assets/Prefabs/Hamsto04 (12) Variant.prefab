@@ -1,5 +1,84 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &437179747478878342
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 8286180708183605038}
+    m_Modifications:
+    - target: {fileID: 107530, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_Name
+      value: MagicZoneGreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.31941676
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.31941676
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.31941676
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.020241737
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+--- !u!1 &437179747478838412 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 107530, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+  m_PrefabInstance: {fileID: 437179747478878342}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &437179747479299164 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 433370, guid: 29915fab7b4f22042a96c8bae6092b97, type: 3}
+  m_PrefabInstance: {fileID: 437179747478878342}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5479377868080024909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -402,6 +481,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 4296952709134812, guid: dad5b3d5aa691fd4d99101294168c1a4, type: 3}
+      insertIndex: 0
+      addedObject: {fileID: 437179747479299164}
+    - targetCorrespondingSourceObject: {fileID: 4296952709134812, guid: dad5b3d5aa691fd4d99101294168c1a4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5479377868079985293}
     m_AddedComponents:
@@ -420,6 +502,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1973470434401866, guid: dad5b3d5aa691fd4d99101294168c1a4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3095247136798735589}
+    - targetCorrespondingSourceObject: {fileID: 1973470434401866, guid: dad5b3d5aa691fd4d99101294168c1a4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2608968366951947934}
     - targetCorrespondingSourceObject: {fileID: 1484735945329684, guid: dad5b3d5aa691fd4d99101294168c1a4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1499509174288753025}
@@ -470,16 +555,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: a25e6e3d681d51041a2900f46ab90e19, type: 2}
+  _auraObject: {fileID: 437179747478838412}
+  _outline: {fileID: 2608968366951947934}
   Rigidbody: {fileID: 2873992957667258072}
-  IsMovingLeft: 0
-  IsMovingRight: 0
   IsRun: 0
-  IsLeader: 0
+  IsScroll: 0
   IsOnFire: 0
   IsDead: 0
   IsSliced: 0
+  IsInvincible: 0
+  IsPushed: 0
   RunningPlace: {fileID: 0}
   Animator: {fileID: 8332774296780889866}
+  _fireDeathDelay: 2
 --- !u!54 &2873992957667258072
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -514,7 +602,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8283856537501685944}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 6446348c43eb19a4a82022e0414df344, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -587,6 +675,22 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2608968366951947934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8283856537501685944}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179c0028abd14af4a9fad8f1f6cb576e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Outline
+  _maskShader: {fileID: 4800000, guid: 48d116f5ed1309c46baa057807ea3a89, type: 3}
+  _fillShader: {fileID: 4800000, guid: 4e448dd6bcd53cf43b35464d04317ea6, type: 3}
+  outlineColor: {r: 0.28627452, g: 0.4431373, b: 0.6, a: 1}
+  outlineWidth: 4.57
 --- !u!4 &8286180708183605038 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4296952709134812, guid: dad5b3d5aa691fd4d99101294168c1a4, type: 3}
