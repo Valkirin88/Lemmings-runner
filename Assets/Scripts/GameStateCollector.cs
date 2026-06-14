@@ -8,10 +8,13 @@ public class GameStateCollector : IDisposable
     private readonly LemmingsStateSet _lemmingsStateSet;
     
     private int _lemmingQuantity;
+    private GameState _gameState;
     
     public LemmingsStateSet LemmingsStateSet => _lemmingsStateSet;
 
     public EndTrack EndTrack => _endTrack;
+
+    public GameState State => _gameState;
 
     public GameStateCollector(EndTrack endTrack,UIHandler uiHandler, LemmingsStateSet lemmingsStateSet)
     {
@@ -21,17 +24,26 @@ public class GameStateCollector : IDisposable
         
         EndTrack.OnFinished += Finish;
 
-        _uiHandler.GameState = GameState.Game;
+        _gameState = GameState.Game;
+        _uiHandler.GameState = _gameState;
     }
 
     private void Finish()
     {
-        if(_lemmingQuantity >= 12)
-            _uiHandler.GameState = GameState.Finish;
+        UnityEngine.Debug.Log($"Finish called! LemmingQuantity: {_lemmingQuantity}, Current State: {_gameState}");
+        
+        if (_lemmingQuantity >= 12)
+        {
+            _gameState = GameState.Finish;
+            _uiHandler.GameState = _gameState;
+        }
         else
         {
-            _uiHandler.GameState = GameState.GameOver;
+            _gameState = GameState.GameOver;
+            _uiHandler.GameState = _gameState;
         }
+        
+        UnityEngine.Debug.Log($"New State: {_gameState}");
     }
 
     public void Update()
@@ -39,7 +51,8 @@ public class GameStateCollector : IDisposable
         _lemmingQuantity = LemmingsStateSet.RunningLemmingViews.Count;
         if (_lemmingQuantity<=0)
         {
-            _uiHandler.GameState = GameState.GameOver;
+            _gameState = GameState.GameOver;
+            _uiHandler.GameState = _gameState;
         }
         _uiHandler.ShowCurrentQuantity(_lemmingQuantity);
         

@@ -26,13 +26,23 @@ public class BloodSplatterManager : MonoBehaviour
     
     private void Awake()
     {
-        if (_instance == null)
+        // Проверяем и на null, и на уничтоженный объект
+        if (_instance == null || _instance.gameObject == null)
         {
             _instance = this;
         }
-        else
+        else if (_instance != this)
         {
             Destroy(gameObject);
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        // Очищаем ссылку при уничтожении
+        if (_instance == this)
+        {
+            _instance = null;
         }
     }
     

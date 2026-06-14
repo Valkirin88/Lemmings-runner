@@ -2,15 +2,41 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 
-public class InputController
+public class InputController :IDisposable
 {
     public event Action<bool> OnMoveLeft;
     public event Action<bool> OnMoveRight;
+    public event Action OnJump;
+    public event Action OnAccelerate;
 
     private bool _isMovingLeft = false;
     private bool _isMovingRight = false;
+    
+    private Button _accelerateButton;
+    private Button _jumpButton;
+
+    public InputController(Button accelerateButton, Button jumpButton)
+    {
+        _accelerateButton = accelerateButton;
+        _jumpButton = jumpButton;
+
+        _accelerateButton.onClick.AddListener(Accelerate);
+        _jumpButton.onClick.AddListener(Jump);
+    }
+
+    private void Accelerate()
+    {
+        OnAccelerate?.Invoke();
+    }
+
+    private void Jump()
+    {
+        OnJump?.Invoke();
+    }
     
     public void Update()
     {
@@ -44,6 +70,12 @@ public class InputController
     private void HandleMouseAndTouchInput()
     {
         bool isInputActive = Input.GetMouseButton(0) || Input.touchCount > 0;
+        
+        // Проверяем, не нажали ли на UI элемент
+        if (isInputActive && IsPointerOverUI())
+        {
+            return;
+        }
         
         if (isInputActive)
         {
@@ -91,5 +123,31 @@ public class InputController
                 _isMovingRight = false;
             }
         }
+    }
+    
+    private bool IsPointerOverUI()
+    {
+        // Проверка для мыши
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return true;
+        }
+        
+        // Проверка для тача
+        for (int i = 0; i < Input.touchCount; i++)
+        {
+            if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(i).fingerId))
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    public void Dispose()
+    {
+        _accelerateButton.onClick.RemoveListener(Accelerate);
+        _jumpButton.onClick.RemoveListener(Jump);
     }
 }

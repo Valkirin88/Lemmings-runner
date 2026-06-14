@@ -59,7 +59,7 @@ public class CircularSaw : MonoBehaviour, IObstacle
         // X от пилы (где лезвие), Y и Z от лемминга
         Vector3 slicePlanePosition = new Vector3(transform.position.x, lemmingPosition.y + 0.2f, lemmingPosition.z);
         
-        _slicedObjects = Slice(slicePlanePosition, new Vector3(0, 0, 1), new TextureRegion());
+        _slicedObjects = Slice(slicePlanePosition, new Vector3(1, 0, 0), new TextureRegion());
         
         if (_slicedObjects == null || _slicedObjects.Length < 2)
         {
