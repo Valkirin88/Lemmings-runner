@@ -6,7 +6,7 @@ public static class GameInfo
     private static float _timeToIncreaseScore = 5f;
     private static int _playAttempts = 1;
     private static bool _isAdsOn = true;
-    private static string _adsHandlerName = "demo-rewarded-yandex";
+    private static string _adsHandlerName = "R-M-19404967-1";//demo-rewarded-yandex
     
 
     public static string UnityLeaderboardName => _unityLeaderboardName;

@@ -166,13 +166,13 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   androidMinAspectRatio: 1
   applicationIdentifier:
-    Android: com.DefaultCompany.
+    Android: com.DefaultCompany.Lemmingsrunner
   buildNumber:
     Standalone: 0
     VisionOS: 0
     iPhone: 0
     tvOS: 0
-  overrideDefaultApplicationIdentifier: 0
+  overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 2
   AndroidMinSdkVersion: 26
   AndroidTargetSdkVersion: 36
@@ -269,8 +269,7 @@ PlayerSettings:
   AndroidAllowedArchitectures: -1
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: "C:/Users/\u0410\u043D\u0434\u0440\u0435\u0439/Desktop/Lemmings
-    pics/Lemmings.keystore"
+  AndroidKeystoreName: '{dedicated}: Desktop/Lemmings.keystore'
   AndroidKeyaliasName: lemmings
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidEnableArm64MTE: 0

@@ -13,10 +13,9 @@ public class UIHandler : MonoBehaviour
     public event Action OnContinueGameplay;
 
     [HideInInspector]
-    public bool IsAdsAvailable = true;
-
-    [HideInInspector]
     public bool IsAdsNeeded;
+
+    public Func<bool> IsAdReadyCheck;
     
     [SerializeField]
     private TMP_Text _currentScoreText;
@@ -82,7 +81,7 @@ public class UIHandler : MonoBehaviour
     private bool _scoreBasePositionCaptured;
     private Tween _scoreShakeTween;
     private int _playAttempts;
-   
+    private bool _waitingContinueAfterAd;
 
     public int Score => _score;
 
@@ -109,6 +108,10 @@ public class UIHandler : MonoBehaviour
         _mainMenuButtonObject.SetActive(true);
         _restartButtonObject.SetActive(true);
         _resumeButtonObject.SetActive(true);
+        if (_resumeButton != null)
+            _resumeButton.interactable = true;
+        if (_adsImageObject != null)
+            _adsImageObject.SetActive(false);
         _manageButtonsObject.SetActive(false);
         _pauseTextObject.SetActive(true);
     }
@@ -119,14 +122,20 @@ public class UIHandler : MonoBehaviour
         {
             if (IsAdsNeeded)
             {
-                // Первое нажатие: показываем рекламу. Игра продолжится только после награды.
+                if (!(IsAdReadyCheck?.Invoke() ?? false))
+                    return;
+
                 OnResumedAfterGameOver?.Invoke();
                 return;
             }
 
-            // Второе нажатие (награда получена): синхронизируем состояние и оживляем леммингов.
+            if (!_waitingContinueAfterAd)
+                return;
+
             OnContinueGameplay?.Invoke();
         }
+
+        _waitingContinueAfterAd = false;
 
         GameState = GameState.Game;
         Time.timeScale = 1;
@@ -137,6 +146,8 @@ public class UIHandler : MonoBehaviour
         _manageButtonsObject.SetActive(true);
         _pauseTextObject.SetActive(false);
         _gameOverObject.SetActive(false);
+        if (_currentScoreText != null)
+            _currentScoreText.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -145,9 +156,8 @@ public class UIHandler : MonoBehaviour
     /// </summary>
     public void OnAdsRewardGranted()
     {
-        if (_adsImageObject != null)
-            _adsImageObject.SetActive(false);
         _playAttempts--;
+        _waitingContinueAfterAd = true;
     }
 
     private void ShowMainMenu()
@@ -229,13 +239,10 @@ public class UIHandler : MonoBehaviour
         _mainMenuButtonObject.SetActive(true);
         _gameOverObject.SetActive(true);
 
-        // Кнопка «Продолжить» с рекламой доступна один раз: пока есть попытка и реклама ещё «нужна» (не получена награда)
-        if (_playAttempts > 0 && IsAdsAvailable && IsAdsNeeded)
-        {
-            _resumeButtonObject.SetActive(true);
-            _adsImageObject.SetActive(true);
-        }
-        
+        _waitingContinueAfterAd = false;
+        IsAdsNeeded = _playAttempts > 0 && GameInfo.IsAdsOn;
+        RefreshGameOverContinueButton();
+
         _pausePanel.SetActive(true);
         _manageButtonsObject.SetActive(false);
         _totalScoreText.text = _score.ToString();
@@ -245,6 +252,24 @@ public class UIHandler : MonoBehaviour
         _restartButtonObject.transform.parent.SetAsLastSibling();
         
        
+    }
+
+    public void RefreshGameOverContinueButton()
+    {
+        if (GameState != GameState.GameOver)
+            return;
+
+        bool adReady = IsAdReadyCheck?.Invoke() ?? false;
+        bool showForAd = _playAttempts > 0 && IsAdsNeeded && adReady;
+        bool showForContinue = _waitingContinueAfterAd;
+        bool showResume = showForAd || showForContinue;
+
+        _resumeButtonObject.SetActive(showResume);
+        if (_adsImageObject != null)
+            _adsImageObject.SetActive(showForAd);
+
+        if (_resumeButton != null)
+            _resumeButton.interactable = showResume;
     }
 
     private void RestartGame()

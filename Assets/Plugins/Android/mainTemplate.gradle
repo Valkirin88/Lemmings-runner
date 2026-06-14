@@ -5,10 +5,10 @@ apply from: '../shared/common.gradle'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    // Yandex Mobile Ads + AppMetrica Ad Revenue (from YandexMobileadsDependencies.xml)
-    implementation 'com.yandex.android:mobileads:7.18.2'
+    // Unity plugin 8.0.1 uses Android SDK 8.0.0 (8.0.1 is not published on Maven Central)
+    implementation 'com.yandex.android:mobileads:8.0.0'
     implementation 'androidx.lifecycle:lifecycle-process:2.4.1'
-    implementation 'io.appmetrica.analytics:analytics:7.14.0'
+    implementation 'io.appmetrica.analytics:analytics:8.0.0'
     implementation 'androidx.annotation:annotation:1.7.1'
 **DEPS**}
 

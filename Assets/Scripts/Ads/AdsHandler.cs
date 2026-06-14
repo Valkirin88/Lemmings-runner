@@ -1,24 +1,59 @@
 using System;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using YandexMobileAds;
 using YandexMobileAds.Base;
 
 public class AdsHandler : MonoBehaviour
 {
+    public static AdsHandler Instance { get; private set; }
+
     public event Action OnAdsLoadFailed;
     public event Action OnAdsLoaded;
+    public event Action OnAdsUnloaded;
     public event Action OnAdsRewarded;
-    
+
     private RewardedAdLoader rewardedAdLoader;
     private RewardedAd rewardedAd;
+    private bool _isLoading;
+    private Coroutine _retryCoroutine;
+    private const float RetryDelaySeconds = 5f;
 
+    public bool IsAdReady => rewardedAd != null;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        try
+        {
+            YandexAds.SetUserConsent(true);
+        }
+        catch (Exception)
+        {
+        }
+
         SetupLoader();
         RequestRewardedAd();
-        DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (_retryCoroutine != null)
+        {
+            StopCoroutine(_retryCoroutine);
+            _retryCoroutine = null;
+        }
+
+        if (Instance == this)
+            Instance = null;
     }
 
     private void SetupLoader()
@@ -26,98 +61,119 @@ public class AdsHandler : MonoBehaviour
         rewardedAdLoader = new RewardedAdLoader();
     }
 
-    private async void RequestRewardedAd()
+    private void RequestRewardedAd()
     {
-        string adUnitId = "demo-rewarded-yandex"; // замените на "R-M-XXXXXX-Y"
-        AdRequest adRequest = new AdRequest(adUnitId);
+        if (_isLoading)
+            return;
+
+        _isLoading = true;
+        AdRequest adRequest = new AdRequest(GameInfo.AdsHandlerName);
         rewardedAdLoader.LoadAd(
             adRequest: adRequest,
             onLoaded: HandleAdLoaded,
             onFailed: HandleAdFailedToLoad);
     }
-    
-    public void HandleAdLoaded(RewardedAd rewardedAd)
-    {
-        OnAdsLoaded?.Invoke();
-        // The ad was loaded successfully. Now you can handle it.
-        this.rewardedAd = rewardedAd;
 
-        // Add events handlers for ad actions
-        this.rewardedAd.OnAdClicked += HandleAdClicked;
-        this.rewardedAd.OnAdShown += HandleAdShown;
-        this.rewardedAd.OnAdFailedToShow += HandleAdFailedToShow;
-        this.rewardedAd.OnAdImpression += HandleImpression;
-        this.rewardedAd.OnAdDismissed += HandleAdDismissed;
-        this.rewardedAd.OnRewarded += HandleRewarded;
+    private void ForceReloadRewardedAd()
+    {
+        _isLoading = false;
+        rewardedAdLoader?.CancelLoading();
+        SetupLoader();
+        RequestRewardedAd();
     }
-    
+
+    public void HandleAdLoaded(RewardedAd loadedAd)
+    {
+        _isLoading = false;
+        if (_retryCoroutine != null)
+        {
+            StopCoroutine(_retryCoroutine);
+            _retryCoroutine = null;
+        }
+
+        rewardedAd = loadedAd;
+
+        rewardedAd.OnAdClicked += HandleAdClicked;
+        rewardedAd.OnAdShown += HandleAdShown;
+        rewardedAd.OnAdFailedToShow += HandleAdFailedToShow;
+        rewardedAd.OnAdImpression += HandleImpression;
+        rewardedAd.OnAdDismissed += HandleAdDismissed;
+        rewardedAd.OnRewarded += HandleRewarded;
+
+        OnAdsLoaded?.Invoke();
+    }
+
     public void HandleAdFailedToLoad(AdFailedToLoadEventArgs args)
     {
+        _isLoading = false;
         OnAdsLoadFailed?.Invoke();
+        ScheduleRetry();
     }
 
+    private void ScheduleRetry()
+    {
+        if (_retryCoroutine != null)
+            return;
+
+        _retryCoroutine = StartCoroutine(RetryLoadAfterDelay());
+    }
+
+    private IEnumerator RetryLoadAfterDelay()
+    {
+        yield return new WaitForSecondsRealtime(RetryDelaySeconds);
+        _retryCoroutine = null;
+        ForceReloadRewardedAd();
+    }
 
     public void ShowRewardedAd()
     {
         if (rewardedAd != null)
         {
             rewardedAd.Show();
+            return;
         }
+
+        ForceReloadRewardedAd();
     }
 
     public void HandleAdDismissed(object sender, EventArgs args)
     {
-        // Called when an ad is dismissed.
-
-        // Clear resources after an ad dismissed.
         DestroyRewardedAd();
-
-        // Now you can preload the next rewarded ad.
         RequestRewardedAd();
     }
 
     public void HandleAdFailedToShow(object sender, AdFailureEventArgs args)
     {
-        // Called when rewarded ad failed to show.
-
-        // Clear resources after an ad dismissed.
         DestroyRewardedAd();
-
-        // Now you can preload the next rewarded ad.
         RequestRewardedAd();
     }
 
     public void HandleAdClicked(object sender, EventArgs args)
     {
-        // Called when a click is recorded for an ad.
     }
 
     public void HandleAdShown(object sender, EventArgs args)
     {
-        // Called when an ad is shown.
     }
 
     public void HandleImpression(object sender, ImpressionData impressionData)
     {
-        // Called when an impression is recorded for an ad.
     }
 
     public void HandleRewarded(object sender, Reward args)
     {
         OnAdsRewarded?.Invoke();
-        // Clear resources after an ad dismissed.
         DestroyRewardedAd();
-
-        // Now you can preload the next rewarded ad.
         RequestRewardedAd();
     }
 
     public void DestroyRewardedAd()
     {
-        if (rewardedAd != null)
-        {
-            rewardedAd.Destroy();
-            rewardedAd = null;
-        }
+        if (rewardedAd == null)
+            return;
+
+        rewardedAd.Destroy();
+        rewardedAd = null;
+        OnAdsUnloaded?.Invoke();
     }
 }

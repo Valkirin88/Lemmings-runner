@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class AdsUIMediator : IDisposable
 {
-    private readonly LemmingPlaceHandler _lemmingPlaceHandler;
     private readonly AdsHandler _adsHandler;
     private readonly UIHandler _uiHandler;
     private readonly LemmingsEventsHandler _lemmingsEventsHandler;
@@ -14,15 +13,12 @@ public class AdsUIMediator : IDisposable
     private readonly LemmingPlaceView _lemmingPlaceView;
 
     private readonly int _continueLemmingsCount;
-    private int _playAttempts;
 
-    // Стартовые позиции, зафиксированные в начале игры — чтобы вернуть отряд на безопасное место после рекламы
     private readonly Vector3 _leaderStartPosition;
     private readonly bool _hasLeaderStart;
     private readonly Vector3 _placeViewStartPosition;
 
     public AdsUIMediator(
-        LemmingPlaceHandler lemmingPlaceHandler,
         AdsHandler adsHandler,
         UIHandler uiHandler,
         LemmingsEventsHandler lemmingsEventsHandler,
@@ -34,7 +30,6 @@ public class AdsUIMediator : IDisposable
         LemmingPlaceView lemmingPlaceView,
         int continueLemmingsCount = 1)
     {
-        _lemmingPlaceHandler = lemmingPlaceHandler;
         _adsHandler = adsHandler;
         _uiHandler = uiHandler;
         _lemmingsEventsHandler = lemmingsEventsHandler;
@@ -45,7 +40,6 @@ public class AdsUIMediator : IDisposable
         _lemmingPlaceView = lemmingPlaceView;
         _continueLemmingsCount = Mathf.Max(1, continueLemmingsCount);
 
-        // Запоминаем самое начальное место лемминга и управляемого объекта
         if (leaderLemmingView != null)
         {
             _leaderStartPosition = leaderLemmingView.transform.position;
@@ -54,16 +48,16 @@ public class AdsUIMediator : IDisposable
         if (_lemmingPlaceView != null)
             _placeViewStartPosition = _lemmingPlaceView.transform.position;
 
-        _playAttempts = GameInfo.PlayAttempts;
-
         _uiHandler.OnResumedAfterGameOver += ShowAds;
         _uiHandler.OnContinueGameplay += ContinueGameplay;
-        _adsHandler.OnAdsLoaded += SetAdsStatus;
-        _adsHandler.OnAdsLoadFailed += ResetAdsStatus;
+        _adsHandler.OnAdsLoaded += RefreshContinueButton;
+        _adsHandler.OnAdsLoadFailed += RefreshContinueButton;
+        _adsHandler.OnAdsUnloaded += RefreshContinueButton;
         _adsHandler.OnAdsRewarded += GrantReward;
 
-        if (GameInfo.IsAdsOn)
-            _uiHandler.IsAdsNeeded = true;
+        _uiHandler.IsAdReadyCheck = () => _adsHandler != null && _adsHandler.IsAdReady;
+
+        RefreshContinueButton();
     }
 
     private void ShowAds()
@@ -71,29 +65,18 @@ public class AdsUIMediator : IDisposable
         _adsHandler.ShowRewardedAd();
     }
 
-    private void SetAdsStatus()
+    private void RefreshContinueButton()
     {
-        _uiHandler.IsAdsAvailable = true;
+        _uiHandler.RefreshGameOverContinueButton();
     }
 
-    private void ResetAdsStatus()
-    {
-        _uiHandler.IsAdsAvailable = false;
-    }
-
-    /// <summary>
-    /// Награда получена: реклама больше не нужна, прячем картинку и тратим попытку.
-    /// Кнопка «Продолжить» остаётся — следующее нажатие возобновит игру.
-    /// </summary>
     private void GrantReward()
     {
         _uiHandler.IsAdsNeeded = false;
         _uiHandler.OnAdsRewardGranted();
+        RefreshContinueButton();
     }
 
-    /// <summary>
-    /// Второе нажатие «Продолжить» после награды: оживляем леммингов и возвращаем игру в Game.
-    /// </summary>
     private void ContinueGameplay()
     {
         ClearAllObstacles();
@@ -110,9 +93,6 @@ public class AdsUIMediator : IDisposable
         new DestroyAllObstacles(_obstaclesSet, _destroyAllObstaclesSound).Activate();
     }
 
-    /// <summary>
-    /// Возвращает управляемый объект (а вместе с ним формацию) на стартовое место — чтобы отряд не оказался над обрывом.
-    /// </summary>
     private void ResetPlaceViewToStart()
     {
         if (_lemmingPlaceView == null)
@@ -155,7 +135,6 @@ public class AdsUIMediator : IDisposable
             lemming.PickUp();
             _lemmingsEventsHandler.AddLemming(lemming);
 
-            // Первого ставим точно на сохранённое стартовое место, остальных — на их места в строю
             if (i == 0 && _hasLeaderStart)
                 lemming.transform.position = _leaderStartPosition;
             else if (lemming.RunningPlace != null)
@@ -167,8 +146,9 @@ public class AdsUIMediator : IDisposable
     {
         _uiHandler.OnResumedAfterGameOver -= ShowAds;
         _uiHandler.OnContinueGameplay -= ContinueGameplay;
-        _adsHandler.OnAdsLoaded -= SetAdsStatus;
-        _adsHandler.OnAdsLoadFailed -= ResetAdsStatus;
+        _adsHandler.OnAdsLoaded -= RefreshContinueButton;
+        _adsHandler.OnAdsLoadFailed -= RefreshContinueButton;
+        _adsHandler.OnAdsUnloaded -= RefreshContinueButton;
         _adsHandler.OnAdsRewarded -= GrantReward;
     }
 }

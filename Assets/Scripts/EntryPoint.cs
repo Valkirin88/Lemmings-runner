@@ -98,7 +98,8 @@ public class EntryPoint : MonoInstaller
         _abilitiesHandler = new AbilitiesHandler(_obstaclesSet,_randomSpawner,_lemmingPlaceHandler, _lemmingsEventsHandler, _lemmingPlaceView, _abilitiesConfigs, _abilitiesFX, _destroyAllObstaclesSound);
         _abilityButton.Initialize(_abilitiesHandler);
         
-        _adsUIMediator = new AdsUIMediator(_lemmingPlaceHandler, _adsHandler, _uiHandler,
+        var adsHandler = AdsHandler.Instance != null ? AdsHandler.Instance : _adsHandler;
+        _adsUIMediator = new AdsUIMediator(adsHandler, _uiHandler,
             _lemmingsEventsHandler, _randomSpawner, _gameStatesUIMediator,
             _obstaclesSet, _destroyAllObstaclesSound,
             _leaderLemmingView, _lemmingPlaceView, _continueLemmingsCount);
