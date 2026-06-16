@@ -62,7 +62,7 @@ public class ScoreColorChanger : MonoBehaviour
         if (_colors == null || _colors.Count == 0)
             return;
 
-        int score = _scoreProvider != null ? _scoreProvider.Score : 0;
+        int score = _scoreProvider != null ? _scoreProvider.SpawnScore : 0;
         if (!force && score == _lastScore)
             return;
         _lastScore = score;

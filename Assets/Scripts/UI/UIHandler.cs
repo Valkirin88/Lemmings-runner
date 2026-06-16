@@ -21,6 +21,14 @@ public class UIHandler : MonoBehaviour
     private TMP_Text _currentScoreText;
 
     [SerializeField]
+    private TMP_Text _lemmingsNumbeText;
+
+    [SerializeField]
+    private RectTransform _lemmingsNumberIcon;
+    [SerializeField]
+    private float _lemmingsIconOffsetWhenOver9 = 30f;
+    
+    [SerializeField]
     private GameObject _pauseTextObject;
 
     [SerializeField]
@@ -77,13 +85,17 @@ public class UIHandler : MonoBehaviour
     private int _currentLevel;
     
     private int _score;
+    private int _spawnScore;
     private Vector2 _scoreTextBasePosition;
     private bool _scoreBasePositionCaptured;
     private Tween _scoreShakeTween;
     private int _playAttempts;
     private bool _waitingContinueAfterAd;
+    private Vector2 _lemmingsIconBasePosition;
+    private bool _lemmingsIconBaseCaptured;
 
     public int Score => _score;
+    public int SpawnScore => _spawnScore;
 
     private void Start()
     {
@@ -95,7 +107,7 @@ public class UIHandler : MonoBehaviour
         _restartButtonObject.SetActive(false);
         GameState = GameState.Game;
         _currentLevel = SceneManager.GetActiveScene().buildIndex;
-        ShowScore(_score, 0);
+        ShowScore(_score, 0, shake: false);
         _playAttempts = GameInfo.PlayAttempts;
     }
 
@@ -150,10 +162,6 @@ public class UIHandler : MonoBehaviour
             _currentScoreText.gameObject.SetActive(true);
     }
 
-    /// <summary>
-    /// Вызывается при получении вознаграждения за рекламу: прячем картинку рекламы и тратим попытку.
-    /// Кнопка «Продолжить» остаётся — следующее нажатие возобновит игру.
-    /// </summary>
     public void OnAdsRewardGranted()
     {
         _playAttempts--;
@@ -166,13 +174,40 @@ public class UIHandler : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void ShowScore(int score, int added)
+    public void SetSpawnScore(int spawnScore)
+    {
+        _spawnScore = spawnScore;
+    }
+
+    public void ShowScore(int score, int added, bool shake)
     {
         _score = score;
         _currentScoreText.text = Score.ToString();
 
-        if (added > _scoreShakeThreshold)
+        if (shake && added > _scoreShakeThreshold)
             ShakeScoreText();
+    }
+
+    public void ShowLemmingsNumber(int quantity)
+    {
+        if (_lemmingsNumbeText == null) return;
+        _lemmingsNumbeText.text = "x" + quantity;
+        UpdateLemmingsIconPosition(quantity);
+    }
+
+    private void UpdateLemmingsIconPosition(int quantity)
+    {
+        if (_lemmingsNumberIcon == null)
+            return;
+
+        if (!_lemmingsIconBaseCaptured)
+        {
+            _lemmingsIconBasePosition = _lemmingsNumberIcon.anchoredPosition;
+            _lemmingsIconBaseCaptured = true;
+        }
+
+        float offsetX = quantity > 9 ? _lemmingsIconOffsetWhenOver9 : 0f;
+        _lemmingsNumberIcon.anchoredPosition = _lemmingsIconBasePosition + new Vector2(offsetX, 0f);
     }
 
     private void ShakeScoreText()
@@ -200,6 +235,8 @@ public class UIHandler : MonoBehaviour
 
     public void ShowCurrentQuantity(int quantity)
     {
+        ShowLemmingsNumber(quantity);
+
         if (_lemmingsQuantityText == null) return;
         if (_lastDisplayedQuantity == quantity) return;
         _lastDisplayedQuantity = quantity;

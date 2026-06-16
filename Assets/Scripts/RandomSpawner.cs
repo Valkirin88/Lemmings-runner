@@ -245,7 +245,7 @@ public class RandomSpawner : MonoBehaviour
         // Каждые _intervalDecreaseScoreStep очков дополнительно убавляем интервал
         if (_intervalDecreasePerStep > 0f && _intervalDecreaseScoreStep > 0)
         {
-            int score = _scoreProvider != null ? _scoreProvider.Score : 0;
+            int score = _scoreProvider != null ? _scoreProvider.SpawnScore : 0;
             int steps = score / _intervalDecreaseScoreStep;
             interval -= steps * _intervalDecreasePerStep;
         }
@@ -277,7 +277,7 @@ public class RandomSpawner : MonoBehaviour
         if (thresholds == null || values == null || thresholds.Length == 0 || values.Length == 0)
             return fallback;
 
-        int score = _scoreProvider != null ? _scoreProvider.Score : 0;
+        int score = _scoreProvider != null ? _scoreProvider.SpawnScore : 0;
 
         int n = Mathf.Min(thresholds.Length, values.Length);
         if (n == 0) return fallback;
@@ -323,7 +323,7 @@ public class RandomSpawner : MonoBehaviour
     /// </summary>
     private List<GameObject> GetAvailableObstaclePrefabs()
     {
-        int score = _scoreProvider != null ? _scoreProvider.Score : 0;
+        int score = _scoreProvider != null ? _scoreProvider.SpawnScore : 0;
 
         if (_obstacleScorePhases != null && _obstacleScorePhases.Count > 0)
         {

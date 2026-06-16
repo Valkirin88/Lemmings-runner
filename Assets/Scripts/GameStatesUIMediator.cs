@@ -1,5 +1,6 @@
 using System;
 
+using UnityEngine;
 
 public class GameStatesUIMediator : IDisposable
 {
@@ -10,6 +11,7 @@ public class GameStatesUIMediator : IDisposable
     private readonly LeaderboardServerSender _leaderboardServerSender;
     
     private int _lemmingQuantity;
+    private int _displayScore;
     private GameState _gameState;
     private float _gameOverDelayRemaining = -1f;
     private const float GameOverDelaySeconds = 0.5f;
@@ -29,10 +31,21 @@ public class GameStatesUIMediator : IDisposable
         _leaderboardServerSender = leaderboardServerSender;
         
         EndTrack.OnFinished += Finish;
-        _scoreHandler.OnScoreChanged += _uiHandler.ShowScore;
+        _scoreHandler.OnScoreChanged += OnScoreChanged;
 
         _gameState = GameState.Game;
         _uiHandler.GameState = _gameState;
+    }
+
+    private void OnScoreChanged(int baseScore, int baseAdded, bool fromBonus)
+    {
+        _uiHandler.SetSpawnScore(baseScore);
+
+        int multiplier = Mathf.Max(0, _lemmingQuantity);
+        int displayAdded = baseAdded * multiplier;
+        _displayScore += displayAdded;
+
+        _uiHandler.ShowScore(_displayScore, displayAdded, fromBonus);
     }
 
     private void Finish()
@@ -98,8 +111,8 @@ public class GameStatesUIMediator : IDisposable
             return;
 
         _gameOverDelayRemaining = -1f;
-        _scoreHandler.SaveScoreResult();
-        _leaderboardServerSender.SendScoreToServer(_scoreHandler.Score);
+        _scoreHandler.SaveScoreResult(_displayScore);
+        _leaderboardServerSender.SendScoreToServer(_displayScore);
         _gameState = GameState.GameOver;
         _uiHandler.GameState = _gameState;
     }
@@ -108,7 +121,7 @@ public class GameStatesUIMediator : IDisposable
     public void Dispose()
     {
         EndTrack.OnFinished -= Finish;
-        _scoreHandler.OnScoreChanged -= _uiHandler.ShowScore;
+        _scoreHandler.OnScoreChanged -= OnScoreChanged;
     }
 }
 

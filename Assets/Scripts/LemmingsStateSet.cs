@@ -37,7 +37,7 @@ public class LemmingsStateSet
 
     private void SubscribeLimmingSream(LemmingView lemmingView)
     {
-        lemmingView.OnLemmingOnFire += FireLemming;
+        lemmingView.OnLemmingOnDanger += FireLemming;
     }
 
     private void FireLemming()
@@ -49,7 +49,7 @@ public class LemmingsStateSet
     {
         RunningLemmingViews.Remove(lemmingView);
         UnsubscribeOnNewLemmingsCaught(lemmingView);
-        lemmingView.OnLemmingOnFire -= FireLemming;
+        lemmingView.OnLemmingOnDanger -= FireLemming;
         OnLemmingCountRemove?.Invoke(lemmingView);
         OnLemmingKilled?.Invoke();
     }

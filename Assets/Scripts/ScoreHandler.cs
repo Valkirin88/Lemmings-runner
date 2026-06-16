@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ScoreHandler : IDisposable
 {
-    public event Action<int, int> OnScoreChanged;
+    public event Action<int, int, bool> OnScoreChanged;
     
     private readonly LemmingsEventsHandler _lemmingsEventsHandler;
     private float _currentTimeforScore;
@@ -14,15 +14,18 @@ public class ScoreHandler : IDisposable
     {
         _lemmingsEventsHandler = lemmingsEventsHandler;
 
-        _lemmingsEventsHandler.OnCurrencyGot += IncreaseScore;
+        _lemmingsEventsHandler.OnCurrencyGot += IncreaseScoreFromBonus;
     }
 
-  
+    private void IncreaseScoreFromBonus(int score)
+    {
+        IncreaseScore(score, fromBonus: true);
+    }
 
-    private void IncreaseScore(int score)
+    private void IncreaseScore(int score, bool fromBonus)
     {
         _score = Score + score;
-        OnScoreChanged?.Invoke(_score, score);
+        OnScoreChanged?.Invoke(_score, score, fromBonus);
     }
 
     public void Update()
@@ -30,23 +33,23 @@ public class ScoreHandler : IDisposable
         _currentTimeforScore = _currentTimeforScore + Time.deltaTime;
         if (_currentTimeforScore >= GameInfo.TimeToIncreaseScore)
         {
-            IncreaseScore(1);
+            IncreaseScore(1, fromBonus: false);
             _currentTimeforScore = 0;
         }
     }
 
-    public void SaveScoreResult()
+    public void SaveScoreResult(int displayScore)
     {
         int bestScore = PlayerPrefs.GetInt(GameInfo.UnityLeaderboardName);
-        if (Score > bestScore)
+        if (displayScore > bestScore)
         {
-            PlayerPrefs.SetInt(GameInfo.UnityLeaderboardName, Score);
+            PlayerPrefs.SetInt(GameInfo.UnityLeaderboardName, displayScore);
         }
     }
 
 
     public void Dispose()
     {
-        _lemmingsEventsHandler.OnCurrencyGot -= IncreaseScore;
+        _lemmingsEventsHandler.OnCurrencyGot -= IncreaseScoreFromBonus;
     }
 }
