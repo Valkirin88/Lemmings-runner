@@ -48,7 +48,7 @@ public class Leaderboard : MonoBehaviour
 
     private void ShowMainMenu()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     private async Task InitializeUnityServices()

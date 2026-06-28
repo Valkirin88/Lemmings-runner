@@ -2,57 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-// Заставка "Руки из сердца". Повесь компонент на пустой GameObject в первой
-// сцене (MainMenu) — она проиграется один раз поверх сцены, сразу после
-// логотипа Unity. Параметры настраиваются в инспекторе, картинка логотипа
-// показывается живым превью (см. RukiIzSerdcaSplashEditor).
+// Заставка "Руки из сердца". Висит на пустом GameObject в сцене MainMenu
+// (грузится первой, сразу после логотипа Unity). Параметры зашиты —
+// показывается один раз за запуск игры, поверх сцены, затем исчезает.
 public class RukiIzSerdcaSplash : MonoBehaviour
 {
-    [Header("Экран / размеры")]
-    [Tooltip("Высота логотипа на экране, в пикселях reference 1080x1920")]
-    [SerializeField] private float _logoHeight = 900f;
-    [SerializeField] private Vector2 _logoPos = new Vector2(0, 160);
-    [SerializeField] private float _taglineFont = 120f;
-    [SerializeField] private float _taglineY = -380f;
-    [SerializeField] private float _brandFont = 42f;
-    [SerializeField] private float _brandTopY = 740f;
-    [SerializeField] private float _brandBottomGap = 140f;
-    [SerializeField] private TMP_FontAsset _font;
+    // ===== Экран / размеры =====
+    private const float LOGO_HEIGHT = 900f;
+    private static readonly Vector2 LOGO_POS = new Vector2(0f, 160f);
+    private const float TAGLINE_FONT = 120f;
+    private const float TAGLINE_Y = -380f;
+    private const float BRAND_FONT = 42f;
+    private const float BRAND_TOP_Y = 740f;
+    private const float BRAND_BOTTOM_GAP = 140f;
 
-    [Header("Сердце")]
-    [Tooltip("Размер сердца относительно рук")]
-    [Range(0.6f, 2.0f)] [SerializeField] private float _heartScale = 1.45f;
-    [SerializeField] private Color _heartColor = new Color32(0xE2, 0x4B, 0x4A, 0xff);
-    [SerializeField] private Color _heartColorEnd = new Color32(0xE8, 0xA8, 0x7C, 0xff);
-    [Range(0f, 1f)] [SerializeField] private float _dimpleDarkness = 0.42f;
-    [SerializeField] private Vector2 _dimpleCenter = new Vector2(160, 138);
-    [SerializeField] private Vector2 _dimpleRadius = new Vector2(16, 8);
+    // ===== Сердце =====
+    private const float HEART_SCALE = 1.45f;
+    private static readonly Color HEART_COLOR = new Color(0.8862745f, 0.29411766f, 0.2901961f, 1f);
+    private static readonly Color HEART_COLOR_END = new Color(0.9098039f, 0.65882355f, 0.4862745f, 1f);
+    private const float DIMPLE_DARKNESS = 0.675f;
+    private static readonly Vector2 DIMPLE_CENTER = new Vector2(160f, 124.2f);
+    private static readonly Vector2 DIMPLE_RADIUS = new Vector2(10.2f, 7.3f);
 
-    [Header("Руки (координаты в дизайн-пространстве 320x300, центр 160,150)")]
-    [SerializeField] private Color _skinColor = new Color32(0xE0, 0xA5, 0x79, 0xff);
-    [SerializeField] private Vector2 _leftAnchor = new Vector2(156, 122);
-    [SerializeField] private Vector2 _leftPalm = new Vector2(126, 64);
-    [SerializeField] private float _armThickness = 16f;
-    [SerializeField] private float _palmRadius = 12f;
-    [SerializeField] private float _fingerLength = 26f;
-    [SerializeField] private float _fingerThickness = 8f;
+    // ===== Руки (координаты в дизайн-пространстве 320x300, центр 160,150) =====
+    private static readonly Color SKIN_COLOR = new Color(0.8784314f, 0.64705884f, 0.4745098f, 1f);
+    private static readonly Vector2 LEFT_ANCHOR = new Vector2(156f, 109.6f);
+    private static readonly Vector2 LEFT_PALM = new Vector2(133.5f, 60.4f);
+    private const float ARM_THICKNESS = 16f;
+    private const float PALM_RADIUS = 12f;
+    private const float FINGER_LENGTH = 26f;
+    private const float FINGER_THICKNESS = 8f;
 
-    [Header("Фон / тайминг")]
-    [SerializeField] private Color _background = new Color32(0x16, 0x16, 0x1c, 0xff);
-    [Tooltip("Задержка перед началом анимации — пауза перед отвалом слов, сек")]
-    [SerializeField] private float _startDelay = 0.6f;
-    [SerializeField] private float _splashDuration = 6f;
-    [SerializeField] private float _hold = 0.5f;
-    [SerializeField] private float _fade = 0.45f;
-    [SerializeField] private bool _playOnStart = true;
-    [Tooltip("Показывать только один раз за запуск игры (не при повторном входе в меню)")]
-    [SerializeField] private bool _showOncePerLaunch = true;
+    // ===== Фон / тайминг =====
+    private static readonly Color BACKGROUND = new Color(0.08627451f, 0.08627451f, 0.10980392f, 1f);
+    private const float START_DELAY = 0.5f;
+    private const float SPLASH_DURATION = 6f;
+    private const float HOLD = 0.6f;
+    private const float FADE = 0.45f;
+    // ограничение шага времени: фризы загрузки не «проматывают» анимацию
+    private const float MAX_DT = 1f / 30f;
 
-    private static bool _shownThisSession;
+    private const string BOOT_SCENE = "Boot";     // лёгкая стартовая сцена
+    private const string TARGET_SCENE = "MainMenu"; // что грузим в фоне
 
     private const float DCX = 160f, DCY = 150f; // центр дизайн-пространства
+
+    [SerializeField] private TMP_FontAsset _font; // шрифт как во всей игре (Softie Cyr SDF 1)
+
+    private static bool _shownThisSession;
+    private bool _bootMode;
 
     private GameObject _root;
     private CanvasGroup _group;
@@ -63,16 +64,18 @@ public class RukiIzSerdcaSplash : MonoBehaviour
     private Vector2 _tileBase;
     private float _k = 1f;
 
-    // кэш раскладки текстуры
     private int _texW, _texH;
     private float _offX, _offY;
     private Vector2 _heartCenterTex;
 
+    // Висит на объекте в лёгкой сцене Boot. В Boot показывает заставку сразу
+    // после лого Unity и асинхронно догружает MainMenu в фоне (без чёрного экрана).
     private void Start()
     {
-        if (!_playOnStart) return;
-        if (_showOncePerLaunch && _shownThisSession) return;
+        if (_shownThisSession) return;
         _shownThisSession = true;
+        _bootMode = SceneManager.GetActiveScene().name == BOOT_SCENE;
+        if (_bootMode) DontDestroyOnLoad(gameObject);
         StartCoroutine(Run());
     }
 
@@ -80,26 +83,43 @@ public class RukiIzSerdcaSplash : MonoBehaviour
     {
         BuildUI();
         Apply(0f);
-        if (_startDelay > 0f)
-            yield return new WaitForSecondsRealtime(_startDelay);
+        yield return null; // показать первый кадр заставки
+
+        // пауза перед стартом (шаг ограничен, чтобы фризы не «проматывали»)
+        float d = 0f;
+        while (d < START_DELAY) { d += Step(); yield return null; }
+
         float t = 0f;
-        while (t < _splashDuration)
+        while (t < SPLASH_DURATION)
         {
-            t += Time.unscaledDeltaTime;
-            Apply(Mathf.Clamp01(t / _splashDuration));
+            t += Step();
+            Apply(Mathf.Clamp01(t / SPLASH_DURATION));
             yield return null;
         }
         Apply(1f);
-        yield return new WaitForSecondsRealtime(_hold);
-        float f = 0f;
-        while (f < _fade)
+
+        float h = 0f;
+        while (h < HOLD) { h += Step(); yield return null; }
+
+        // меню грузится быстро — грузим обычным способом под заставкой
+        if (_bootMode)
         {
-            f += Time.unscaledDeltaTime;
-            _group.alpha = 1f - Mathf.Clamp01(f / _fade);
+            SceneManager.LoadScene(TARGET_SCENE);
+            yield return null; // кадр на инициализацию меню под оверлеем
+        }
+
+        float f = 0f;
+        while (f < FADE)
+        {
+            f += Step();
+            _group.alpha = 1f - Mathf.Clamp01(f / FADE);
             yield return null;
         }
         if (_root != null) Destroy(_root);
+        if (_bootMode) Destroy(gameObject);
     }
+
+    private static float Step() { return Mathf.Min(Time.unscaledDeltaTime, MAX_DT); }
 
     // -------------------------------------------------------------------------
     private void BuildUI()
@@ -120,7 +140,7 @@ public class RukiIzSerdcaSplash : MonoBehaviour
 
         var bg = NewRect("BG", _root.transform);
         Stretch(bg);
-        bg.gameObject.AddComponent<Image>().color = _background;
+        bg.gameObject.AddComponent<Image>().color = BACKGROUND;
 
         ComputeLayout();
         var heartTex = BuildHeart();
@@ -130,35 +150,35 @@ public class RukiIzSerdcaSplash : MonoBehaviour
         _figure = NewRect("Figure", _root.transform);
         _figure.anchorMin = _figure.anchorMax = new Vector2(0.5f, 0.5f);
         _figure.pivot = new Vector2(_heartCenterTex.x / _texW, 1f - _heartCenterTex.y / _texH);
-        _figure.sizeDelta = new Vector2(_logoHeight * aspect, _logoHeight);
-        _figure.anchoredPosition = _logoPos;
+        _figure.sizeDelta = new Vector2(LOGO_HEIGHT * aspect, LOGO_HEIGHT);
+        _figure.anchoredPosition = LOGO_POS;
 
-        _heart = AddSprite("Heart", _figure, heartTex, _heartColor);
-        AddSprite("Arms", _figure, armsTex, _skinColor);
+        _heart = AddSprite("Heart", _figure, heartTex, HEART_COLOR);
+        AddSprite("Arms", _figure, armsTex, SKIN_COLOR);
 
         var font = _font != null ? _font : FindCyrillicFont();
 
-        MakeText("компания", _brandFont, MUTED(), new Vector2(0, _brandTopY), font, FontStyles.UpperCase, 12f);
-        MakeText("представляет", _brandFont, MUTED(), new Vector2(0, _taglineY - _brandBottomGap), font, FontStyles.UpperCase, 12f);
+        MakeText("компания", BRAND_FONT, MUTED(), new Vector2(0, BRAND_TOP_Y), font, FontStyles.UpperCase, 12f);
+        MakeText("представляет", BRAND_FONT, MUTED(), new Vector2(0, TAGLINE_Y - BRAND_BOTTOM_GAP), font, FontStyles.UpperCase, 12f);
 
-        var ruki = MakeText("Руки", _taglineFont, TEXT(), Vector2.zero, font, FontStyles.Normal, 0f);
+        var ruki = MakeText("Руки", TAGLINE_FONT, TEXT(), Vector2.zero, font, FontStyles.Normal, 0f);
         ruki.alignment = TextAlignmentOptions.Left;
         ruki.rectTransform.pivot = new Vector2(0f, 0.5f);
         ruki.ForceMeshUpdate();
         float wRuki = ruki.preferredWidth;
 
-        var probe = MakeText("от сердца", _taglineFont, TEXT(), Vector2.zero, font, FontStyles.Normal, 0f);
+        var probe = MakeText("от сердца", TAGLINE_FONT, TEXT(), Vector2.zero, font, FontStyles.Normal, 0f);
         probe.ForceMeshUpdate();
         float wTile = probe.preferredWidth;
         Destroy(probe.gameObject);
 
-        float space = _taglineFont * 0.30f;
+        float space = TAGLINE_FONT * 0.30f;
         float total = wRuki + space + wTile;
         float startX = -total * 0.5f;
-        ruki.rectTransform.anchoredPosition = new Vector2(startX, _taglineY);
+        ruki.rectTransform.anchoredPosition = new Vector2(startX, TAGLINE_Y);
         float slotLeft = startX + wRuki + space;
 
-        var reveal = MakeText("из …", _taglineFont, TEXT(), new Vector2(slotLeft, _taglineY), font, FontStyles.Normal, 0f);
+        var reveal = MakeText("из …", TAGLINE_FONT, TEXT(), new Vector2(slotLeft, TAGLINE_Y), font, FontStyles.Normal, 0f);
         reveal.alignment = TextAlignmentOptions.Left;
         reveal.rectTransform.pivot = new Vector2(0f, 0.5f);
 
@@ -166,28 +186,28 @@ public class RukiIzSerdcaSplash : MonoBehaviour
         _tile = NewRect("Tile", _root.transform);
         _tile.anchorMin = _tile.anchorMax = new Vector2(0.5f, 0.5f);
         _tile.pivot = new Vector2(0f, 1f);
-        _tile.sizeDelta = new Vector2(wTile + pad * 2f, _taglineFont * 1.35f);
-        _tileBase = new Vector2(slotLeft - pad, _taglineY + _taglineFont * 0.62f);
+        _tile.sizeDelta = new Vector2(wTile + pad * 2f, TAGLINE_FONT * 1.35f);
+        _tileBase = new Vector2(slotLeft - pad, TAGLINE_Y + TAGLINE_FONT * 0.62f);
         _tile.anchoredPosition = _tileBase;
         var tileBg = _tile.gameObject.AddComponent<Image>();
-        tileBg.color = _background;
+        tileBg.color = BACKGROUND;
         tileBg.raycastTarget = false;
         _tileGroup = _tile.gameObject.AddComponent<CanvasGroup>();
-        var tileTxt = MakeText("от сердца", _taglineFont, TEXT(), Vector2.zero, font, FontStyles.Normal, 0f);
+        var tileTxt = MakeText("от сердца", TAGLINE_FONT, TEXT(), Vector2.zero, font, FontStyles.Normal, 0f);
         tileTxt.transform.SetParent(_tile, false);
         tileTxt.alignment = TextAlignmentOptions.Left;
         tileTxt.rectTransform.anchorMin = tileTxt.rectTransform.anchorMax = new Vector2(0f, 0.5f);
         tileTxt.rectTransform.pivot = new Vector2(0f, 0.5f);
         tileTxt.rectTransform.anchoredPosition = new Vector2(pad, 0f);
 
-        _k = _taglineFont / 30f;
+        _k = TAGLINE_FONT / 30f;
     }
 
     private void Apply(float p)
     {
         _figure.localRotation = Quaternion.Euler(0, 0, -Eval(FlipKeys, p));
         float c = Mathf.Clamp01((p - 0.86f) / (0.94f - 0.86f));
-        _heart.color = Color.Lerp(_heartColor, _heartColorEnd, c);
+        _heart.color = Color.Lerp(HEART_COLOR, HEART_COLOR_END, c);
 
         float tx = Eval(TileX, p), ty = Eval(TileY, p), tr = Eval(TileRot, p), ta = Eval(TileA, p);
         _tile.anchoredPosition = _tileBase + new Vector2(tx * _k, -ty * _k);
@@ -286,12 +306,14 @@ public class RukiIzSerdcaSplash : MonoBehaviour
     }
 
     // ===== Геометрия / текстуры =====
-    private Vector2 Scaled(Vector2 p)
+    private static Vector2 Scaled(Vector2 p)
     {
-        return new Vector2(DCX + (p.x - DCX) * _heartScale, DCY + (p.y - DCY) * _heartScale);
+        return new Vector2(DCX + (p.x - DCX) * HEART_SCALE, DCY + (p.y - DCY) * HEART_SCALE);
     }
 
-    private List<Vector2> HeartPoly()
+    private static Vector2 S(float x, float y) { return Scaled(new Vector2(x, y)); }
+
+    private static List<Vector2> HeartPoly()
     {
         var poly = new List<Vector2>();
         AddCubic(poly, S(160, 128), S(152, 106), S(120, 106), S(114, 132));
@@ -301,22 +323,19 @@ public class RukiIzSerdcaSplash : MonoBehaviour
         return poly;
     }
 
-    private Vector2 S(float x, float y) { return Scaled(new Vector2(x, y)); }
-
-    // Считаем общий размер текстуры по содержимому (сердце + руки) с запасом
     private void ComputeLayout()
     {
         var poly = HeartPoly();
         float minX = 1e9f, minY = 1e9f, maxX = -1e9f, maxY = -1e9f;
         foreach (var p in poly) Expand(ref minX, ref minY, ref maxX, ref maxY, p, 0f);
 
-        float armPad = Mathf.Max(_armThickness, _palmRadius) * 0.5f + 2f;
-        float handPad = _palmRadius + _fingerLength + _fingerThickness * 0.5f + 2f;
-        Vector2 rAnchor = new Vector2(320 - _leftAnchor.x, _leftAnchor.y);
-        Vector2 rPalm = new Vector2(320 - _leftPalm.x, _leftPalm.y);
-        Expand(ref minX, ref minY, ref maxX, ref maxY, _leftAnchor, armPad);
+        float armPad = Mathf.Max(ARM_THICKNESS, PALM_RADIUS) * 0.5f + 2f;
+        float handPad = PALM_RADIUS + FINGER_LENGTH + FINGER_THICKNESS * 0.5f + 2f;
+        Vector2 rAnchor = new Vector2(320 - LEFT_ANCHOR.x, LEFT_ANCHOR.y);
+        Vector2 rPalm = new Vector2(320 - LEFT_PALM.x, LEFT_PALM.y);
+        Expand(ref minX, ref minY, ref maxX, ref maxY, LEFT_ANCHOR, armPad);
         Expand(ref minX, ref minY, ref maxX, ref maxY, rAnchor, armPad);
-        Expand(ref minX, ref minY, ref maxX, ref maxY, _leftPalm, handPad);
+        Expand(ref minX, ref minY, ref maxX, ref maxY, LEFT_PALM, handPad);
         Expand(ref minX, ref minY, ref maxX, ref maxY, rPalm, handPad);
 
         const float PAD = 8f;
@@ -334,94 +353,100 @@ public class RukiIzSerdcaSplash : MonoBehaviour
         minY = Mathf.Min(minY, p.y - r); maxY = Mathf.Max(maxY, p.y + r);
     }
 
-    public Texture2D BuildHeart()
+    private Texture2D BuildHeart()
     {
-        if (_texW == 0) ComputeLayout();
         var poly = HeartPoly();
-        for (int i = 0; i < poly.Count; i++) poly[i] += new Vector2(_offX, _offY);
+        Vector2 o = new Vector2(_offX, _offY);
+        float minX = 1e9f, minY = 1e9f, maxX = -1e9f, maxY = -1e9f;
+        for (int i = 0; i < poly.Count; i++)
+        {
+            poly[i] += o;
+            minX = Mathf.Min(minX, poly[i].x); maxX = Mathf.Max(maxX, poly[i].x);
+            minY = Mathf.Min(minY, poly[i].y); maxY = Mathf.Max(maxY, poly[i].y);
+        }
 
         var px = new Color[_texW * _texH];
-        Vector2 dc = Scaled(_dimpleCenter) + new Vector2(_offX, _offY);
-        float drx = _dimpleRadius.x * _heartScale, dry = _dimpleRadius.y * _heartScale;
+        Vector2 dc = Scaled(DIMPLE_CENTER) + o;
+        float drx = DIMPLE_RADIUS.x * HEART_SCALE, dry = DIMPLE_RADIUS.y * HEART_SCALE;
 
-        for (int y = 0; y < _texH; y++)
-        for (int x = 0; x < _texW; x++)
+        int X0 = Mathf.Max(0, Mathf.FloorToInt(minX));
+        int X1 = Mathf.Min(_texW - 1, Mathf.CeilToInt(maxX));
+        int Y0 = Mathf.Max(0, Mathf.FloorToInt(minY));
+        int Y1 = Mathf.Min(_texH - 1, Mathf.CeilToInt(maxY));
+        int n = poly.Count;
+        var rowCov = new float[Mathf.Max(1, X1 - X0 + 1)];
+        var xs = new List<float>(8);
+
+        // построчная заливка (scanline) с 2x анти-алиасингом по вертикали
+        // и дробным покрытием по горизонтали
+        for (int y = Y0; y <= Y1; y++)
         {
-            float cov = 0f;
-            for (int sy = 0; sy < 2; sy++)
-            for (int sx = 0; sx < 2; sx++)
-                if (InPoly(poly, x + 0.25f + sx * 0.5f, y + 0.25f + sy * 0.5f)) cov += 0.25f;
-            if (cov <= 0f) continue;
-            float rgb = 1f;
-            float dx = (x - dc.x) / drx, dy = (y - dc.y) / dry;
-            if (dx * dx + dy * dy < 1f) rgb = _dimpleDarkness;
-            Set(px, _texW, _texH, x, y, new Color(rgb, rgb, rgb, cov));
+            for (int r = 0; r < rowCov.Length; r++) rowCov[r] = 0f;
+
+            for (int s = 0; s < 2; s++)
+            {
+                float yy = y + 0.25f + s * 0.5f;
+                xs.Clear();
+                for (int i = 0, j = n - 1; i < n; j = i++)
+                {
+                    Vector2 a = poly[j], b = poly[i];
+                    if ((a.y <= yy && b.y > yy) || (b.y <= yy && a.y > yy))
+                        xs.Add(a.x + (yy - a.y) / (b.y - a.y) * (b.x - a.x));
+                }
+                xs.Sort();
+                for (int c = 0; c + 1 < xs.Count; c += 2)
+                {
+                    float xa = xs[c], xb = xs[c + 1];
+                    int pa = Mathf.Max(X0, Mathf.FloorToInt(xa));
+                    int pb = Mathf.Min(X1, Mathf.CeilToInt(xb) - 1);
+                    for (int x = pa; x <= pb; x++)
+                        rowCov[x - X0] += Mathf.Clamp01(Mathf.Min(x + 1f, xb) - Mathf.Max((float)x, xa)) * 0.5f;
+                }
+            }
+
+            for (int x = X0; x <= X1; x++)
+            {
+                float cov = Mathf.Clamp01(rowCov[x - X0]);
+                if (cov <= 0f) continue;
+                float rgb = 1f;
+                float dx = (x - dc.x) / drx, dy = (y - dc.y) / dry;
+                if (dx * dx + dy * dy < 1f) rgb = DIMPLE_DARKNESS;
+                Set(px, _texW, _texH, x, y, new Color(rgb, rgb, rgb, cov));
+            }
         }
         return ToTexture(px, _texW, _texH);
     }
 
-    public Texture2D BuildArms()
+    private Texture2D BuildArms()
     {
-        if (_texW == 0) ComputeLayout();
         var px = new Color[_texW * _texH];
         Vector2 o = new Vector2(_offX, _offY);
-        Vector2 la = _leftAnchor + o, lp = _leftPalm + o;
-        Vector2 ra = new Vector2(320 - _leftAnchor.x, _leftAnchor.y) + o;
-        Vector2 rp = new Vector2(320 - _leftPalm.x, _leftPalm.y) + o;
+        Vector2 la = LEFT_ANCHOR + o, lp = LEFT_PALM + o;
+        Vector2 ra = new Vector2(320 - LEFT_ANCHOR.x, LEFT_ANCHOR.y) + o;
+        Vector2 rp = new Vector2(320 - LEFT_PALM.x, LEFT_PALM.y) + o;
 
-        Limb(px, _texW, _texH, la.x, la.y, lp.x, lp.y, _armThickness);
-        Limb(px, _texW, _texH, ra.x, ra.y, rp.x, rp.y, _armThickness);
+        Limb(px, _texW, _texH, la.x, la.y, lp.x, lp.y, ARM_THICKNESS);
+        Limb(px, _texW, _texH, ra.x, ra.y, rp.x, rp.y, ARM_THICKNESS);
         Hand(px, _texW, _texH, lp.x, lp.y, -1);
         Hand(px, _texW, _texH, rp.x, rp.y, +1);
         return ToTexture(px, _texW, _texH);
     }
 
-    public Texture2D BuildCompositePreview()
+    private static void Hand(Color[] px, int W, int H, float palmX, float palmY, int side)
     {
-        ComputeLayout();
-        var heart = BuildHeart();
-        var arms = BuildArms();
-        var hp = heart.GetPixels();
-        var ap = arms.GetPixels();
-        var op = new Color[hp.Length];
-        for (int i = 0; i < op.Length; i++)
-        {
-            Color c = _background; c.a = 1f;
-            float ha = hp[i].a;
-            if (ha > 0f)
-            {
-                Color hc = new Color(_heartColor.r * hp[i].r, _heartColor.g * hp[i].r, _heartColor.b * hp[i].r);
-                c = c * (1f - ha) + hc * ha;
-            }
-            float aa = ap[i].a;
-            if (aa > 0f)
-                c = c * (1f - aa) + (Color)_skinColor * aa;
-            c.a = 1f;
-            op[i] = c;
-        }
-        var outTex = new Texture2D(_texW, _texH, TextureFormat.RGBA32, false);
-        outTex.SetPixels(op);
-        outTex.Apply();
-        Object.DestroyImmediate(heart);
-        Object.DestroyImmediate(arms);
-        return outTex;
-    }
-
-    private void Hand(Color[] px, int W, int H, float palmX, float palmY, int side)
-    {
-        Disc(px, W, H, palmX, palmY, _palmRadius);
+        Disc(px, W, H, palmX, palmY, PALM_RADIUS);
         float[] baseAng = { -30, -10, 10, 30 };
         foreach (var ba in baseAng)
         {
             float ang = (ba + side * 15f) * Mathf.Deg2Rad;
             Limb(px, W, H, palmX, palmY,
-                palmX + _fingerLength * Mathf.Sin(ang),
-                palmY - _fingerLength * Mathf.Cos(ang), _fingerThickness);
+                palmX + FINGER_LENGTH * Mathf.Sin(ang),
+                palmY - FINGER_LENGTH * Mathf.Cos(ang), FINGER_THICKNESS);
         }
         float th = side * 78f * Mathf.Deg2Rad;
         Limb(px, W, H, palmX, palmY,
-            palmX + _fingerLength * 0.72f * Mathf.Sin(th),
-            palmY - _fingerLength * 0.72f * Mathf.Cos(th), _fingerThickness);
+            palmX + FINGER_LENGTH * 0.72f * Mathf.Sin(th),
+            palmY - FINGER_LENGTH * 0.72f * Mathf.Cos(th), FINGER_THICKNESS);
     }
 
     private static void Limb(Color[] px, int W, int H, float x0, float y0, float x1, float y1, float thick)
@@ -463,20 +488,6 @@ public class RukiIzSerdcaSplash : MonoBehaviour
             float by = u * u * u * p0.y + 3f * u * u * t * p1.y + 3f * u * t * t * p2.y + t * t * t * p3.y;
             poly.Add(new Vector2(bx, by));
         }
-    }
-
-    private static bool InPoly(List<Vector2> poly, float px, float py)
-    {
-        bool inside = false;
-        int n = poly.Count;
-        for (int i = 0, j = n - 1; i < n; j = i++)
-        {
-            Vector2 a = poly[i], b = poly[j];
-            if (((a.y > py) != (b.y > py)) &&
-                (px < (b.x - a.x) * (py - a.y) / (b.y - a.y) + a.x))
-                inside = !inside;
-        }
-        return inside;
     }
 
     private static void Set(Color[] px, int W, int H, int x, int y, Color c) { px[(H - 1 - y) * W + x] = c; }

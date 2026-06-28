@@ -42,7 +42,7 @@ public class MainMenu : MonoBehaviour
     {
         BloodSplatterManager.Instance.AddSplattersOnKill();
         yield return new WaitForSeconds(_bloodDisplayDelay);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
 
     private void OnDestroy()

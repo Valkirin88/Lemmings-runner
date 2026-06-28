@@ -60,7 +60,7 @@ public class MusicHandler : MonoBehaviour
 
     private bool IsMenuScene() => IsMenuScene(SceneManager.GetActiveScene().buildIndex);
 
-    private static bool IsMenuScene(int buildIndex) => buildIndex == 0 || buildIndex == 2;
+    private static bool IsMenuScene(int buildIndex) => buildIndex == 1 || buildIndex == 3;
 
     private AudioClip GetGameClip()
     {
