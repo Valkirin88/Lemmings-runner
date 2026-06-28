@@ -76,7 +76,7 @@ public class Chipper : MonoBehaviour, IObstacle
             lemming.transform.SetParent(null, true);
         }
         // Захваченный лемминг умирает даже если включили неуязвимость после захвата.
-        lemming.Kill(destroyImmediately: true, ignoreInvincibility: true);
+        lemming.Kill(destroyImmediately: true, ignoreInvincibility: true, deathCause: LemmingDeathCause.Chipper);
     }
 
     private void OnTriggerEnter(Collider other)

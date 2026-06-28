@@ -2,6 +2,13 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+public enum LemmingDeathCause
+{
+    Default,
+    Saw,
+    Drill,
+    Chipper
+}
 
 public class LemmingView : MonoBehaviour
 {
@@ -61,6 +68,7 @@ public class LemmingView : MonoBehaviour
     public bool IsOnFire;
     public bool IsDead;
     public bool IsSliced;
+    public LemmingDeathCause DeathCause { get; private set; }
 
     public bool IsInvincible
     {
@@ -441,7 +449,7 @@ public class LemmingView : MonoBehaviour
     
     /// <param name="destroyImmediately">true — убрать объект сразу (например при убийстве препятствием), иначе горящий исчезнет через 2 сек</param>
     /// <param name="ignoreInvincibility">true — смерть от падения (Bottom), обходит неуязвимость</param>
-    public void Kill(bool destroyImmediately = false, bool ignoreInvincibility = false)
+    public void Kill(bool destroyImmediately = false, bool ignoreInvincibility = false, LemmingDeathCause deathCause = LemmingDeathCause.Default)
     {
         if (IsInvincible && !ignoreInvincibility)
             return;
@@ -454,6 +462,7 @@ public class LemmingView : MonoBehaviour
         }
 
         IsDead = true;
+        DeathCause = deathCause;
 
         OnLemmingKilled?.Invoke(this);
 
@@ -470,11 +479,12 @@ public class LemmingView : MonoBehaviour
             Destroy(gameObject, 2f);
     }
 
-    public void KillWithotBlood(bool ignoreInvincibility = false)
+    public void KillWithotBlood(bool ignoreInvincibility = false, LemmingDeathCause deathCause = LemmingDeathCause.Default)
     {
         if ((IsInvincible && !ignoreInvincibility) || IsDead) return;
         
         IsDead = true;
+        DeathCause = deathCause;
         
         OnLemmingKilled?.Invoke(this);
 

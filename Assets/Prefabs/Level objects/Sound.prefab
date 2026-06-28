@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2797246068576527583}
   - component: {fileID: 1294370478113246363}
   - component: {fileID: 2543143557352303997}
+  - component: {fileID: 3847291056182746391}
   m_Layer: 0
   m_Name: Sound
   m_TagString: Untagged
@@ -152,3 +153,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3847291056182746391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5163800294889890982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56979e62bc6e83341b9099cb4ac1116d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VibrationHandler

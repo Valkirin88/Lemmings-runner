@@ -45,6 +45,9 @@ public class EntryPoint : MonoInstaller
     private SoundsHandler _soundHandler;
 
     [SerializeField]
+    private VibrationHandler _vibrationHandler;
+
+    [SerializeField]
     private Bottom _bottom;
 
     [SerializeField]
@@ -90,6 +93,13 @@ public class EntryPoint : MonoInstaller
         _lemmingPlaceHandler.Initialize(_gameStatesUIMediator, _lemmingPlaceView);
         _lemmingPlaceController = new LemmingPlaceController(_lemmingPlaceView, _inputController, _lemmingConfig, _gameStatesUIMediator);
         _soundHandler.Initialize(_lemmingsEventsHandler);
+        var vibrationHandler = _vibrationHandler;
+        if (vibrationHandler == null && _soundHandler != null)
+            vibrationHandler = _soundHandler.GetComponent<VibrationHandler>();
+        if (vibrationHandler == null && _soundHandler != null)
+            vibrationHandler = _soundHandler.gameObject.AddComponent<VibrationHandler>();
+        if (vibrationHandler != null)
+            vibrationHandler.Initialize(_lemmingsEventsHandler);
         if (_bottom != null)
             _bottom.Initialize(_soundHandler);
         _eventsSoundMediator = new EventsSoundMediator(_soundHandler, _obstaclesSet, _lemmingsEventsHandler);

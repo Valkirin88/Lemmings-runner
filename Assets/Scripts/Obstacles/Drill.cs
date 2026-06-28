@@ -129,6 +129,7 @@ public class Drill : MonoBehaviour, IObstacle
 
     private void CatchLemming(LemmingView lemming, Collider lemmingCollider)
     {
+        VibrationHandler.PlayDrillHitVibro();
         StopLemmingMovement(lemming);
 
         Vector3 stickWorld = GetColliderContactPoint(lemmingCollider);
@@ -191,7 +192,7 @@ public class Drill : MonoBehaviour, IObstacle
             lemming.transform.SetParent(null, true);
 
         // Захваченный лемминг умирает даже если включили неуязвимость после захвата.
-        lemming.KillWithotBlood(ignoreInvincibility: true);
+        lemming.KillWithotBlood(ignoreInvincibility: true, deathCause: LemmingDeathCause.Drill);
     }
 
     private void PlayCatchEffects(Vector3 worldPosition)

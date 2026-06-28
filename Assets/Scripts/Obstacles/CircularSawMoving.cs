@@ -63,7 +63,7 @@ public class CircularSawMoving : MonoBehaviour, IObstacle
             // Вызываем Kill для неубитых леммингов, а для горящих - сразу уничтожаем
             if (!lemmingView.IsDead)
             {
-                lemmingView.Kill(destroyImmediately: true);
+                lemmingView.Kill(destroyImmediately: true, deathCause: LemmingDeathCause.Saw);
             }
             else
             {
